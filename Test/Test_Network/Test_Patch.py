@@ -1,5 +1,6 @@
 import unittest
-from ComMeN.Patch.Patch import Patch
+
+from ComMeN.Network.Patch import Patch
 
 
 class PatchTestCase(unittest.TestCase):

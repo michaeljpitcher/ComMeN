@@ -12,12 +12,12 @@ __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Michael Pitcher"]
 __license__ = ""
-__version__ = "1.0.8"
+__version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class Patch():
+class Patch:
     """
     The basic node of the ComMeN network. Contains a subpopulation of compartments, which interact via the
     events of the system.
@@ -28,6 +28,7 @@ class Patch():
         :param compartments: list of compartments present in this patch
         """
         self.subpopulation = dict([(c, 0) for c in compartments])
+        self.neighbours = dict()
 
     def update(self, compartment, alteration):
         """
