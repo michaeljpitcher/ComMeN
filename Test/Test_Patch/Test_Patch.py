@@ -1,6 +1,7 @@
 import unittest
 from ComMeN.Patch.Patch import Patch
 
+
 class PatchTestCase(unittest.TestCase):
     def setUp(self):
         self.compartments = ['a','b','c']
