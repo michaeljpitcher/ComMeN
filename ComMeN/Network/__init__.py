@@ -18,4 +18,4 @@ __status__ = "Development"
 
 from Edge import *
 from Patch import *
-from Network import *
+from MetapopulationNetwork import *

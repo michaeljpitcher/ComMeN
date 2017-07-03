@@ -5,8 +5,8 @@ from ComMeN.Network.Edge import *
 
 class EdgeTestCase(unittest.TestCase):
     def setUp(self):
-        self.edge = Edge(('a','b'))
-        self.edge_directed = Edge(('c', 'd'), True)
+        self.edge = Edge('a','b')
+        self.edge_directed = Edge('c', 'd', True)
 
     def test_initialise(self):
         self.assertEqual(self.edge.node1, 'a')

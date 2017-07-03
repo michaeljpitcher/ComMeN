@@ -16,3 +16,6 @@ __version__ = "1.0.8"
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+
+from Event import *
+from UpdateHandler import *

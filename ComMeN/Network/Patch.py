@@ -6,8 +6,6 @@ Long Docstring
 
 """
 
-# imports
-
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Michael Pitcher"]
@@ -28,7 +26,9 @@ class Patch:
         :param compartments: list of compartments present in this patch
         """
         self.subpopulation = dict([(c, 0) for c in compartments])
+        # Record of all nodes this patch neighbours (updated when an edge is added to a network)
         self.neighbours = dict()
+        self.update_handler = None
 
     def update(self, compartment, alteration):
         """
@@ -40,3 +40,6 @@ class Patch:
         new_value = self.subpopulation[compartment] + alteration
         assert new_value >= 0, "New value cannot be negative"
         self.subpopulation[compartment] = new_value
+        # If an update handler has been assigned, process the consequences of updating this patch
+        if self.update_handler:
+            self.update_handler.propagate_node_update(self)

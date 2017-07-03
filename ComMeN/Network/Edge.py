@@ -22,7 +22,7 @@ class Edge:
     An edge connecting two nodes on the network in some way. Can be bi-directional or directed.
     """
 
-    def __init__(self, (node_1, node_2), directed=False):
+    def __init__(self, node_1, node_2, directed=False):
         """
         Create a new edge. If directed == True, then assumed direction is from node 1 to node 2.
         :param node_1: Node on network
