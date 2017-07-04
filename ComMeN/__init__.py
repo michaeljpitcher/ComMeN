@@ -14,4 +14,5 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 from Network import *
+from Events import *
 from Dynamics import *

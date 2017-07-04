@@ -1,7 +1,6 @@
 import unittest
 
-from ComMeN.Dynamics import *
-from ComMeN.Network import *
+from ComMeN import *
 
 
 class NonAbstractEvent(Event):

@@ -12,9 +12,9 @@ __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
 __credits__ = ["Michael Pitcher"]
 __license__ = ""
-__version__ = "1.0.8"
+__version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from Dynamics import *
-from UpdateHandler import *
+from Event import *
+from Create import *

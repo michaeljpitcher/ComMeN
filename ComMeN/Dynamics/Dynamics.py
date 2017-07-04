@@ -26,10 +26,16 @@ NODE_ID = 'node_id'
 
 class Dynamics:
     """
-    Dynamics handles the simulation of events over a network. Using the run function, each event calculates its rate,
-    based on the assigned reaction parameter and the current state of the subpopulations of nodes in the network. Using
-    these rates, a timestep interval is calculated and an event is probabilistically chosen. The event is performed and
-    the network is updated. This continues until a time limit is reached or there are no events that can occur.
+    Dynamics handles the simulation of events over a network.
+
+    Simulations are run using the run function, which performs events using Gillespie algorithm, adapted from:
+    D. T. Gillespie, "A general method for numerically simulating the stochastic time evolution of coupled chemical
+    reactions," J. Comput. Phys., vol. 22, no. 4, pp. 403-434, 1976. **
+
+    Each event calculates its rate, based on the assigned reaction parameter and the current state of the subpopulations
+    of nodes in the network. Using these rates, a timestep interval is calculated and an event is probabilistically
+    chosen. The event is performed and the network is updated. This continues until a time limit is reached or there are
+    no events that can occur.
     """
 
     def __init__(self, network, events):
@@ -43,6 +49,12 @@ class Dynamics:
         self._network = network
         self._events = events
         self._time = 0.0
+        self._compartments = []
+        for node in self._network.nodes:
+            self._compartments += node.compartments
+        # Remove any duplicates
+        self._compartments = list(set(self._compartments))
+
 
     def run(self, time_limit, output_data=False, run_id=None):
         """
@@ -62,12 +74,8 @@ class Dynamics:
                 current_time.append(str(time.localtime()[5]))
                 filename = ''.join(current_time) + '.csv'
             csv_file = open(filename, 'w')
-            compartments = []
-            for node in self._network.nodes:
-                for c in node.compartments:
-                    if c not in compartments:
-                        compartments.append(c)
-            csv_writer = csv.DictWriter(csv_file, [TIMESTEP, NODE_ID] + compartments)
+
+            csv_writer = csv.DictWriter(csv_file, [TIMESTEP, NODE_ID] + self._compartments)
             csv_writer.writeheader()
             print "Data output to:", filename
 
@@ -114,4 +122,8 @@ class Dynamics:
             csv_writer.writerow(row)
 
     def timestep_print(self):
+        """
+        Output to the console every timestep
+        :return:
+        """
         print "t = ", self._time
