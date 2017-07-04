@@ -16,5 +16,4 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from EpidemicDynamics import *
-from EpidemicNetwork import *
+from SIRSinglePatch import *

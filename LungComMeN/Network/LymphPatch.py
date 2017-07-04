@@ -6,7 +6,7 @@ Long Docstring
 
 """
 
-# imports
+from ComMeN.Network.Patch import Patch
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -16,5 +16,8 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from EpidemicDynamics import *
-from EpidemicNetwork import *
+
+class LungPatch(Patch):
+    def __init__(self, node_id, compartments):
+        Patch.__init__(self, node_id, compartments)
+        # TODO - spatial attributes

@@ -1,3 +1,7 @@
-p = dict([(1,1), (2,2), (3,3)])
+import numpy
 
-print p
+
+a = ['a','b','c','d']
+print numpy.random.choice(a)
+
+

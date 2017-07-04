@@ -6,7 +6,7 @@ Long Docstring
 
 """
 
-# imports
+from ComMeN import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -16,5 +16,8 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from EpidemicDynamics import *
-from EpidemicNetwork import *
+
+class SinglePatchEpidemicNetwork(MetapopulationNetwork):
+    def __init__(self, compartments):
+        nodes = [Patch(1, compartments)]
+        MetapopulationNetwork.__init__(self, nodes, [])

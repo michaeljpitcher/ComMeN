@@ -6,7 +6,7 @@ Long Docstring
 
 """
 
-from ..Network import *
+from Patch import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"

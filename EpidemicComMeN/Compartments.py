@@ -16,5 +16,11 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from EpidemicDynamics import *
-from EpidemicNetwork import *
+SUSCEPTIBLE = 'susceptible'
+EXPOSED = 'exposed'
+INFECTIOUS = 'infectious'
+RECOVERED = 'recovered'
+
+SIR_compartments = [SUSCEPTIBLE, INFECTIOUS, RECOVERED]
+SIS_compartments = [SUSCEPTIBLE, INFECTIOUS]
+SEIR_compartments = [SUSCEPTIBLE, EXPOSED, INFECTIOUS, RECOVERED]
