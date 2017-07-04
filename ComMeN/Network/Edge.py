@@ -29,6 +29,20 @@ class Edge:
         :param node_2: Node on network
         :param directed: Does edge have a direction
         """
-        self.node1 = node_1
-        self.node2 = node_2
+        self.nodes = [node_1, node_2]
         self.directed = directed
+        node_1.add_adjacent_edge(self)
+        node_2.add_adjacent_edge(self)
+
+    def __getitem__(self, item):
+        """
+        Given a node, return the neighbour
+        :param item: Node
+        :return:
+        """
+        if item == self.nodes[0]:
+            return self.nodes[1]
+        elif item == self.nodes[1]:
+            return self.nodes[0]
+        else:
+            raise Exception("Node {0} is not on this edge".format(item))

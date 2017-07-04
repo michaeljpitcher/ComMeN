@@ -20,3 +20,4 @@ from Event import *
 from Create import *
 from Destroy import *
 from Change import *
+from Translocate import *

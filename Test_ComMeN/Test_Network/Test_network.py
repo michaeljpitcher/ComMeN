@@ -36,10 +36,6 @@ class NetworkTestCase(unittest.TestCase):
         self.network_empty.add_edge(edge)
         self.assertItemsEqual(self.network_empty.nodes, [p1,p2])
         self.assertItemsEqual(self.network_empty.edges, [edge])
-        self.assertTrue(p2 in p1.neighbours)
-        self.assertEqual(p1.neighbours[p2], edge)
-        self.assertTrue(p1 in p2.neighbours)
-        self.assertEqual(p2.neighbours[p1], edge)
 
         # Fail - node1 not in network
         p3 = Patch(None, ['a', 'b'])
@@ -51,3 +47,4 @@ class NetworkTestCase(unittest.TestCase):
         with self.assertRaises(AssertionError) as context:
             self.network_empty.add_edge(edge3)
         self.assertTrue('is not in the network' in str(context.exception))
+

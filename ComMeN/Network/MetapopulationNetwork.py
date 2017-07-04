@@ -53,11 +53,6 @@ class MetapopulationNetwork:
         :return:
         """
         # Pull nodes from edge instance, check they exist on this network object
-        node1 = edge.node1
-        assert node1 in self.nodes, "Node {0} is not in the network".format(node1)
-        node2 = edge.node2
-        assert node2 in self.nodes, "Node {0} is not in the network".format(node2)
+        for n in edge.nodes:
+            assert n in self.nodes, "Node {0} is not in the network".format(n)
         self.edges.append(edge)
-        # Add a record to node1's neighbours, key=node2, value=edge object (and vice versa)
-        node1.neighbours[node2] = edge
-        node2.neighbours[node1] = edge

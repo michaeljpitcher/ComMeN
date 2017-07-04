@@ -1,7 +1,6 @@
 import unittest
 
-from ComMeN.Network.Patch import Patch
-
+from ComMeN import *
 
 class PatchTestCase(unittest.TestCase):
     def setUp(self):
@@ -13,7 +12,7 @@ class PatchTestCase(unittest.TestCase):
         self.assertItemsEqual(self.patch._subpopulation.keys(), self.compartments)
         for c in self.compartments:
             self.assertEqual(self.patch._subpopulation[c], 0)
-        self.assertFalse(len(self.patch.neighbours))
+        self.assertFalse(len(self.patch.adjacent_edges))
         self.assertFalse(self.patch.update_handler)
 
     def test_update(self):
@@ -27,7 +26,13 @@ class PatchTestCase(unittest.TestCase):
             self.patch.update({self.compartments[1]:-1})
         self.assertEqual('New value cannot be negative', str(context.exception))
 
-        # TODO - With update handler
+    def test_add_adjacent_edge(self):
+        patch2 = Patch(2, self.compartments)
+        e = Edge(self.patch, patch2)
+        self.patch.adjacent_edges.clear()
+        self.patch.add_adjacent_edge(e)
+        self.assertItemsEqual(self.patch.adjacent_edges.keys(), [Edge])
+        self.assertItemsEqual(self.patch.adjacent_edges[Edge], [e])
 
 if __name__ == '__main__':
     unittest.main()

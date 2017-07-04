@@ -30,7 +30,7 @@ class Patch:
         self.node_id = node_id
         self._subpopulation = dict([(c, 0) for c in self.compartments])
         # Record of all nodes this patch neighbours (updated when an edge is added to a network)
-        self.neighbours = dict()
+        self.adjacent_edges = dict()
         self.update_handler = None
 
     def __getitem__(self, item):
@@ -59,3 +59,14 @@ class Patch:
         # If an update handler has been assigned, process the consequences of updating this patch
         if self.update_handler:
             self.update_handler.propagate_node_update(self)
+
+    def add_adjacent_edge(self, edge):
+        """
+        Add an edge to the list of adjacent edges
+        :param edge:
+        :return:
+        """
+        if edge.__class__ not in self.adjacent_edges:
+            self.adjacent_edges[edge.__class__] = [edge]
+        else:
+            self.adjacent_edges[edge.__class__].append(edge)
