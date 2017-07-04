@@ -18,3 +18,4 @@ __status__ = "Development"
 
 from Event import *
 from Create import *
+from Destroy import *

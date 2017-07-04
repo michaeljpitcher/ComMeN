@@ -20,7 +20,7 @@ __status__ = "Development"
 class Create(Event):
     """
     Create event - a member of the specified compartment is created. Either a spontaneous creation, or created by
-    members of other compartments
+    members of compartments
     """
     def __init__(self, reaction_parameter, nodes, compartment_created, influencing_compartments=None):
         """
@@ -29,7 +29,7 @@ class Create(Event):
         :param reaction_parameter: Reaction parameter of event
         :param nodes: Nodes where creation occurs
         :param compartment_created: The compartment to add new member into
-        :param influencing_compartments: Compartmemnts whose members cause creation (if not specified, spontaneous
+        :param influencing_compartments: Compartments whose members cause creation (if not specified, spontaneous
         creation)
         """
         self._compartment_created = compartment_created
