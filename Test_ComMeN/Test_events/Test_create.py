@@ -16,15 +16,15 @@ class CreateTestCase(unittest.TestCase):
         self.assertEqual(self.event.rate, 0.1)
         self.assertEqual(self.event_infl.rate, 0.2 * 0)
 
-        self.node.update('b', 2)
+        self.node.update({'b':2})
         self.assertEqual(self.event.rate, 0.1)
         self.assertEqual(self.event_infl.rate, 0.2 * 2)
 
-        self.node.update('c', 3)
+        self.node.update({'c':3})
         self.assertEqual(self.event.rate, 0.1)
         self.assertEqual(self.event_infl.rate, 0.2 * 5)
 
-        self.node.update('d', 4)
+        self.node.update({'d':4})
         self.assertEqual(self.event.rate, 0.1)
         self.assertEqual(self.event_infl.rate, 0.2 * 5)
 

@@ -51,7 +51,7 @@ class Destroy(Event):
     def _update_node(self, node):
         """
         Update the node by removing a member from the compartment
-        :param node:
+        :param node: Node to update
         :return:
         """
-        node.update(self._compartment_destroyed, -1)
+        node.update({self._compartment_destroyed:-1})

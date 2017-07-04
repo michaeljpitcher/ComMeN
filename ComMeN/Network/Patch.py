@@ -45,16 +45,17 @@ class Patch:
     def __str__(self):
         return self.__class__.__name__
 
-    def update(self, compartment, alteration):
+    def update(self, changes):
         """
         Change the value of the count of a compartment by an amount (new value cannot be negative)
-        :param compartment: Compartment to be amended
-        :param alteration: Amount to change count value by
+        :param changes: Dictionary of changes; key=compartment, value=amount to update
         :return:
         """
-        new_value = self._subpopulation[compartment] + alteration
-        assert new_value >= 0, "New value cannot be negative"
-        self._subpopulation[compartment] = new_value
+        for compartment in changes:
+            alteration = changes[compartment]
+            new_value = self._subpopulation[compartment] + alteration
+            assert new_value >= 0, "New value cannot be negative"
+            self._subpopulation[compartment] = new_value
         # If an update handler has been assigned, process the consequences of updating this patch
         if self.update_handler:
             self.update_handler.propagate_node_update(self)

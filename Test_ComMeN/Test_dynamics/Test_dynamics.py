@@ -10,7 +10,7 @@ class NonAbstractEvent(Event):
         return node['a']
 
     def _update_node(self, node):
-        node.update('b', 1)
+        node.update({'b':1})
         return [node]
 
 
@@ -29,5 +29,5 @@ class DynamicsTestCase(unittest.TestCase):
 
     def test_run(self):
         rand.seed(101)
-        self.nodes[0].update('a', 2)
+        self.nodes[0].update({'a':2})
         self.dynamics.run(time_limit=1000, output_data=True, run_id=99)

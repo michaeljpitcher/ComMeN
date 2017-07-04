@@ -17,14 +17,14 @@ class PatchTestCase(unittest.TestCase):
         self.assertFalse(self.patch.update_handler)
 
     def test_update(self):
-        self.patch.update(self.compartments[0], 9)
+        self.patch.update({self.compartments[0]:9})
         self.assertEqual(self.patch._subpopulation[self.compartments[0]], 9)
         self.assertEqual(self.patch._subpopulation[self.compartments[1]], 0)
         self.assertEqual(self.patch._subpopulation[self.compartments[2]], 0)
 
         # Fail - negative value
         with self.assertRaises(AssertionError) as context:
-            self.patch.update(self.compartments[1], -1)
+            self.patch.update({self.compartments[1]:-1})
         self.assertEqual('New value cannot be negative', str(context.exception))
 
         # TODO - With update handler

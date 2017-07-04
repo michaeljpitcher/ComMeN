@@ -3,13 +3,14 @@ import unittest
 from ComMeN import *
 
 
-class DestroyTestCase(unittest.TestCase):
+class ChangeTestCase(unittest.TestCase):
     def setUp(self):
-        self.compartment_destroyed = 'a'
+        self.compartment_from = 'a'
+        self.compartment_to = 'd'
         self.infl_compartments = ['b','c']
         self.node = Patch(0, ['a','b','c','d'])
-        self.event = Destroy(0.1, [self.node], self.compartment_destroyed)
-        self.event_infl = Destroy(0.2, [self.node], self.compartment_destroyed, self.infl_compartments)
+        self.event = Change(0.1, [self.node], self.compartment_from, self.compartment_to)
+        self.event_infl = Change(0.2, [self.node], self.compartment_from, self.compartment_to, self.infl_compartments)
         uh = UpdateHandler([self.event, self.event_infl])
 
     def test_rates(self):
@@ -30,9 +31,11 @@ class DestroyTestCase(unittest.TestCase):
 
     def test_perform(self):
         self.node.update({'a':1})
-        self.assertEqual(self.node[self.compartment_destroyed], 1)
+        self.assertEqual(self.node[self.compartment_from], 1)
+        self.assertEqual(self.node[self.compartment_to], 0)
         self.event.perform()
-        self.assertEqual(self.node[self.compartment_destroyed], 0)
+        self.assertEqual(self.node[self.compartment_from], 0)
+        self.assertEqual(self.node[self.compartment_to], 1)
 
 
 if __name__ == '__main__':
