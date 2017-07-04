@@ -6,7 +6,7 @@ from ComMeN.Network import *
 class NetworkTestCase(unittest.TestCase):
     def setUp(self):
         self.network_empty = MetapopulationNetwork()
-        self.nodes = [Patch(['a']), Patch(['a'])]
+        self.nodes = [Patch(None, ['a']), Patch(None, ['a'])]
         self.edges = [Edge(self.nodes[0], self.nodes[1])]
         self.network_full = MetapopulationNetwork(self.nodes, self.edges)
 
@@ -18,7 +18,7 @@ class NetworkTestCase(unittest.TestCase):
 
 
     def test_add_node(self):
-        p = Patch(['a','b'])
+        p = Patch(None, ['a', 'b'])
         self.network_empty.add_node(p)
         self.assertItemsEqual(self.network_empty.nodes, [p])
 
@@ -28,17 +28,21 @@ class NetworkTestCase(unittest.TestCase):
         self.assertEqual('Node c is not instance of Patch class', str(context.exception))
 
     def test_add_edge(self):
-        p1 = Patch(['a', 'b'])
-        p2 = Patch(['a', 'b'])
+        p1 = Patch(None, ['a', 'b'])
+        p2 = Patch(None, ['a', 'b'])
         self.network_empty.add_node(p1)
         self.network_empty.add_node(p2)
         edge = Edge(p1, p2)
         self.network_empty.add_edge(edge)
         self.assertItemsEqual(self.network_empty.nodes, [p1,p2])
         self.assertItemsEqual(self.network_empty.edges, [edge])
+        self.assertTrue(p2 in p1.neighbours)
+        self.assertEqual(p1.neighbours[p2], edge)
+        self.assertTrue(p1 in p2.neighbours)
+        self.assertEqual(p2.neighbours[p1], edge)
 
         # Fail - node1 not in network
-        p3 = Patch(['a', 'b'])
+        p3 = Patch(None, ['a', 'b'])
         edge2 = Edge(p3, p2)
         with self.assertRaises(AssertionError) as context:
             self.network_empty.add_edge(edge2)

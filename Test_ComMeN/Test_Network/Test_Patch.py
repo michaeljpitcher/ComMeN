@@ -1,26 +1,26 @@
 import unittest
 
 from ComMeN.Network.Patch import Patch
-from ComMeN.Dynamics import *
 
 
 class PatchTestCase(unittest.TestCase):
     def setUp(self):
         self.compartments = ['a','b','c']
-        self.patch = Patch(self.compartments)
+        self.patch = Patch(1, self.compartments)
 
     def test_initialise(self):
-        self.assertItemsEqual(self.patch.subpopulation.keys(), self.compartments)
+        self.assertEqual(self.patch.node_id, 1)
+        self.assertItemsEqual(self.patch._subpopulation.keys(), self.compartments)
         for c in self.compartments:
-            self.assertEqual(self.patch.subpopulation[c], 0)
+            self.assertEqual(self.patch._subpopulation[c], 0)
         self.assertFalse(len(self.patch.neighbours))
         self.assertFalse(self.patch.update_handler)
 
     def test_update(self):
         self.patch.update(self.compartments[0], 9)
-        self.assertEqual(self.patch.subpopulation[self.compartments[0]], 9)
-        self.assertEqual(self.patch.subpopulation[self.compartments[1]], 0)
-        self.assertEqual(self.patch.subpopulation[self.compartments[2]], 0)
+        self.assertEqual(self.patch._subpopulation[self.compartments[0]], 9)
+        self.assertEqual(self.patch._subpopulation[self.compartments[1]], 0)
+        self.assertEqual(self.patch._subpopulation[self.compartments[2]], 0)
 
         # Fail - negative value
         with self.assertRaises(AssertionError) as context:

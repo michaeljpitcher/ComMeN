@@ -33,13 +33,17 @@ class UpdateHandler:
         # Fill dependencies by checking nodes of each event (i.e. which nodes contribute to events state variable)
         for event in events:
             for node in event.state_variable_composition:
+                # Attaches itself to the node (if no update handler already)
+                if not node.update_handler:
+                    node.update_handler = self
+                # Add a record to the dictionary if one doesn't exist already
                 if node not in self._dependencies:
                     self._dependencies[node] = []
                 self._dependencies[node].append(event)
 
     def propagate_node_update(self, node):
         """
-        Given a node, update the state variables of the events that occur at the node (as its subpopulation
+        Given a node, update the state variables of the events that occur at that node (as its subpopulation
         has been altered)
         :param node: The node whose subpopulation has been amended
         :return:

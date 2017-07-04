@@ -28,7 +28,7 @@ class Event:
     Reaction parameter - average probability to first order in unit time, that an event will occur accordingly in the
         next time interval unit time
     State variable - number of distinct reactant possible combinations for event, found to be present at time t.
-    Probability - probability, to first order in unit time that an event will occur in the next time interval unit time
+    Rate - probability, to first order in unit time that an event will occur in the next time interval unit time
     """
 
     def __init__(self, reaction_parameter, nodes):
@@ -37,8 +37,8 @@ class Event:
         :param reaction_parameter: Rate at which event occurs
         :param nodes: Nodes where event can occur
         """
-        # Reaction probability of event
-        self.probability = 0
+        # Reaction rate of event
+        self.rate = 0
         self._reaction_parameter = reaction_parameter
 
         #  Initialise the state variable, and the dictionary detailing its composition.
@@ -59,7 +59,7 @@ class Event:
         value_after = self._calculate_state_variable_at_node(node)
         self.state_variable_composition[node] = value_after
         self._state_variable += (value_after - value_before)
-        self.probability = self._state_variable * self._reaction_parameter
+        self.rate = self._state_variable * self._reaction_parameter
 
     def _calculate_state_variable_at_node(self, node):
         """
