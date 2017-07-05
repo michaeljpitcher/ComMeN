@@ -27,5 +27,5 @@ class SinglePatchEpidemicNetwork(MetapopulationNetwork):
         :param compartments: Compartments to add to nodes
         """
         # Just one node, no edges
-        nodes = [Patch(1, compartments)]
+        nodes = [Patch(0, compartments)]
         MetapopulationNetwork.__init__(self, nodes, [])
