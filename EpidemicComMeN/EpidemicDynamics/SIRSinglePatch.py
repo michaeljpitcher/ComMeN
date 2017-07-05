@@ -7,7 +7,6 @@ Long Docstring
 """
 
 from ComMeN import *
-from ..EpidemicNetwork.SinglePatchNetwork import SinglePatchEpidemicNetwork
 from ..Compartments import *
 from ..EpidemicEvents.Infect import *
 
@@ -39,7 +38,7 @@ class SIRSinglePatchDynamics(Dynamics):
         :param seeding: Initial seeding of patch
         """
         # Single patch network
-        network = SinglePatchEpidemicNetwork(SIR_compartments)
+        network = SinglePatchMetapopulation(SIR_compartments)
         # Create events
         events = []
         # Birth - into susceptible class

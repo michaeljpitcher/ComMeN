@@ -6,7 +6,8 @@ Long Docstring
 
 """
 
-from ComMeN import *
+from MetapopulationNetwork import MetapopulationNetwork
+from Patch import Patch
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -17,7 +18,7 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class SinglePatchEpidemicNetwork(MetapopulationNetwork):
+class SinglePatchMetapopulation(MetapopulationNetwork):
     """
     An epidemic taking place across a single homogeneously mixed population (i.e. a one-patch network)
     """

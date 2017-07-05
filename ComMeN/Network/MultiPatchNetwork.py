@@ -6,7 +6,9 @@ Long Docstring
 
 """
 
-from ComMeN import *
+from MetapopulationNetwork import MetapopulationNetwork
+from Patch import Patch
+from Edge import Edge
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -17,7 +19,7 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class MultiPatchEpidemicNetwork(MetapopulationNetwork):
+class MultiPatchMetapopulationNetwork(MetapopulationNetwork):
     """
     An epidemic taking place across a multitude of patches (no spatial attributes)
     """

@@ -1,6 +1,6 @@
 import unittest
 
-from EpidemicComMeN import *
+from ComMeN import *
 
 
 class MultiPatchNetworkTestCase(unittest.TestCase):
@@ -8,7 +8,7 @@ class MultiPatchNetworkTestCase(unittest.TestCase):
         compartments = ['a','b','c']
         self.nodes = 10
         self.edges = [(0,1), (0,2), (2,3), (3,4), (4,5), (6,7), (7,8), (8,9), (0,9)]
-        self.network = MultiPatchEpidemicNetwork(compartments, self.nodes, self.edges)
+        self.network = MultiPatchMetapopulationNetwork(compartments, self.nodes, self.edges)
 
     def test_initialise(self):
         self.assertEqual(len(self.network.nodes), self.nodes)
