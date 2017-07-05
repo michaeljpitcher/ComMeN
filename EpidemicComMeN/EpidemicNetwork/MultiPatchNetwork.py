@@ -31,7 +31,7 @@ class MultiPatchEpidemicNetwork(MetapopulationNetwork):
         nodes = []
         # Create the nodes
         for n in range(number_patches):
-            nodes.append([Patch(n, compartments)])
+            nodes.append(Patch(n, compartments))
         edges = []
         # Create the edges
         for (n1, n2) in connections:
