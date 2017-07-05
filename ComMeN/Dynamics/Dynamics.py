@@ -47,7 +47,7 @@ class Dynamics:
         # Create update handler. Doing so attaches handler to every node (that has an event attached)
         update_handler = UpdateHandler(events)
         self._network = network
-        self._events = events
+        self._events = [e for e in events if e.reaction_parameter > 0]
         self._time = 0.0
         self._compartments = []
         for node in self._network.nodes:

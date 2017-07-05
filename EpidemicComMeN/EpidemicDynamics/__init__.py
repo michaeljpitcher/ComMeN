@@ -18,3 +18,4 @@ __status__ = "Development"
 
 from SIRSinglePatch import *
 from SEIRSinglePatch import *
+from SISSinglePatch import *

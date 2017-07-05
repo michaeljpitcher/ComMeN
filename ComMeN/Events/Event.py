@@ -39,7 +39,7 @@ class Event:
         """
         # Reaction rate of event
         self.rate = 0
-        self._reaction_parameter = reaction_parameter
+        self.reaction_parameter = reaction_parameter
 
         #  Initialise the state variable, and the dictionary detailing its composition.
         self._state_variable = 0
@@ -61,7 +61,7 @@ class Event:
             return
         self.state_variable_composition[node] = value_after
         self._state_variable += change
-        self.rate = self._state_variable * self._reaction_parameter
+        self.rate = self._state_variable * self.reaction_parameter
 
     def _calculate_state_variable_at_node(self, node):
         """
