@@ -16,6 +16,7 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+MATERNALLY_IMMUNE = 'maternally_immune'
 SUSCEPTIBLE = 'susceptible'
 EXPOSED = 'exposed'
 INFECTIOUS = 'infectious'
@@ -24,3 +25,4 @@ RECOVERED = 'recovered'
 SIR_compartments = [SUSCEPTIBLE, INFECTIOUS, RECOVERED]
 SIS_compartments = [SUSCEPTIBLE, INFECTIOUS]
 SEIR_compartments = [SUSCEPTIBLE, EXPOSED, INFECTIOUS, RECOVERED]
+MSEIR_compartments = [MATERNALLY_IMMUNE, SUSCEPTIBLE, EXPOSED, INFECTIOUS, RECOVERED]
