@@ -30,27 +30,25 @@ class MetapopulationNetwork:
         self.nodes = []
         if nodes:
             for n in nodes:
-                self.add_node(n)
+                self._add_node(n)
         self.edges = []
         if edges:
             for e in edges:
-                self.add_edge(e)
+                self._add_edge(e)
 
-    def add_node(self, node):
+    def _add_node(self, node):
         """
-        Add a node (instance of patch class) to the network
+        Add a node (instance of patch class) to the network (must have unique node ID)
         :param node: Patch instance to add
-        :return:
         """
-        # Must be an instance of Patch class (or subclasses)
-        assert isinstance(node, Patch), "Node {0} is not instance of Patch class".format(node)
+        assert node.node_id not in [n.node_id for n in self.nodes], \
+            "Node ID {0} already exists in network".format(node.node_id)
         self.nodes.append(node)
 
-    def add_edge(self, edge):
+    def _add_edge(self, edge):
         """
         Add an edge instance to the network
         :param edge: Edge to be added
-        :return:
         """
         # Pull nodes from edge instance, check they exist on this network object
         for n in edge.nodes:
