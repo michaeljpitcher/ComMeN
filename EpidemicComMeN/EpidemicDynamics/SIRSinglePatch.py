@@ -9,6 +9,7 @@ Long Docstring
 from ComMeN import *
 from ..EpidemicNetwork.SinglePatchNetwork import SinglePatchEpidemicNetwork
 from ..Compartments import *
+from ..Events.Infect import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -31,8 +32,9 @@ class SIRSinglePatchDynamics(Dynamics):
         events.append(Create(birth_rate, network.nodes, compartment_created=SUSCEPTIBLE,
                              influencing_compartments=[SUSCEPTIBLE, INFECTIOUS, RECOVERED]))
         # Infection - Infectious change Susceptible to Infectious
-        events.append(Change(infection_rate, network.nodes, compartment_from=SUSCEPTIBLE, compartment_to=INFECTIOUS,
-                             influencing_compartments=INFECTIOUS))
+        events.append(Infect(infection_rate, network.nodes, susceptible_compartment=SUSCEPTIBLE,
+                             infected_compartment=INFECTIOUS, infectious_compartments=[INFECTIOUS],
+                             population_density_dependent=True))
         # Recover - Infectious changes to Recovered
         events.append(Change(recovery_rate, network.nodes, compartment_from=INFECTIOUS, compartment_to=RECOVERED))
         # Death (standard) - death event for every compartment
@@ -46,3 +48,10 @@ class SIRSinglePatchDynamics(Dynamics):
         # Seed the network
         network.nodes[0].update({SUSCEPTIBLE: population_total - population_infected})
         network.nodes[0].update({INFECTIOUS: population_infected})
+
+    def _end_simulation(self):
+        """
+        End the simulation if the infection has been eliminated from the system
+        :return: True if no infectious members, false otherwise
+        """
+        return self._network.nodes[0][INFECTIOUS] == 0

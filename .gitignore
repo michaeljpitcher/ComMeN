@@ -8,3 +8,7 @@
 .idea/workspace.xml
 
 *.pyc
+
+sandbox.py
+
+*.csv

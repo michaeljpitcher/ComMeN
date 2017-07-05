@@ -18,3 +18,5 @@ __status__ = "Development"
 
 from EpidemicDynamics import *
 from EpidemicNetwork import *
+from Plotting import *
+from Compartments import *
