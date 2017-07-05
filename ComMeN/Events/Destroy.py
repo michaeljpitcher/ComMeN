@@ -54,4 +54,4 @@ class Destroy(Event):
         :param node: Node to update
         :return:
         """
-        node.update({self._compartment_destroyed:-1})
+        node.update({self._compartment_destroyed: -1})

@@ -37,7 +37,7 @@ class Patch:
         """
         Shortcut function to retrieve a patch subpopulation compartment via the get item function.
         e.g. use patch[compartment] to return count of compartment in subpopulation of patch instance
-        :param item:
+        :param item: Compartment of subpopulation
         :return:
         """
         return self._subpopulation[item]

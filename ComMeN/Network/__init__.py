@@ -19,3 +19,5 @@ __status__ = "Development"
 from Edge import *
 from Patch import *
 from MetapopulationNetwork import *
+from SinglePatchNetwork import *
+from MultiPatchNetwork import *

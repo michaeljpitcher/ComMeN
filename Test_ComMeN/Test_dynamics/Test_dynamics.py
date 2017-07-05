@@ -16,7 +16,6 @@ class NonAbstractEvent(Event):
 
 class DynamicsTestCase(unittest.TestCase):
     def setUp(self):
-        self.network_empty = MetapopulationNetwork()
         self.nodes = [Patch(1, ['a','b','c']), Patch(2, ['a','b','d'])]
         self.edges = [Edge(self.nodes[0], self.nodes[1])]
         self.network = MetapopulationNetwork(self.nodes, self.edges)

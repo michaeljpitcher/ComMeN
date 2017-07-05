@@ -1,7 +1,6 @@
 import unittest
 
 from EpidemicComMeN import *
-from ComMeN.Dynamics import UpdateHandler
 
 
 class InfectTestCase(unittest.TestCase):
@@ -30,7 +29,7 @@ class InfectTestCase(unittest.TestCase):
 
         self.node.update({self.infectious_comps[0]: 4})
         self.assertEqual(self.event_pop.rate, 0.1 * ((8 * 4) / float(8 + 3 + 4)))
-        self.assertEqual(self.event_non_pop.rate, 0.2 * ((8 * 4)))
+        self.assertEqual(self.event_non_pop.rate, 0.2 * (8 * 4))
 
         self.node.update({self.infectious_comps[1]: 2})
         self.assertEqual(self.event_pop.rate, 0.1 * ((8 * (4+2)) / float(8 + 3 + 4 + 2)))

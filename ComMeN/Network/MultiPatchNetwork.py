@@ -23,12 +23,13 @@ class MultiPatchMetapopulationNetwork(MetapopulationNetwork):
     """
     An epidemic taking place across a multitude of patches (no spatial attributes)
     """
-    def __init__(self, compartments, number_patches, connections):
+    def __init__(self, compartments, number_patches, connections, seeding=None):
         """
         Create a new multi-patch network
         :param compartments: Compartments of subpopulations of nodes
         :param number_patches: Number of nodes in network
         :param connections: Edge definitions - consists of (n1, n2) integers, where 0 <= n1, n2 < number_patches
+        :param seeding: Seeding of nodes
         """
         nodes = []
         # Create the nodes
@@ -38,4 +39,4 @@ class MultiPatchMetapopulationNetwork(MetapopulationNetwork):
         # Create the edges
         for (n1, n2) in connections:
             edges.append(Edge(nodes[n1], nodes[n2]))
-        MetapopulationNetwork.__init__(self, nodes, edges)
+        MetapopulationNetwork.__init__(self, nodes, edges, seeding)

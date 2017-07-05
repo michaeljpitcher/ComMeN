@@ -5,16 +5,13 @@ from ComMeN.Network import *
 
 class NetworkTestCase(unittest.TestCase):
     def setUp(self):
-        self.network_empty = MetapopulationNetwork()
         self.nodes = [Patch(0, ['a']), Patch(1, ['a'])]
         self.edges = [Edge(self.nodes[0], self.nodes[1])]
-        self.network_full = MetapopulationNetwork(self.nodes, self.edges)
+        self.network = MetapopulationNetwork(self.nodes, self.edges)
 
     def test_initialise(self):
-        self.assertFalse(len(self.network_empty.nodes))
-        self.assertFalse(len(self.network_empty.edges))
-        self.assertItemsEqual(self.network_full.nodes, self.nodes)
-        self.assertItemsEqual(self.network_full.edges, self.edges)
+        self.assertItemsEqual(self.network.nodes, self.nodes)
+        self.assertItemsEqual(self.network.edges, self.edges)
 
         # Test fail patch - non-unique IDs
         nodes = [Patch(0, ['a']), Patch(0, ['a'])]

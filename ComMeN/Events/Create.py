@@ -54,4 +54,4 @@ class Create(Event):
         :param node: Node to update
         :return:
         """
-        node.update({self._compartment_created:1})
+        node.update({self._compartment_created: 1})

@@ -67,7 +67,7 @@ class Event:
         """
         Calculate the amount the given node contributes to the overall state variable. To be overriden in subclass, as
         specific to the event type.
-        :param node:
+        :param node: Node at which to calculate the contribution to event state variable
         :return:
         """
         raise NotImplementedError()

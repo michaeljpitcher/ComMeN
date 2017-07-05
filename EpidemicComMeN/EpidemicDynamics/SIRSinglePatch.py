@@ -38,7 +38,7 @@ class SIRSinglePatchDynamics(Dynamics):
         :param seeding: Initial seeding of patch
         """
         # Single patch network
-        network = SinglePatchMetapopulation(SIR_compartments)
+        network = SinglePatchMetapopulation(SIR_compartments, seeding)
         # Create events
         events = []
         # Birth - into susceptible class
@@ -56,7 +56,7 @@ class SIRSinglePatchDynamics(Dynamics):
         # Death (by disease) - increased mortality for disease
         events.append(Destroy(death_by_infection_rate, network.nodes, compartment_destroyed=INFECTIOUS))
 
-        Dynamics.__init__(self, network, events, seeding)
+        Dynamics.__init__(self, network, events)
 
 
     def _end_simulation(self):
