@@ -6,7 +6,7 @@ from ComMeN.Network import *
 class NetworkTestCase(unittest.TestCase):
     def setUp(self):
         self.network_empty = MetapopulationNetwork()
-        self.nodes = [Patch(None, ['a']), Patch(None, ['a'])]
+        self.nodes = [Patch(0, ['a']), Patch(1, ['a'])]
         self.edges = [Edge(self.nodes[0], self.nodes[1])]
         self.network_full = MetapopulationNetwork(self.nodes, self.edges)
 
@@ -16,35 +16,18 @@ class NetworkTestCase(unittest.TestCase):
         self.assertItemsEqual(self.network_full.nodes, self.nodes)
         self.assertItemsEqual(self.network_full.edges, self.edges)
 
-
-    def test_add_node(self):
-        p = Patch(None, ['a', 'b'])
-        self.network_empty.add_node(p)
-        self.assertItemsEqual(self.network_empty.nodes, [p])
-
-        # Fail - not a Patch instance
+        # Test fail patch - non-unique IDs
+        nodes = [Patch(0, ['a']), Patch(0, ['a'])]
+        edges = [Edge(nodes[0], nodes[1])]
         with self.assertRaises(AssertionError) as context:
-            self.network_empty.add_node("c")
-        self.assertEqual('Node c is not instance of Patch class', str(context.exception))
+            network_full = MetapopulationNetwork(nodes, self.edges)
+        self.assertEqual(str(context.exception), 'Node ID 0 already exists in network')
 
-    def test_add_edge(self):
-        p1 = Patch(None, ['a', 'b'])
-        p2 = Patch(None, ['a', 'b'])
-        self.network_empty.add_node(p1)
-        self.network_empty.add_node(p2)
-        edge = Edge(p1, p2)
-        self.network_empty.add_edge(edge)
-        self.assertItemsEqual(self.network_empty.nodes, [p1,p2])
-        self.assertItemsEqual(self.network_empty.edges, [edge])
-
-        # Fail - node1 not in network
-        p3 = Patch(None, ['a', 'b'])
-        edge2 = Edge(p3, p2)
+        # test fail edge - node not in network
+        nodes = [Patch(0, ['a']), Patch(1, ['a'])]
+        edges = [Edge(nodes[0], Patch(3, ['a']))]
         with self.assertRaises(AssertionError) as context:
-            self.network_empty.add_edge(edge2)
+            network_full = MetapopulationNetwork(nodes, self.edges)
         self.assertTrue('is not in the network' in str(context.exception))
-        edge3 = Edge(p1, p3)
-        with self.assertRaises(AssertionError) as context:
-            self.network_empty.add_edge(edge3)
-        self.assertTrue('is not in the network' in str(context.exception))
+
 
