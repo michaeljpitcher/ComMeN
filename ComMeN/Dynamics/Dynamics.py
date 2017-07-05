@@ -38,11 +38,12 @@ class Dynamics:
     no events that can occur.
     """
 
-    def __init__(self, network, events):
+    def __init__(self, network, events, seeding=None):
         """
         Create a new set of dynamics.
         :param network: The network upon which the events occur
         :param events: The events acting on the network
+        :param seeding: Initial state of network. Dict, key=node_id, value=dict, key=compartment, value=seed amount
         """
         # Create update handler. Doing so attaches handler to every node (that has an event attached)
         update_handler = UpdateHandler(events)
@@ -54,6 +55,14 @@ class Dynamics:
             self._compartments += node.compartments
         # Remove any duplicates
         self._compartments = list(set(self._compartments))
+
+        #  Seed the network
+        if seeding:
+            for node_id in seeding:
+                node = [n for n in network.nodes if n.node_id == node_id]
+                # Ensure only one node found for this node ID (i.e. the node is there and there's no ID conflict)
+                assert len(node) == 1, "Seeding Error for {0}: Nodes found = {1}".format(node_id, len(node))
+                node[0].update(seeding[node_id])
 
     def run(self, time_limit, output_data=False, run_id=None):
         """
@@ -123,7 +132,6 @@ class Dynamics:
         """
         Write the current state of the network nodes to a csv file. One row = one patch at the current time
         :param csv_writer: CSV writer object (DictWriter)
-        :return:
         """
         # Loop through all nodes
         for node in self._network.nodes:
@@ -135,6 +143,5 @@ class Dynamics:
     def _timestep_print(self):
         """
         Output to the console every timestep
-        :return:
         """
         print "t = ", self._time

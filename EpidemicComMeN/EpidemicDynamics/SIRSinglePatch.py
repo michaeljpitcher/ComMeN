@@ -28,7 +28,7 @@ class SIRSinglePatchDynamics(Dynamics):
     """
 
     def __init__(self, birth_rate, infection_rate, recovery_rate, death_rate, death_by_infection_rate,
-                 population_total, population_infected):
+                 seeding):
         """
         Create new SIR single patch model
         :param birth_rate: rate at which members are born into S (population dependent)
@@ -36,8 +36,7 @@ class SIRSinglePatchDynamics(Dynamics):
         :param recovery_rate: rate at which I member turn to R
         :param death_rate: Rate at which all compartments die
         :param death_by_infection_rate: Rate at which I dies (extra to natural death)
-        :param population_total: Total population at start
-        :param population_infected: Population amount who start at I (S = population_total - population_infected)
+        :param seeding: Initial seeding of patch
         """
         # Single patch network
         network = SinglePatchEpidemicNetwork(SIR_compartments)
@@ -58,11 +57,8 @@ class SIRSinglePatchDynamics(Dynamics):
         # Death (by disease) - increased mortality for disease
         events.append(Destroy(death_by_infection_rate, network.nodes, compartment_destroyed=INFECTIOUS))
 
-        Dynamics.__init__(self, network, events)
+        Dynamics.__init__(self, network, events, seeding)
 
-        # Seed the network
-        network.nodes[0].update({SUSCEPTIBLE: population_total - population_infected})
-        network.nodes[0].update({INFECTIOUS: population_infected})
 
     def _end_simulation(self):
         """
