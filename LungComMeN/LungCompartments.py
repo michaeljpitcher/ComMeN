@@ -15,5 +15,3 @@ __license__ = ""
 __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
-
-from DataPlotter import *

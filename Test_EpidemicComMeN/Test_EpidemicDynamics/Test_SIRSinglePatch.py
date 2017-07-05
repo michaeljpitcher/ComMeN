@@ -16,4 +16,4 @@ class InfectTestCase(unittest.TestCase):
                                                self.death_rate, self.death_by_infection_rate, self.seeding)
 
     def test_run(self):
-        self.dynamics.run(100, output_data=True, run_id=11)
+        self.dynamics.run(10)
