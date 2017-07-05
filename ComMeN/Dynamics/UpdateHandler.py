@@ -29,17 +29,17 @@ class UpdateHandler:
         :param events: List of all events
         """
         # Dependencies is a dictionary listing every event at a node
-        self._dependencies = dict()
-        # Fill dependencies by checking nodes of each event (i.e. which nodes contribute to events state variable)
+        self._node_dependencies = dict()
+
         for event in events:
             for node in event.state_variable_composition:
                 # Attaches itself to the node (if no update handler already)
                 if not node.update_handler:
                     node.update_handler = self
                 # Add a record to the dictionary if one doesn't exist already
-                if node not in self._dependencies:
-                    self._dependencies[node] = []
-                self._dependencies[node].append(event)
+                if node not in self._node_dependencies:
+                    self._node_dependencies[node] = []
+                self._node_dependencies[node].append(event)
 
     def propagate_node_update(self, node):
         """
@@ -48,6 +48,6 @@ class UpdateHandler:
         :param node: The node whose subpopulation has been amended
         :return:
         """
-        events = self._dependencies[node]
+        events = self._node_dependencies[node]
         for e in events:
             e.update_state_variable_from_node(node)

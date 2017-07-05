@@ -70,3 +70,11 @@ class Patch:
             self.adjacent_edges[edge.__class__] = [edge]
         else:
             self.adjacent_edges[edge.__class__].append(edge)
+
+    def total_population(self):
+        """
+        The total population at this node
+        :return:
+        """
+        # Sum of counts in subpopulation for each compartment
+        return sum(self._subpopulation.values())

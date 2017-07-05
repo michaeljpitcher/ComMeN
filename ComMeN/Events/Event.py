@@ -55,10 +55,12 @@ class Event:
         :param node:
         :return:
         """
-        value_before = self.state_variable_composition[node]
         value_after = self._calculate_state_variable_at_node(node)
+        change = value_after - self.state_variable_composition[node]
+        if change == 0:
+            return
         self.state_variable_composition[node] = value_after
-        self._state_variable += (value_after - value_before)
+        self._state_variable += change
         self.rate = self._state_variable * self._reaction_parameter
 
     def _calculate_state_variable_at_node(self, node):

@@ -55,7 +55,6 @@ class Dynamics:
         # Remove any duplicates
         self._compartments = list(set(self._compartments))
 
-
     def run(self, time_limit, output_data=False, run_id=None):
         """
         Run the simulation, performing events upon the network, until time limit is reached or no event can occur.
@@ -65,6 +64,7 @@ class Dynamics:
         :return:
         """
         print "ComMeN Simulation"
+        csv_writer = None
 
         if output_data:
             if run_id:
@@ -79,12 +79,15 @@ class Dynamics:
             csv_writer.writeheader()
             print "Data output to:", filename
 
-            self.record_data(csv_writer)
+            self._record_data(csv_writer)
 
-        self.timestep_print()
+        self._timestep_print()
 
         # Run until time limit reached
         while self._time < time_limit:
+            if self._end_simulation():
+                print "Termination point reached - ending simulation"
+                return
             # Calculate the total rate
             total_rate = sum([e.rate for e in self._events])
             # If rate is zero for all, end simulation
@@ -105,10 +108,18 @@ class Dynamics:
             # Update time
             self._time += tau
             if output_data:
-                self.record_data(csv_writer)
-            self.timestep_print()
+                self._record_data(csv_writer)
+            self._timestep_print()
 
-    def record_data(self, csv_writer):
+    def _end_simulation(self):
+        """
+        Function to determine if simulation should be ended. Can be overridden by sub-classes to end when a certain
+        limit reached (e.g. if infection dies out)
+        :return: Boolean - if true, simulation ends
+        """
+        return False
+
+    def _record_data(self, csv_writer):
         """
         Write the current state of the network nodes to a csv file. One row = one patch at the current time
         :param csv_writer: CSV writer object (DictWriter)
@@ -116,12 +127,12 @@ class Dynamics:
         """
         # Loop through all nodes
         for node in self._network.nodes:
-            row = {TIMESTEP:self._time, NODE_ID: node.node_id}
+            row = {TIMESTEP: self._time, NODE_ID: node.node_id}
             for c in node.compartments:
                 row[c] = node[c]
             csv_writer.writerow(row)
 
-    def timestep_print(self):
+    def _timestep_print(self):
         """
         Output to the console every timestep
         :return:
