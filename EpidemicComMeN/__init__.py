@@ -16,8 +16,7 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+from EpidemicComMeN.EpidemicDynamics.EpidemicCompartments import *
 from EpidemicDynamics import *
-from EpidemicNetwork import *
 from EpidemicEvents import *
-from Plotting import *
-from Compartments import *
+from EpidemicNetwork import *
