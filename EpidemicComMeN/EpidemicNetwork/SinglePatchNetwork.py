@@ -18,6 +18,14 @@ __status__ = "Development"
 
 
 class SinglePatchEpidemicNetwork(MetapopulationNetwork):
+    """
+    An epidemic taking place across a single homogeneously mixed population (i.e. a one-patch network)
+    """
     def __init__(self, compartments):
+        """
+        Create a new network
+        :param compartments: Compartments to add to nodes
+        """
+        # Just one node, no edges
         nodes = [Patch(1, compartments)]
         MetapopulationNetwork.__init__(self, nodes, [])

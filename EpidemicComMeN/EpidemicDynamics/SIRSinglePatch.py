@@ -9,7 +9,7 @@ Long Docstring
 from ComMeN import *
 from ..EpidemicNetwork.SinglePatchNetwork import SinglePatchEpidemicNetwork
 from ..Compartments import *
-from ..Events.Infect import *
+from ..EpidemicEvents.Infect import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -21,12 +21,27 @@ __status__ = "Development"
 
 
 class SIRSinglePatchDynamics(Dynamics):
+    """
+    SIR (Susceptible-Infectious-Recovered dynamics occurring across a single homogeneously mixed population. Members
+    are born into S, contact between S and I turns S into I, I recovers to R. Death occurs naturally at all compartments
+    and increased death occurs due to disease at I.
+    """
 
     def __init__(self, birth_rate, infection_rate, recovery_rate, death_rate, death_by_infection_rate,
                  population_total, population_infected):
+        """
+        Create new SIR single patch model
+        :param birth_rate: rate at which members are born into S (population dependent)
+        :param infection_rate: rate at which I members infect S (population density dependent)
+        :param recovery_rate: rate at which I member turn to R
+        :param death_rate: Rate at which all compartments die
+        :param death_by_infection_rate: Rate at which I dies (extra to natural death)
+        :param population_total: Total population at start
+        :param population_infected: Population amount who start at I (S = population_total - population_infected)
+        """
+        # Single patch network
         network = SinglePatchEpidemicNetwork(SIR_compartments)
-
-        # Events
+        # Create events
         events = []
         # Birth - into susceptible class
         events.append(Create(birth_rate, network.nodes, compartment_created=SUSCEPTIBLE,
