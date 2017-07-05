@@ -20,40 +20,43 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class SIRSinglePatchDynamics(Dynamics):
+class SEIRSinglePatchDynamics(Dynamics):
     """
-    SIR (Susceptible-Infectious-Recovered dynamics occurring across a single homogeneously mixed population. Members
-    are born into S, contact between S and I turns S into I, I recovers to R. Death occurs naturally at all compartments
-    and increased death occurs due to disease at I.
+    SEIR (Susceptible-Exposed-Infectious-Recovered dynamics occurring across a single homogeneously mixed population.
+    Members are born into S, contact between S and I turns S into E, E progresses to I, I recovers to R. Death occurs
+    naturally at all compartments and increased death occurs due to disease at I.
     """
 
-    def __init__(self, birth_rate, infection_rate, recovery_rate, death_rate, death_by_infection_rate,
+    def __init__(self, birth_rate, infection_rate, progression_rate, recovery_rate, death_rate, death_by_infection_rate,
                  population_total, population_infected):
         """
-        Create new SIR single patch model
+        Create new SEIR single patch model
         :param birth_rate: rate at which members are born into S (population dependent)
-        :param infection_rate: rate at which I members infect S (population density dependent)
-        :param recovery_rate: rate at which I member turn to R
+        :param infection_rate: rate at which I members infect S (population density dependent) and turn S to E
+        :param progression_rate: rate at which E members turn to I
+        :param recovery_rate: rate at which I members turn to R
         :param death_rate: Rate at which all compartments die
         :param death_by_infection_rate: Rate at which I dies (extra to natural death)
         :param population_total: Total population at start
         :param population_infected: Population amount who start at I (S = population_total - population_infected)
         """
         # Single patch network
-        network = SinglePatchEpidemicNetwork(SIR_compartments)
+        network = SinglePatchEpidemicNetwork(SEIR_compartments)
         # Create events
         events = []
         # Birth - into susceptible class
         events.append(Create(birth_rate, network.nodes, compartment_created=SUSCEPTIBLE,
-                             influencing_compartments=SIR_compartments))
-        # Infection - Infectious change Susceptible to Infectious
+                             influencing_compartments=SEIR_compartments))
+        # Infection - Infectious change Susceptible to Exposed
         events.append(Infect(infection_rate, network.nodes, susceptible_compartment=SUSCEPTIBLE,
-                             infected_compartment=INFECTIOUS, infectious_compartments=[INFECTIOUS],
+                             infected_compartment=EXPOSED, infectious_compartments=[INFECTIOUS],
                              population_density_dependent=True))
+        # Progression - Exposed becomes Infectious
+        events.append(Change(progression_rate, network.nodes, compartment_from=EXPOSED, compartment_to=INFECTIOUS))
         # Recover - Infectious changes to Recovered
         events.append(Change(recovery_rate, network.nodes, compartment_from=INFECTIOUS, compartment_to=RECOVERED))
         # Death (standard) - death event for every compartment
-        for c in SIR_compartments:
+        for c in SEIR_compartments:
             events.append(Destroy(death_rate, network.nodes, compartment_destroyed=c))
         # Death (by disease) - increased mortality for disease
         events.append(Destroy(death_by_infection_rate, network.nodes, compartment_destroyed=INFECTIOUS))
@@ -67,6 +70,6 @@ class SIRSinglePatchDynamics(Dynamics):
     def _end_simulation(self):
         """
         End the simulation if the infection has been eliminated from the system
-        :return: True if no infectious members, false otherwise
+        :return: True if no exposed or infectious members, false otherwise
         """
-        return self._network.nodes[0][INFECTIOUS] == 0
+        return self._network.nodes[0][EXPOSED] == 0 and self._network.nodes[0][INFECTIOUS] == 0
