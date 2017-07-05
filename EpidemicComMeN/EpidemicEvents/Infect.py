@@ -54,5 +54,5 @@ class Infect(Change):
                 return 0
             else:
                 # Divide by the total population at node
-                state_variable = state_variable / node.total_population()
+                state_variable = state_variable / float(node.total_population())
         return state_variable
