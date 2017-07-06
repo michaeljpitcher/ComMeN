@@ -46,3 +46,10 @@ class Edge:
             return self.nodes[0]
         else:
             raise Exception("Node {0} is not on this edge".format(item))
+
+    def __str__(self):
+        """
+        String version of edge is (node1.node_id, node2.node_id)
+        :return:
+        """
+        return "(" + str(self.nodes[0].node_id) + ", " + str(self.nodes[1].node_id) + ")"

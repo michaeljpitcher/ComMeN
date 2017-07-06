@@ -7,7 +7,7 @@ Long Docstring
 """
 
 from ComMeN.Network import *
-from LungPatch import *
+from LungComMeN.LungNetwork.LungPatch import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"

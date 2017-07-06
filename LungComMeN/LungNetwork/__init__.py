@@ -18,5 +18,7 @@ __status__ = "Development"
 
 from LungPatch import *
 from LymphPatch import *
-from SingleLungLobeMetapopulationNetwork import *
-from TwoLungLobeMetapopulationNetwork import *
+from LungEdge import *
+from LymphEdge import *
+from BPS import *
+from Lobe import *
