@@ -57,7 +57,7 @@ LYMPH = 'lymph'
 
 class BronchopulmonarySegmentLymphMetapopulationNetwork(MetapopulationNetwork):
 
-    def __init__(self, ventilation, perfusion, compartments, seeding=None):
+    def __init__(self, compartments, ventilation, perfusion, seeding=None):
 
         nodes = {}
         for segment in ALL_BPS:
