@@ -20,3 +20,4 @@ from LungComMeN.LungDynamics.LungCompartments import *
 from LungDynamics import *
 from LungEvents import *
 from LungNetwork import *
+from ComMeN import *

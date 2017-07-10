@@ -20,3 +20,4 @@ from EpidemicComMeN.EpidemicDynamics.EpidemicCompartments import *
 from EpidemicDynamics import *
 from EpidemicEvents import *
 from EpidemicNetwork import *
+from ComMeN import *
