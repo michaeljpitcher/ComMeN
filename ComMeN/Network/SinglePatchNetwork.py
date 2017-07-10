@@ -22,16 +22,11 @@ class SinglePatchMetapopulation(MetapopulationNetwork):
     """
     An epidemic taking place across a single homogeneously mixed population (i.e. a one-patch network)
     """
-    def __init__(self, compartments, seeding=None):
+    def __init__(self, compartments):
         """
         Create a new network
         :param compartments: Compartments to add to node
-        :param seeding: Seeding for the node
         """
         # Just one node, no edges
         nodes = [Patch(0, compartments)]
-        if seeding:
-            node_seeding = {0: seeding}
-        else:
-            node_seeding = None
-        MetapopulationNetwork.__init__(self, nodes, seeding=node_seeding)
+        MetapopulationNetwork.__init__(self, nodes)

@@ -5,7 +5,7 @@ from ComMeN.Network import *
 
 class NetworkTestCase(unittest.TestCase):
     def setUp(self):
-        self.nodes = [Patch(0, ['a']), Patch(1, ['a'])]
+        self.nodes = [Patch(0, ['a', 'b', 'c']), Patch(1, ['a', 'b', 'c'])]
         self.edges = [Edge(self.nodes[0], self.nodes[1])]
         self.network = MetapopulationNetwork(self.nodes, self.edges)
 
@@ -27,4 +27,11 @@ class NetworkTestCase(unittest.TestCase):
             network_full = MetapopulationNetwork(nodes, self.edges)
         self.assertTrue('is not in the network' in str(context.exception))
 
-
+    def test_seed(self):
+        self.network.seed({0:{'a':1, 'b':2}, 1:{'a':3, 'c':4}})
+        self.assertEqual(self.nodes[0]['a'], 1)
+        self.assertEqual(self.nodes[0]['b'], 2)
+        self.assertEqual(self.nodes[0]['c'], 0)
+        self.assertEqual(self.nodes[1]['a'], 3)
+        self.assertEqual(self.nodes[1]['b'], 0)
+        self.assertEqual(self.nodes[1]['c'], 4)

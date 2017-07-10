@@ -16,7 +16,7 @@ class NonAbstractEvent(Event):
 
 class DynamicsTestCase(unittest.TestCase):
     def setUp(self):
-        self.nodes = [Patch(1, ['a','b','c']), Patch(2, ['a','b','d'])]
+        self.nodes = [Patch(0, ['a','b','c']), Patch(1, ['a','b','d'])]
         self.edges = [Edge(self.nodes[0], self.nodes[1])]
         self.network = MetapopulationNetwork(self.nodes, self.edges)
         self.events = [NonAbstractEvent(0.1, [self.nodes[0]]), NonAbstractEvent(0.2, [self.nodes[1]]),
@@ -28,5 +28,6 @@ class DynamicsTestCase(unittest.TestCase):
 
     def test_run(self):
         rand.seed(101)
-        self.nodes[0].update({'a':2})
-        self.dynamics.run(time_limit=1000, output_data=True, run_id=99)
+        seeding = {0: {'a':2}}
+
+        self.dynamics.run(time_limit=1000, seeding=seeding, output_data=True, run_id=99)

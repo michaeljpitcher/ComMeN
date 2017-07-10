@@ -55,16 +55,19 @@ class Dynamics:
         # Remove any duplicates
         self._compartments = list(set(self._compartments))
 
-    def run(self, time_limit, output_data=False, run_id=None):
+    def run(self, time_limit, seeding, output_data=False, run_id=None):
         """
         Run the simulation, performing events upon the network, until time limit is reached or no event can occur.
         :param time_limit: Maximum simulation time to run dynamics until - will terminate once this is exceeded
+        :param seeding: Initial state of the network
         :param output_data: Should data be written to a CSV file
         :param run_id: Identifier for this simulation. Will be used for CSV filename if supplied
         :return:
         """
         print "ComMeN Simulation"
         csv_writer = None
+
+        self._network.seed(seeding)
 
         if output_data:
             if run_id:

@@ -22,12 +22,11 @@ class MetapopulationNetwork:
     A collection of nodes (patch instances) joined by edges, which forms the basis of the metapopulation model
     """
 
-    def __init__(self, nodes, edges=None, seeding=None):
+    def __init__(self, nodes, edges=None):
         """
         Create a new metapopulation network
         :param nodes: Nodes of network
         :param edges: Optional edges of network
-        :param seeding: Initial state of network. Dict, key=node_id, value=dict, key=compartment, value=seed amount
         """
         # If nodes or edges provided, add them
         self.nodes = []
@@ -37,13 +36,16 @@ class MetapopulationNetwork:
         if edges:
             for e in edges:
                 self._add_edge(e)
-        #  Seed the network
-        if seeding:
-            for node_id in seeding:
-                node = [n for n in self.nodes if n.node_id == node_id]
-                # Ensure only one node found for this node ID (i.e. the node is there and there's no ID conflict)
-                assert len(node) == 1, "Seeding Error for {0}: Nodes found = {1}".format(node_id, len(node))
-                node[0].update(seeding[node_id])
+
+    def seed(self, seeding):
+        """
+        Seed the network with sub-populations
+        :param seeding: Dict of seeding. Key=node_id, value=dict, key=compartment, value=subpopulation value
+        :return:
+        """
+        for node_id in seeding:
+            node = self.get_node_by_id(node_id)
+            node.update(seeding[node_id])
 
     def _add_node(self, node):
         """
