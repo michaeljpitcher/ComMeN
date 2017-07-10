@@ -63,3 +63,15 @@ class MetapopulationNetwork:
         for n in edge.nodes:
             assert n in self.nodes, "Node {0} is not in the network".format(n)
         self.edges.append(edge)
+
+    def get_node_by_id(self, node_id):
+        """
+        Given an ID, return a node
+        :param node_id: The ID to find
+        :return: The node to return
+        """
+        node = [n for n in self.nodes if n.node_id == node_id]
+        # Check only one node found
+        assert len(node) != 0, "Node ID {0} not found".format(node_id)
+        assert len(node) < 2, "Too many nodes found for ID {0}: {1}".format(node_id, len(node))
+        return node[0]
