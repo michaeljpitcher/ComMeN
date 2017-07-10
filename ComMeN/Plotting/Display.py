@@ -18,8 +18,8 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-def draw_network(network, node_positions, node_size=3200, node_class_colours=None,
-                 node_text_size=10, edge_class_colours=None, edge_width=10, filename=None):
+def draw_network(network, node_positions, node_size=3200, node_class_colours=None, node_text_size=10,
+                 edge_class_colours=None, edge_width=10, filename=None, figsize=(10,10)):
     """
     Draw a network
     :param network: The network to draw
@@ -30,9 +30,11 @@ def draw_network(network, node_positions, node_size=3200, node_class_colours=Non
     :param edge_class_colours: Colours for edges based on class- key:Subclass of edge, value=Colour
     :param edge_width: Size of edges
     :param filename: Filename if save is required
+    :param figsize: Size of figure
     :return:
     """
 
+    fig = plt.figure(figsize=figsize)
     # Create a networkx graph
     g = nx.Graph()
 
@@ -73,4 +75,4 @@ def draw_network(network, node_positions, node_size=3200, node_class_colours=Non
     plt.show()
     # Save if required
     if filename:
-        plt.savefig(filename + ".png")
+        fig.savefig(filename + ".png")
