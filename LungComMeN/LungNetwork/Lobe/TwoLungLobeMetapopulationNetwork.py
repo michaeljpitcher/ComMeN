@@ -36,9 +36,9 @@ class TwoLungLobeMetapopulationNetwork(MetapopulationNetwork):
         """
         nodes = []
         # Right lobes
-        nodes.append(LungPatch(SUPERIOR_RIGHT, compartments, ventilation[SUPERIOR_RIGHT], perfusion[SUPERIOR_RIGHT]))
-        nodes.append(LungPatch(MIDDLE_RIGHT, compartments, ventilation[MIDDLE_RIGHT], perfusion[MIDDLE_RIGHT]))
         nodes.append(LungPatch(INFERIOR_RIGHT, compartments, ventilation[INFERIOR_RIGHT], perfusion[INFERIOR_RIGHT]))
+        nodes.append(LungPatch(MIDDLE_RIGHT, compartments, ventilation[MIDDLE_RIGHT], perfusion[MIDDLE_RIGHT]))
+        nodes.append(LungPatch(SUPERIOR_RIGHT, compartments, ventilation[SUPERIOR_RIGHT], perfusion[SUPERIOR_RIGHT]))
         #  Left lobes
         nodes.append(LungPatch(SUPERIOR_LEFT, compartments, ventilation[SUPERIOR_LEFT], perfusion[SUPERIOR_LEFT]))
         nodes.append(LungPatch(INFERIOR_LEFT, compartments, ventilation[INFERIOR_LEFT], perfusion[INFERIOR_LEFT]))
