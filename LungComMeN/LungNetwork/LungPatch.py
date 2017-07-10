@@ -33,6 +33,5 @@ class LungPatch(Patch):
         """
         self._ventilation = ventilation
         self._perfusion = perfusion
-        # TODO - oxygen tension may be minus not divide in this instance
-        self._oxygen_tension = ventilation / float(perfusion)
+        self._oxygen_tension = ventilation - perfusion
         Patch.__init__(self, node_id, compartments)
