@@ -17,3 +17,4 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 from DataPlotter import *
+from Display import *
