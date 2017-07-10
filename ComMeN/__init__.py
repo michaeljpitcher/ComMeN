@@ -16,4 +16,4 @@ __status__ = "Development"
 from Network import *
 from Events import *
 from Dynamics import *
-from Plotting import *
+from Visuals import *
