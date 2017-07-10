@@ -43,7 +43,7 @@ class Patch:
         return self._subpopulation[item]
 
     def __str__(self):
-        return self.__class__.__name__
+        return self.__class__.__name__ + ":" + str(self.node_id)
 
     def update(self, changes):
         """
