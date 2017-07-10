@@ -8,6 +8,7 @@ Long Docstring
 
 from ComMeN.Network import *
 from LungComMeN.LungNetwork.LungPatch import *
+from LungLobes import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -16,10 +17,6 @@ __license__ = ""
 __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
-
-SUPERIOR = 'superior'
-MIDDLE = 'middle'
-INFERIOR = 'inferior'
 
 
 class SingleLungLobeMetapopulationNetwork(MetapopulationNetwork):
@@ -38,20 +35,22 @@ class SingleLungLobeMetapopulationNetwork(MetapopulationNetwork):
         :param right: Is this model for the right lung? (False = left lung)
         """
         nodes = []
-        # Superior lobe
-        nodes.append(LungPatch(SUPERIOR, compartments, ventilation[SUPERIOR], perfusion[SUPERIOR]))
+
         if right:
-            # Middle lobe (right side only)
-            nodes.append(LungPatch(MIDDLE, compartments, ventilation[MIDDLE], perfusion[MIDDLE]))
-        # Inferior lobe
-        nodes.append(LungPatch(INFERIOR, compartments, ventilation[INFERIOR], perfusion[INFERIOR]))
+            id_list = [SUPERIOR_RIGHT, MIDDLE_RIGHT, INFERIOR_RIGHT]
+        else:
+            id_list = [SUPERIOR_LEFT, INFERIOR_LEFT]
+
+        for node_id in id_list:
+            nodes.append(LungPatch(node_id, compartments, ventilation[node_id], perfusion[node_id]))
 
         # Edges
         edges = []
-        # Superior to Middle for right, Superior to Inferior for left
-        edges.append(Edge(nodes[0], nodes[1]))
-        # Middle to Inferior for right
+
         if right:
+            edges.append(Edge(nodes[0], nodes[1]))
             edges.append(Edge(nodes[1], nodes[2]))
+        else:
+            edges.append(Edge(nodes[0], nodes[1]))
 
         MetapopulationNetwork.__init__(self, nodes, edges, seeding)

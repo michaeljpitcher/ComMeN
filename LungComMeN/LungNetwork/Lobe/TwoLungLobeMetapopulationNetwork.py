@@ -8,6 +8,7 @@ Long Docstring
 
 from ComMeN.Network import *
 from LungComMeN.LungNetwork.LungPatch import *
+from LungLobes import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -16,12 +17,6 @@ __license__ = ""
 __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
-
-SUPERIOR_RIGHT = 'superior_right'
-MIDDLE_RIGHT = 'middle_right'
-INFERIOR_RIGHT = 'inferior_right'
-SUPERIOR_LEFT = 'superior_left'
-INFERIOR_LEFT = 'inferior_left'
 
 
 class TwoLungLobeMetapopulationNetwork(MetapopulationNetwork):
