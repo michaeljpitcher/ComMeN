@@ -31,7 +31,10 @@ class LungPatch(Patch):
         :param ventilation: Value reflecting amount of air reaching patch
         :param perfusion: Value reflecting amount of blood reaching patch
         """
-        self._ventilation = ventilation
-        self._perfusion = perfusion
-        self._oxygen_tension = ventilation - perfusion
+        self.ventilation = ventilation
+        self.perfusion = perfusion
+        self.oxygen_tension = ventilation - perfusion
         Patch.__init__(self, node_id, compartments)
+
+    def __str__(self):
+        return str(self.node_id)

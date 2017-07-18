@@ -28,3 +28,6 @@ class LymphPatch(Patch):
         :param compartments: Compartments in patch subpopulation
         """
         Patch.__init__(self, node_id, compartments)
+
+    def __str__(self):
+        return str(self.node_id)
