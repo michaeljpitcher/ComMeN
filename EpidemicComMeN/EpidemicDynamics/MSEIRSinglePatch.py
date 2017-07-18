@@ -28,7 +28,7 @@ class MSEIRSinglePatchDynamics(Dynamics):
     """
 
     def __init__(self, birth_rate, immunity_waning_rate, infection_rate, progression_rate, recovery_rate, death_rate,
-                 death_by_infection_rate, seeding):
+                 death_by_infection_rate):
         """
         Create new MSEIR single patch model
         :param birth_rate: rate at which members are born into S (population dependent)
@@ -38,10 +38,9 @@ class MSEIRSinglePatchDynamics(Dynamics):
         :param recovery_rate: rate at which I members turn to R
         :param death_rate: Rate at which all compartments die
         :param death_by_infection_rate: Rate at which I dies (extra to natural death)
-        :param seeding: Initial seeding of patch
         """
         # Single patch network
-        network = SinglePatchMetapopulation(MSEIR_compartments, seeding)
+        network = SinglePatchMetapopulation(MSEIR_compartments)
         # Create events
         events = []
         # Birth - into susceptible class

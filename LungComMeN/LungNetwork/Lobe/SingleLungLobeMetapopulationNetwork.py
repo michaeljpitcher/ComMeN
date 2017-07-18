@@ -25,11 +25,10 @@ class SingleLungLobeMetapopulationNetwork(MetapopulationNetwork):
     (Superior-Middle-Inferior / Superior-Inferior) have an edge connecting them.
     """
 
-    def __init__(self, compartments, seeding, ventilation, perfusion, right=True):
+    def __init__(self, compartments, ventilation, perfusion, right=True):
         """
         Create a single human lung model
         :param compartments: Compartments in lobe patches
-        :param seeding: Initial seeding of network compartments
         :param ventilation: Dictionary of ventilation attributes for nodes, key=node_id (lobe name)
         :param perfusion: Dictionary of perfusion attributes for nodes, key=node_id (lobe name)
         :param right: Is this model for the right lung? (False = left lung)
@@ -53,4 +52,4 @@ class SingleLungLobeMetapopulationNetwork(MetapopulationNetwork):
         else:
             edges.append(Edge(nodes[0], nodes[1]))
 
-        MetapopulationNetwork.__init__(self, nodes, edges, seeding)
+        MetapopulationNetwork.__init__(self, nodes, edges)

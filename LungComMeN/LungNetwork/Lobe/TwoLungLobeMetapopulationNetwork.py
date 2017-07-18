@@ -26,11 +26,10 @@ class TwoLungLobeMetapopulationNetwork(MetapopulationNetwork):
     INFERIOR_RIGHT - MIDDLE_RIGHT - SUPERIOR_RIGHT - SUPERIOR_LEFT - INFERIOR_LEFT).
     """
 
-    def __init__(self, compartments, seeding, ventilation, perfusion):
+    def __init__(self, compartments, ventilation, perfusion):
         """
         Create a human dual lung model
         :param compartments: Compartments in lobe patches
-        :param seeding: Initial seeding of network compartments
         :param ventilation: Dictionary of ventilation attributes for nodes, key=node_id (lobe name)
         :param perfusion: Dictionary of perfusion attributes for nodes, key=node_id (lobe name)
         """
@@ -48,4 +47,4 @@ class TwoLungLobeMetapopulationNetwork(MetapopulationNetwork):
         for n in range(4):
             edges.append(Edge(nodes[n], nodes[n+1]))
 
-        MetapopulationNetwork.__init__(self, nodes, edges, seeding)
+        MetapopulationNetwork.__init__(self, nodes, edges)

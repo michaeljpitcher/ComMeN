@@ -26,8 +26,8 @@ class SEIRSinglePatchDynamics(Dynamics):
     naturally at all compartments and increased death occurs due to disease at I.
     """
 
-    def __init__(self, birth_rate, infection_rate, progression_rate, recovery_rate, death_rate, death_by_infection_rate,
-                 seeding):
+    def __init__(self, birth_rate, infection_rate, progression_rate, recovery_rate, death_rate,
+                 death_by_infection_rate):
         """
         Create new SEIR single patch model
         :param birth_rate: rate at which members are born into S (population dependent)
@@ -36,10 +36,9 @@ class SEIRSinglePatchDynamics(Dynamics):
         :param recovery_rate: rate at which I members turn to R
         :param death_rate: Rate at which all compartments die
         :param death_by_infection_rate: Rate at which I dies (extra to natural death)
-        :param seeding: Initial seeding of patch
         """
         # Single patch network
-        network = SinglePatchMetapopulation(SEIR_compartments, seeding)
+        network = SinglePatchMetapopulation(SEIR_compartments)
         # Create events
         events = []
         # Birth - into susceptible class
