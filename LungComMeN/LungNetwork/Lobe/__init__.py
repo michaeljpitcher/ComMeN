@@ -18,3 +18,4 @@ __status__ = "Development"
 
 from SingleLungLobeMetapopulationNetwork import *
 from TwoLungLobeMetapopulationNetwork import *
+from LungLobes import *

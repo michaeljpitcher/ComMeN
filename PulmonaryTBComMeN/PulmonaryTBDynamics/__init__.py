@@ -16,8 +16,4 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from ComMeN import *
-from LungEvents import *
-from LungNetwork import *
-from LungVisuals import *
-from LungDynamics import *
+from TB_model_1 import *

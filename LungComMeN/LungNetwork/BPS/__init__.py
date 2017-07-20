@@ -18,3 +18,4 @@ __status__ = "Development"
 
 from BPSMetapopulationNetwork import *
 from BPSLymphMetapopulationNetwork import *
+from BronchopulmonarySegments import *

@@ -6,7 +6,7 @@ Long Docstring
 
 """
 
-# imports
+
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -16,8 +16,3 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from ComMeN import *
-from LungEvents import *
-from LungNetwork import *
-from LungVisuals import *
-from LungDynamics import *

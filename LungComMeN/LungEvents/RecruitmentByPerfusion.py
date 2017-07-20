@@ -17,7 +17,11 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class RecruitmentByBlood(Create):
+class RecruitmentByPerfusion(Create):
+    """
+    Create a new member of the compartment, recruited via the bloodstream. Rate is dependent on the perfusion at the
+    patch
+    """
 
     def __init__(self, reaction_parameter, nodes, compartment_created, influencing_compartments):
         Create.__init__(self, reaction_parameter, nodes, compartment_created, influencing_compartments)
