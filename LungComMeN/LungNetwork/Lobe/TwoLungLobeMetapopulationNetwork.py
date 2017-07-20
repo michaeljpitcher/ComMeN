@@ -9,6 +9,7 @@ Long Docstring
 from ComMeN.Network import *
 from LungComMeN.LungNetwork.LungPatch import *
 from LungLobes import *
+from ..LungEdge import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -45,6 +46,6 @@ class TwoLungLobeMetapopulationNetwork(MetapopulationNetwork):
         # Edges
         edges = []
         for n in range(4):
-            edges.append(Edge(nodes[n], nodes[n+1]))
+            edges.append(LungEdge(nodes[n], nodes[n+1], False, 0))
 
         MetapopulationNetwork.__init__(self, nodes, edges)

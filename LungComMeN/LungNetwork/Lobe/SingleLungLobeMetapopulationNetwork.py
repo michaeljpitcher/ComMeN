@@ -9,6 +9,7 @@ Long Docstring
 from ComMeN.Network import *
 from LungComMeN.LungNetwork.LungPatch import *
 from LungLobes import *
+from ..LungEdge import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -28,7 +29,7 @@ class SingleLungLobeMetapopulationNetwork(MetapopulationNetwork):
     def __init__(self, compartments, ventilation, perfusion, right=True):
         """
         Create a single human lung model
-        :param compartments: Compartments in lobe patches
+        :param compartments: Compartments of subpopulations in lobe patches
         :param ventilation: Dictionary of ventilation attributes for nodes, key=node_id (lobe name)
         :param perfusion: Dictionary of perfusion attributes for nodes, key=node_id (lobe name)
         :param right: Is this model for the right lung? (False = left lung)
@@ -47,9 +48,9 @@ class SingleLungLobeMetapopulationNetwork(MetapopulationNetwork):
         edges = []
 
         if right:
-            edges.append(Edge(nodes[0], nodes[1]))
-            edges.append(Edge(nodes[1], nodes[2]))
+            edges.append(LungEdge(nodes[0], nodes[1], False, 0))
+            edges.append(LungEdge(nodes[1], nodes[2], False, 0))
         else:
-            edges.append(Edge(nodes[0], nodes[1]))
+            edges.append(LungEdge(nodes[0], nodes[1], False, 0))
 
         MetapopulationNetwork.__init__(self, nodes, edges)
