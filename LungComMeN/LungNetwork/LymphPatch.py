@@ -20,6 +20,7 @@ __status__ = "Development"
 class LymphPatch(Patch):
     """
     Patch representing a region of the human lymphatic system
+    TODO: spatial heterogeneities of lymph patches
     """
     def __init__(self, node_id, compartments):
         """
