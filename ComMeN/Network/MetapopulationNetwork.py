@@ -31,11 +31,17 @@ class MetapopulationNetwork:
         # If nodes or edges provided, add them
         self.nodes = []
         for n in nodes:
-            self._add_node(n)
+            self.add_node(n)
         self.edges = []
         if edges:
             for e in edges:
-                self._add_edge(e)
+                self.add_edge(e)
+
+    def __getitem__(self, item):
+        try:
+            return [n for n in self.nodes if n.node_id == item][0]
+        except IndexError:
+            raise Exception, "Node with id '{0}' not found in network".format(item)
 
     def seed(self, seeding):
         """
@@ -44,10 +50,9 @@ class MetapopulationNetwork:
         :return:
         """
         for node_id in seeding:
-            node = self.get_node_by_id(node_id)
-            node.update(seeding[node_id])
+            self[node_id].update(seeding[node_id])
 
-    def _add_node(self, node):
+    def add_node(self, node):
         """
         Add a node (instance of patch class) to the network (must have unique node ID)
         :param node: Patch instance to add
@@ -56,7 +61,7 @@ class MetapopulationNetwork:
             "Node ID {0} already exists in network".format(node.node_id)
         self.nodes.append(node)
 
-    def _add_edge(self, edge):
+    def add_edge(self, edge):
         """
         Add an edge instance to the network
         :param edge: Edge to be added
@@ -65,15 +70,3 @@ class MetapopulationNetwork:
         for n in edge.nodes:
             assert n in self.nodes, "Node {0} is not in the network".format(n)
         self.edges.append(edge)
-
-    def get_node_by_id(self, node_id):
-        """
-        Given an ID, return a node
-        :param node_id: The ID to find
-        :return: The node to return
-        """
-        node = [n for n in self.nodes if n.node_id == node_id]
-        # Check only one node found
-        assert len(node) != 0, "Node ID {0} not found".format(node_id)
-        assert len(node) < 2, "Too many nodes found for ID {0}: {1}".format(node_id, len(node))
-        return node[0]
