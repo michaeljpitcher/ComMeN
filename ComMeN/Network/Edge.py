@@ -36,13 +36,13 @@ class Edge:
 
     def __getitem__(self, item):
         """
-        Given a node, return the neighbour
+        Given a node or node_id, return the neighbour. I.e. instance[self.nodes[0]] returns self.nodes[1]
         :param item: Node
         :return:
         """
-        if item == self.nodes[0]:
+        if item == self.nodes[0] or item == self.nodes[0].node_id:
             return self.nodes[1]
-        elif item == self.nodes[1]:
+        elif item == self.nodes[1] or item == self.nodes[1].node_id:
             return self.nodes[0]
         else:
             raise Exception("Node {0} is not on this edge".format(item))
