@@ -33,7 +33,13 @@ class LungPatch(Patch):
         """
         self.ventilation = ventilation
         self.perfusion = perfusion
-        self.oxygen_tension = ventilation - perfusion
+
+        # TODO: oxygen tension probably needs to be more complex than this
+        if ventilation - perfusion >= 0:
+            self.oxygen_tension = ventilation - perfusion
+        else:
+            self.oxygen_tension = 0
+
         Patch.__init__(self, node_id, compartments)
 
     def __str__(self):
