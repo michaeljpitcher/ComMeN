@@ -6,7 +6,7 @@ Long Docstring
 
 """
 
-import numpy as np
+import numpy.random as rand
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -80,7 +80,7 @@ class Event:
         """
         if not self._state_variable:
             raise Exception("State variable for event is 0 - no instances where event can be performed")
-        r = np.random.random() * self._state_variable
+        r = rand.random() * self._state_variable
         running_total = 0
         for node in self.state_variable_composition:
             running_total += self.state_variable_composition[node]
