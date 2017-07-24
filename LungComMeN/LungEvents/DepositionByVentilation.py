@@ -17,9 +17,9 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class RecruitmentByPerfusion(Create):
+class DepositByVentilation(Create):
     """
-    Create a new member of the compartment, recruited via the bloodstream. Rate is dependent on the perfusion at the
+    Create a new member of the compartment, inhaled into the lungs. Rate is dependent on the ventilation at the
     patch
     """
 
@@ -27,4 +27,4 @@ class RecruitmentByPerfusion(Create):
         Create.__init__(self, reaction_parameter, nodes, compartment_created, influencing_compartments)
 
     def _calculate_state_variable_at_node(self, node):
-        return Create._calculate_state_variable_at_node(self, node) * node.perfusion
+        return Create._calculate_state_variable_at_node(self, node) * node.ventilation

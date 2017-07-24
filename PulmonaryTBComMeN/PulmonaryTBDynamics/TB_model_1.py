@@ -6,8 +6,9 @@ Long Docstring
 
 """
 
-from LungComMeN.LungDynamics.LungDynamics import *
-from LungTBCompartments import *
+from ComMeN.Dynamics.Dynamics import *
+from ComMeN.Events.Translocate import *
+from PulmonaryTBCompartments import *
 from LungComMeN.LungEvents import *
 from LungComMeN.LungNetwork import *
 
@@ -20,7 +21,7 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class TBModel1(LungDynamics):
+class TBModel1(Dynamics):
     """
     First TB model.
     - One lung (right)
@@ -50,4 +51,4 @@ class TBModel1(LungDynamics):
         events.append(Translocate(fast_translocate, network.nodes, BACTERIUM_FAST, LungEdge, False))
         events.append(Translocate(slow_translocate, network.nodes, BACTERIUM_FAST, LungEdge, False))
 
-        LungDynamics.__init__(self, network, events)
+        Dynamics.__init__(self, network, events)

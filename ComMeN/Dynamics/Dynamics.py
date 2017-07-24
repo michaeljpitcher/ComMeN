@@ -44,10 +44,12 @@ class Dynamics:
         :param network: The network upon which the events occur
         :param events: The events acting on the network
         """
+        # Only interested in events that can actually occur
+        events = [e for e in events if e.reaction_parameter > 0]
         # Create update handler. Doing so attaches handler to every node (that has an event attached)
         update_handler = UpdateHandler(events)
         self._network = network
-        self._events = [e for e in events if e.reaction_parameter > 0]
+        self._events = events
         self._time = 0.0
         self._compartments = []
         for node in self._network.nodes:
@@ -59,7 +61,8 @@ class Dynamics:
         """
         Run the simulation, performing events upon the network, until time limit is reached or no event can occur.
         :param time_limit: Maximum simulation time to run dynamics until - will terminate once this is exceeded
-        :param seeding: Initial state of the network
+        :param seeding: Initial state of the network. Dict: key=node_id, value=updates as dict: key=compartment,
+                        value=amount to start
         :param output_data: Should data be written to a CSV file
         :param run_id: Identifier for this simulation. Will be used for CSV filename if supplied
         :return:
