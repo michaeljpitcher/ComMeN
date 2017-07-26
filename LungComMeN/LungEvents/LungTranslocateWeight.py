@@ -41,7 +41,7 @@ class LungTranslocateWeight(Translocate):
         :param edges: Edges to choose from
         :return: Edge chosen
         """
-        total_weight = sum([e.drainage for e in edges])
+        total_weight = sum([e.weight for e in edges])
         r = rand.random() * total_weight
         running_total = 0
         for e in edges:

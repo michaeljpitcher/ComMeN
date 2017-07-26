@@ -25,8 +25,20 @@ class BacteriaTranslocateTestCase(unittest.TestCase):
         self.lymphnodes[0].update({BACTERIUM_FAST: 1})
         self.assertEqual(self.event_lung.rate, 0.1 * 1 * 1.3)
         self.assertEqual(self.event_to_lymph.rate, 0.2 * 1 * 1.4)
-        print self.event_from_lymph.state_variable_composition
         self.assertEqual(self.event_from_lymph.rate, 0.3 * 1)
+
+    def test_perform(self):
+        self.lungnodes[0].update({BACTERIUM_FAST: 1})
+        self.event_lung.perform()
+        self.assertEqual(self.lungnodes[0][BACTERIUM_FAST], 0)
+        self.assertEqual(self.lungnodes[1][BACTERIUM_FAST], 1)
+        self.event_to_lymph.perform()
+        self.assertEqual(self.lungnodes[1][BACTERIUM_FAST], 0)
+        self.assertEqual(self.lymphnodes[1][BACTERIUM_FAST], 1)
+        self.event_from_lymph.perform()
+        self.assertEqual(self.lungnodes[1][BACTERIUM_FAST], 1)
+        self.assertEqual(self.lymphnodes[1][BACTERIUM_FAST], 0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -17,12 +17,12 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-
+# TODO - perfusion based?
 class MacrophageRecruitment(Create):
     def __init__(self, reaction_parameter, nodes):
         Create.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR)
 
 
-class MacrophageRecruitmentByChemokine(Create):
-    def __init__(self, reaction_parameter, nodes, chemokine_compartments):
-        Create.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, chemokine_compartments)
+class MacrophageRecruitmentByCytokine(Create):
+    def __init__(self, reaction_parameter, nodes, cytokine_compartments):
+        Create.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, cytokine_compartments)

@@ -25,7 +25,7 @@ class MacrophageDeath(Destroy):
     def _update_node(self, node):
         changes = {self._compartment_destroyed: -1}
         if self._compartment_destroyed == MACROPHAGE_INFECTED:
-            bacteria_to_distribute = int(round(float(node[MACROPHAGE_INFECTED])/BACTERIUM_INTRACELLULAR))
+            bacteria_to_distribute = int(round(float(node[BACTERIUM_INTRACELLULAR])/node[MACROPHAGE_INFECTED]))
             changes[BACTERIUM_INTRACELLULAR] = -1 * bacteria_to_distribute
             changes[BACTERIUM_SLOW] = bacteria_to_distribute
         node.update(changes)

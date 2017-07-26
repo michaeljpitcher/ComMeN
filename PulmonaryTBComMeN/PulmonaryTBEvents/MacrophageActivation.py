@@ -23,15 +23,15 @@ class MacrophageSpontaneousActivation(Change):
         Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED)
 
 
-class MacrophageActivationByChemokine(Change):
-    def __init__(self, reaction_parameter, nodes, chemokine_compartments):
-        Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED,
-                        influencing_compartments=chemokine_compartments)
-
-
 class MacrophageActivationByTCell(Change):
     def __init__(self, reaction_parameter, nodes):
         Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED,
                         influencing_compartments=[T_CELL_HELPER_ACTIVATED])
+
+
+class MacrophageActivationByExternals(Change):
+    def __init__(self, reaction_parameter, nodes, influencing_compartments):
+        Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED,
+                        influencing_compartments=influencing_compartments)
 
 # TODO: macrophage deactivation?

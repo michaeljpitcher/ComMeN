@@ -18,11 +18,6 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class MacrophageTranslocateLung(LungTranslocateWeight):
-    def __init__(self, reaction_parameter, nodes, compartment_translocating):
-        LungTranslocateWeight.__init__(self, reaction_parameter, nodes, compartment_translocating)
-
-
 class MacrophageTranslocateLungToLymph(LymphTranslocateDrainage):
     def __init__(self, reaction_parameter, nodes, compartment_translocating):
         LymphTranslocateDrainage.__init__(self, reaction_parameter, nodes, compartment_translocating)
