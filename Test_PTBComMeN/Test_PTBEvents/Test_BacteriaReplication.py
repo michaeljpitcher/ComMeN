@@ -7,9 +7,9 @@ class BacteriaReplicationTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [BACTERIUM_FAST, BACTERIUM_SLOW, BACTERIUM_INTRACELLULAR]
         self.nodes = get_nodes(compartments)
-        self.events = [BacteriaReplication(0.1, self.nodes, BACTERIUM_FAST),
-                       BacteriaReplication(0.2, self.nodes, BACTERIUM_SLOW),
-                       BacteriaReplication(0.3, self.nodes, BACTERIUM_INTRACELLULAR)]
+        self.events = [BacteriaReplicate(0.1, self.nodes, BACTERIUM_FAST),
+                       BacteriaReplicate(0.2, self.nodes, BACTERIUM_SLOW),
+                       BacteriaReplicate(0.3, self.nodes, BACTERIUM_INTRACELLULAR)]
         u = UpdateHandler(self.events)
 
     def test_state_variable(self):
