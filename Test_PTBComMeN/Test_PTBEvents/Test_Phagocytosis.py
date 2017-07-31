@@ -10,9 +10,8 @@ class PhagocytosisTestCase(unittest.TestCase):
         self.nodes = get_nodes(compartments)
         self.phagocytosis = Phagocytosis(0.1, self.nodes, MACROPHAGE_ACTIVATED, BACTERIUM_FAST)
         self.phagocy_internalise_infect = PhagocytosisInternalise(0.2, self.nodes, MACROPHAGE_REGULAR, BACTERIUM_FAST,
-                                                                  BACTERIUM_INTRACELLULAR, MACROPHAGE_INFECTED)
-        self.phagocy_internalise = PhagocytosisInternalise(0.3, self.nodes, MACROPHAGE_INFECTED, BACTERIUM_FAST,
-                                                           BACTERIUM_INTRACELLULAR)
+                                                                  MACROPHAGE_INFECTED)
+        self.phagocy_internalise = PhagocytosisInternalise(0.3, self.nodes, MACROPHAGE_INFECTED, BACTERIUM_FAST)
         u = UpdateHandler([self.phagocytosis, self.phagocy_internalise, self.phagocy_internalise_infect])
 
     def test_state_variable(self):
