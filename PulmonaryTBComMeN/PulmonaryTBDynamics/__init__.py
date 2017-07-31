@@ -16,4 +16,5 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from TB_model_1 import *
+from TBModelBPSLymph import *
+from TBModelLobe import *
