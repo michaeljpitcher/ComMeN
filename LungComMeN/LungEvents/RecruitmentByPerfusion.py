@@ -27,4 +27,9 @@ class RecruitmentByPerfusion(Create):
         Create.__init__(self, reaction_parameter, nodes, compartment_created, influencing_compartments)
 
     def _calculate_state_variable_at_node(self, node):
+        """
+        State variable = standard create state variable * perfusion at patch
+        :param node:
+        :return:
+        """
         return Create._calculate_state_variable_at_node(self, node) * node.perfusion
