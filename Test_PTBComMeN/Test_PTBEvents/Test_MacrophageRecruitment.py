@@ -8,7 +8,6 @@ class MacrophageRecruitmentTestCase(unittest.TestCase):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED]
         self.nodes = get_nodes(compartments)
         self.event = MacrophageRecruitment(0.1, self.nodes)
-        self.event_perf = MacrophageRecruitmentPerfusion(0.3, [n for n in self.nodes if isinstance(n, LungPatch)])
         self.event_cyto = MacrophageRecruitmentByCytokine(0.2, self.nodes, [MACROPHAGE_INFECTED])
         u = UpdateHandler([self.event, self.event_cyto])
 
