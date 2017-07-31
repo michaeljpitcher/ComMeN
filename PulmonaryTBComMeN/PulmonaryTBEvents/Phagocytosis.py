@@ -7,6 +7,7 @@ Long Docstring
 """
 
 from ComMeN.Events.Destroy import *
+from ..PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -25,8 +26,8 @@ class Phagocytosis(Destroy):
 
 class PhagocytosisInternalise(Phagocytosis):
     def __init__(self, reaction_parameter, nodes, phagocyte_compartment, bacterial_compartment,
-                 internalised_compartment, phagocyte_infected_compartment=None):
-        self._internalised_compartment = internalised_compartment
+                 phagocyte_infected_compartment=None):
+        self._internalised_compartment = BACTERIUM_INTRACELLULAR
         self._phagocyte_infected_compartment = phagocyte_infected_compartment
         Phagocytosis.__init__(self, reaction_parameter, nodes, phagocyte_compartment, bacterial_compartment)
 

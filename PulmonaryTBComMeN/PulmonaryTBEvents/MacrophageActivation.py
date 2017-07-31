@@ -7,7 +7,7 @@ Long Docstring
 """
 
 from ComMeN.Events.Change import *
-from ..PulmonaryTBDynamics.PulmonaryTBCompartments import *
+from ..PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -21,12 +21,6 @@ __status__ = "Development"
 class MacrophageSpontaneousActivation(Change):
     def __init__(self, reaction_parameter, nodes):
         Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED)
-
-
-class MacrophageActivationByTCell(Change):
-    def __init__(self, reaction_parameter, nodes):
-        Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED,
-                        influencing_compartments=[T_CELL_HELPER_ACTIVATED])
 
 
 class MacrophageActivationByExternals(Change):

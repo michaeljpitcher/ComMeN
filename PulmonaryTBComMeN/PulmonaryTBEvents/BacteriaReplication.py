@@ -7,7 +7,6 @@ Long Docstring
 """
 
 from ComMeN.Events.Create import *
-from ..PulmonaryTBDynamics.PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -18,6 +17,9 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-class BacteriaReplication(Create):
+class BacteriaReplicate(Create):
+    """
+    Bacterium replicates
+    """
     def __init__(self, reaction_parameter, nodes, compartment):
         Create.__init__(self, reaction_parameter, nodes, compartment, [compartment])

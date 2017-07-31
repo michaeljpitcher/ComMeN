@@ -8,9 +8,9 @@ Long Docstring
 
 from ComMeN.Dynamics.Dynamics import *
 from ComMeN.Events.Translocate import *
-from PulmonaryTBCompartments import *
 from LungComMeN.LungEvents import *
 from LungComMeN.LungNetwork import *
+from PulmonaryTBComMeN.PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"

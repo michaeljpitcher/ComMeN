@@ -7,7 +7,7 @@ Long Docstring
 """
 
 from ComMeN.Events.Destroy import *
-from ..PulmonaryTBDynamics.PulmonaryTBCompartments import *
+from ..PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"

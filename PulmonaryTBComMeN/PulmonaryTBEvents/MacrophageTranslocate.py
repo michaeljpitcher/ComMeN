@@ -6,7 +6,6 @@ Long Docstring
 
 """
 
-from LungComMeN.LungEvents.LungTranslocateWeight import *
 from LungComMeN.LungEvents.LymphTranslocateDrainage import *
 
 __author__ = "Michael Pitcher"
