@@ -7,7 +7,7 @@ Long Docstring
 """
 
 from ComMeN import *
-from EpidemicComMeN.EpidemicDynamics.EpidemicCompartments import SUSCEPTIBLE, INFECTIOUS, SIS_compartments
+from EpidemicComMeN.EpidemicCompartments import SUSCEPTIBLE, INFECTIOUS, SIS_compartments
 from ..EpidemicEvents.Infect import *
 
 __author__ = "Michael Pitcher"
