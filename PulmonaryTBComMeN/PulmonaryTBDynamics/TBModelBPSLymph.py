@@ -24,27 +24,38 @@ __status__ = "Development"
 
 
 class TBModelBPSLymph(Dynamics):
+    """
+    Create a ComMeN model of a TB infection spreading over a set of lungs.
+    """
     def __init__(self, config_filepath):
+        """
+        Create new model
+        :param config_filepath: path to configuration file
+        """
 
         config = cp.ConfigParser()
         config.read(config_filepath)
 
         compartments = BACTERIA + MACROPHAGES + T_CELLS
+        # Compartments which give off cytokine
         cytokine_compartments = [MACROPHAGE_INFECTED]
+        # Compartments which are antigen-presenting cells (for T-cell priming)
         apcs = [MACROPHAGE_INFECTED]
 
+        # Configure spatial attributes
         ventilations = dict()
         perfusions = dict()
-
         try:
             for bps in ALL_BPS:
                 ventilations[bps] = config.getfloat('Ventilations', bps)
                 perfusions[bps] = config.getfloat('Perfusions', bps)
         except cp.NoSectionError as e:
             raise Exception("Configuration file error: {0}".format(e.message))
-
+        # Create a network
         network = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, ventilations, perfusions)
 
+        # --------------------------------------------
+        # EVENTS
         events = []
 
         for compartment in BACTERIA:
