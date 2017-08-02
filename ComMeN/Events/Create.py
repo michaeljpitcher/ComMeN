@@ -30,7 +30,7 @@ class Create(Event):
         :param nodes: Nodes where creation occurs
         :param compartment_created: The compartment to add new member into
         :param influencing_compartments: Compartments whose members cause creation (if not specified, spontaneous
-        creation)
+                                         creation)
         """
         self._compartment_created = compartment_created
         self._influencing_compartments = influencing_compartments
@@ -41,17 +41,18 @@ class Create(Event):
         The amount this node provides to the state variable. 1 if no influencing compartments specified, else sum of
         counts of specified compartments
         :param node: Node to calculate
-        :return:
+        :return: State variable contribution of node
         """
         if self._influencing_compartments:
+            # Sum all influencing compartments
             return sum([node[c] for c in self._influencing_compartments])
         else:
+            # Spontaneous creation
             return 1
 
     def _update_node(self, node):
         """
         Update the node by adding a new member into the compartment
         :param node: Node to update
-        :return:
         """
         node.update({self._compartment_created: 1})

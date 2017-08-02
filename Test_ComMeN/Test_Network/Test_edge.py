@@ -13,15 +13,6 @@ class EdgeTestCase(unittest.TestCase):
         self.assertFalse(self.edge.directed)
         self.assertTrue(self.edge_directed.directed)
 
-        self.assertItemsEqual(self.patches[0].adjacent_edges.keys(), [Edge])
-        self.assertItemsEqual(self.patches[0].adjacent_edges[Edge], [self.edge])
-        self.assertItemsEqual(self.patches[1].adjacent_edges.keys(), [Edge])
-        self.assertItemsEqual(self.patches[1].adjacent_edges[Edge], [self.edge])
-        self.assertItemsEqual(self.patches[2].adjacent_edges.keys(), [Edge])
-        self.assertItemsEqual(self.patches[2].adjacent_edges[Edge], [self.edge_directed])
-        self.assertItemsEqual(self.patches[3].adjacent_edges.keys(), [Edge])
-        self.assertItemsEqual(self.patches[3].adjacent_edges[Edge], [self.edge_directed])
-
     def test_getitem(self):
         self.assertEqual(self.edge[self.patches[0]], self.patches[1])
         self.assertEqual(self.edge[self.patches[1]], self.patches[0])

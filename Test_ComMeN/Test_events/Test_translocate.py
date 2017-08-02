@@ -16,6 +16,8 @@ class TranslocateTestCase(unittest.TestCase):
 
         edges = [Edge(self.nodes[0],self.nodes[1]), Edge(self.nodes[0], self.nodes[2], True),
                  Edge_Type1(self.nodes[0], self.nodes[3], False), Edge_Type1(self.nodes[4], self.nodes[0], True)]
+
+        self.network = MetapopulationNetwork(self.nodes, edges)
         self.event_no_class = Translocate(0.1, self.nodes, compartments[0])
         self.event_class = Translocate(0.2, self.nodes, compartments[0], edge_class=Edge_Type1)
         self.event_not_number_edges = Translocate(0.3, self.nodes, compartments[0], rate_increases_with_edges=False)

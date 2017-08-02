@@ -29,8 +29,8 @@ class Destroy(Event):
         :param reaction_parameter: Reaction parameter of event
         :param nodes: Nodes where destruction occurs
         :param compartment_destroyed: The compartment to remove a member from
-        :param influencing_compartments: Compartmemnts whose members cause destruction (if not specified, spontaneous
-        destruction)
+        :param influencing_compartments: Compartments whose members cause destruction (if not specified, spontaneous
+                                         destruction)
         """
         self._compartment_destroyed = compartment_destroyed
         self._influencing_compartments = influencing_compartments
@@ -41,9 +41,11 @@ class Destroy(Event):
         The amount this node provides to the state variable. If no influencing compartments specified, value is count of
         the compartment to remove from, else count * sum of counts of influencing compartments
         :param node: Node to calculate
-        :return:
+        :return: state variable contribution from this node
         """
+        # Always depends on how many of compartment exist already
         state_variable = node[self._compartment_destroyed]
+        # Multiply by influencing compartments, if specified
         if self._influencing_compartments:
             state_variable = state_variable * sum([node[c] for c in self._influencing_compartments])
         return state_variable
@@ -52,6 +54,5 @@ class Destroy(Event):
         """
         Update the node by removing a member from the compartment
         :param node: Node to update
-        :return:
         """
         node.update({self._compartment_destroyed: -1})
