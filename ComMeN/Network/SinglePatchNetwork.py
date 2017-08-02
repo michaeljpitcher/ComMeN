@@ -20,7 +20,7 @@ __status__ = "Development"
 
 class SinglePatchMetapopulation(MetapopulationNetwork):
     """
-    An epidemic taking place across a single homogeneously mixed population (i.e. a one-patch network)
+    A network consisting of a single patch - complete homogeneous mixing population
     """
     def __init__(self, compartments):
         """

@@ -52,15 +52,20 @@ class Event:
     def update_state_variable_from_node(self, node):
         """
         Given a node, update this events state variable and thus probability based on the current subpopulation of node
-        :param node:
-        :return:
+        :param node: Node to calculate state variable from
         """
+        # Get new value
         value_after = self._calculate_state_variable_at_node(node)
+        # Calculate change
         change = value_after - self.state_variable_composition[node]
+        # No change, so quit
         if change == 0:
             return
+        # Set new value
         self.state_variable_composition[node] = value_after
+        # Alter the total state variable by the change of amount
         self._state_variable += change
+        # Recalculate rate
         self.rate = self._state_variable * self.reaction_parameter
 
     def _calculate_state_variable_at_node(self, node):
@@ -68,7 +73,7 @@ class Event:
         Calculate the amount the given node contributes to the overall state variable. To be overriden in subclass, as
         specific to the event type.
         :param node: Node at which to calculate the contribution to event state variable
-        :return:
+        :return: State variable from node
         """
         raise NotImplementedError()
 
@@ -78,20 +83,24 @@ class Event:
         overall state variable, then updates it (and neighbours if needed)
         :return:
         """
+        # Check their is some state variable composition
         if not self._state_variable:
             raise Exception("State variable for event is 0 - no instances where event can be performed")
+        # Choose a node based on the contribution to total state variable
         r = rand.random() * self._state_variable
         running_total = 0
+        # Loop through all nodes which contribute to this event, summing state variables. Once greater than r, choose
+        # that node
         for node in self.state_variable_composition:
             running_total += self.state_variable_composition[node]
             if running_total >= r:
-                nodes_impacted = self._update_node(node)
-                return nodes_impacted
+                # Update node, finish
+                self._update_node(node)
+                return
 
     def _update_node(self, node):
         """
         Update the subpopulation of the node. To be overriden in subclass, as specific to the event type.
         :param node: Node to be updated
-        :return:
         """
         raise NotImplementedError()

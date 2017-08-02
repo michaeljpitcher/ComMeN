@@ -23,8 +23,8 @@ class Change(Event):
     """
     def __init__(self, reaction_parameter, nodes, compartment_from, compartment_to, influencing_compartments=None):
         """
-        New create event. Must specify the compartment created, may specify members of which compartments have created
-        the new member (else spontaneous creation)
+        New change event. Must specify the compartment changing from and to, may specify members of which compartments
+        have caused change (else spontaneous change)
         :param reaction_parameter: Reaction parameter of event
         :param nodes: Nodes where change occurs
         :param compartment_from: The compartment to remove member from

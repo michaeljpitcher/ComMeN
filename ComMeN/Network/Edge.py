@@ -29,16 +29,15 @@ class Edge:
         :param node_2: Node on network
         :param directed: Does edge have a direction
         """
+        assert node_1 != node_2, "Nodes on edge are the same: {0}".format(node_1)
         self.nodes = [node_1, node_2]
         self.directed = directed
-        node_1.add_adjacent_edge(self)
-        node_2.add_adjacent_edge(self)
 
     def __getitem__(self, item):
         """
         Given a node or node_id, return the neighbour. I.e. instance[self.nodes[0]] returns self.nodes[1]
-        :param item: Node
-        :return:
+        :param item: Node or node id
+        :return: Adjacent node
         """
         if item == self.nodes[0] or item == self.nodes[0].node_id:
             return self.nodes[1]

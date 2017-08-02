@@ -47,14 +47,17 @@ class Patch:
 
     def update(self, changes):
         """
-        Change the value of the count of a compartment by an amount (new value cannot be negative)
+        Change the value of the counts of sub-population compartments by an amount (new value cannot be negative)
         :param changes: Dictionary of changes; key=compartment, value=amount to update
         :return:
         """
-        for compartment in changes:
-            alteration = changes[compartment]
+        # Loop through all changes
+        for compartment, alteration in changes.iteritems():
+            # Calculate new value
             new_value = self._subpopulation[compartment] + alteration
+            # Ensure new value is not negative
             assert new_value >= 0, "New value cannot be negative"
+            # Update value
             self._subpopulation[compartment] = new_value
         # If an update handler has been assigned, process the consequences of updating this patch
         if self.update_handler:
@@ -62,14 +65,14 @@ class Patch:
 
     def add_adjacent_edge(self, edge):
         """
-        Add an edge to the list of adjacent edges
-        :param edge:
-        :return:
+        Add an edge to the list of adjacent edges, based on its class
+        :param edge: Edge to add
         """
+        # Check if there is already a record for this class of edge, if not add one
         if edge.__class__ not in self.adjacent_edges:
-            self.adjacent_edges[edge.__class__] = [edge]
-        else:
-            self.adjacent_edges[edge.__class__].append(edge)
+            self.adjacent_edges[edge.__class__] = []
+        # Add the edge to the record for the edge class
+        self.adjacent_edges[edge.__class__].append(edge)
 
     def total_population(self):
         """

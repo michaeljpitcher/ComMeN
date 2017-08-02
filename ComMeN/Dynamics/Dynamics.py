@@ -26,7 +26,7 @@ NODE_ID = 'node_id'
 
 class Dynamics:
     """
-    Dynamics handles the simulation of events over a network.
+    Dynamics handles the simulation of events over a metapopulation network.
 
     Simulations are run using the run function, which performs events using Gillespie algorithm, adapted from:
     D. T. Gillespie, "A general method for numerically simulating the stochastic time evolution of coupled chemical
@@ -70,8 +70,10 @@ class Dynamics:
         print "ComMeN Simulation"
         csv_writer = None
 
+        # Seed the network with initial subpopulation counts
         self._network.seed(seeding)
 
+        # Data is to be written to an output file
         if output_data:
             if run_id:
                 filename = str(run_id) + '.csv'
@@ -114,6 +116,7 @@ class Dynamics:
             # Update time
             self._time += tau
             if output_data:
+                # Record data. Use the timestep interval to record
                 self._record_data(csv_writer)
             self._timestep_print()
 

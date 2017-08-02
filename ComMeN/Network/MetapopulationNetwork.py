@@ -38,19 +38,24 @@ class MetapopulationNetwork:
                 self.add_edge(e)
 
     def __getitem__(self, item):
+        """
+        Get the node in the network with the given ID
+        :param item: Node ID to return
+        :return: Node with ID
+        """
         try:
-            return [n for n in self.nodes if n.node_id == item][0]
-        except IndexError:
+            # Find the next node in node list with the given ID (should only be one by the add_node function)
+            return next(n for n in self.nodes if n.node_id == item)
+        except StopIteration:
             raise Exception, "Node with id '{0}' not found in network".format(item)
 
     def seed(self, seeding):
         """
-        Seed the network with sub-populations
+        Seed the network with values for sub-populations of nodes
         :param seeding: Dict of seeding. Key=node_id, value=dict, key=compartment, value=subpopulation value
-        :return:
         """
-        for node_id in seeding:
-            self[node_id].update(seeding[node_id])
+        for node_id, node_seeding in seeding.iteritems():
+            self[node_id].update(node_seeding)
 
     def add_node(self, node):
         """
@@ -70,3 +75,5 @@ class MetapopulationNetwork:
         for n in edge.nodes:
             assert n in self.nodes, "Node {0} is not in the network".format(n)
         self.edges.append(edge)
+        for n in edge.nodes:
+            n.add_adjacent_edge(edge)

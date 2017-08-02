@@ -28,7 +28,7 @@ class Translocate(Event):
         New translocate event. If rate_increases_with_edges, then the rate of the event increases the more edges there
         are at node. If false, then rate is only dependent on their being one edge.
         :param reaction_parameter: Reaction parameter of event
-        :param nodes: Nodes where creation occurs
+        :param nodes: Nodes where translocation occurs
         :param compartment_translocating: The compartment of the member translocating
         :param edge_class: Class of edge which this event occurs along
         :param rate_increases_with_edges: Does the rate increase the more viable edges there are at node?
@@ -85,9 +85,13 @@ class Translocate(Event):
         """
         # Get all acceptable edges
         viable_edges = self._viable_edges(node)
+        # Choose an edge
         chosen_edge = self._pick_edge(viable_edges)
+        # Remove member from the node
         node.update({self._compartment_translocating: -1})
+        # Get neighbour from edge
         neighbour = chosen_edge[node]
+        # Add member to the neighbour
         neighbour.update({self._compartment_translocating: 1})
 
     def _pick_edge(self, edges):
