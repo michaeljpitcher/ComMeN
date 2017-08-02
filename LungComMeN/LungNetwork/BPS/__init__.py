@@ -16,6 +16,5 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from BPSMetapopulationNetwork import *
 from BPSLymphMetapopulationNetwork import *
 from BronchopulmonarySegments import *
