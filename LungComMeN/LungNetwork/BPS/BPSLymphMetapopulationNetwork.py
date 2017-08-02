@@ -31,15 +31,21 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetwork(MetapopulationNetw
     """
 
     def __init__(self, compartments, ventilation, perfusion):
+        """
+        Create a new network
+        :param compartments: Compartments within patches
+        :param ventilation: Dictionary of ventilation values (key:patch ID, value:ventilation value)
+        :param perfusion: Dictionary of perfusion values (key:patch ID, value:perfusion value)
+        """
         # Keep lists of node types for convenience
         self.BPS_nodes = []
         self.lymph_nodes = []
 
         # Node for every BPS
         nodes = {}
-        for segment in ALL_BPS:
-            nodes[segment] = LungPatch(segment, compartments, ventilation[segment], perfusion[segment])
-            self.BPS_nodes.append(nodes[segment])
+        for segment_id in ALL_BPS:
+            nodes[segment_id] = LungPatch(segment_id, compartments, ventilation[segment_id], perfusion[segment_id])
+            self.BPS_nodes.append(nodes[segment_id])
         # Single node for the lymph system
         nodes[LYMPH] = LymphPatch(LYMPH, compartments)
         self.lymph_nodes = [nodes[LYMPH]]
@@ -55,7 +61,8 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetwork(MetapopulationNetw
                     BPS_patch2 = nodes[lobe[index2]]
                     edges.append(LungEdge(BPS_patch, BPS_patch2, False, 1))
 
-        for segment in ALL_BPS:
-            edges.append(LymphEdge(nodes[LYMPH], nodes[segment], False, 1))
+        # Add a lymph edge from lymph to every BPS
+        for segment_id in ALL_BPS:
+            edges.append(LymphEdge(nodes[LYMPH], nodes[segment_id], False, 1))
 
         MetapopulationNetwork.__init__(self, nodes.values(), edges)
