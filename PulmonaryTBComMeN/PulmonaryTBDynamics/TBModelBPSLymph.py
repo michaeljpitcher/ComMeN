@@ -67,10 +67,11 @@ class TBModelBPSLymph(Dynamics):
                                              network.BPS_nodes))
 
         # Macrophage recruitment
-        events.append(MacrophageRecruitment(config.getfloat("Events", "macrophage_recruitment_lung"),
+        events.append(MacrophageRecruitmentPerfusionBased(config.getfloat("Events", "macrophage_recruitment_lung"),
                                             network.BPS_nodes))
-        events.append(MacrophageRecruitmentByCytokine(config.getfloat("Events", "macrophage_recruitment_lung_infection"),
-                                            network.BPS_nodes, cytokine_compartments))
+        events.append(MacrophageRecruitmentByCytokinePerfusionBased(
+            config.getfloat("Events", "macrophage_recruitment_lung_infection"), network.BPS_nodes,
+            cytokine_compartments))
         events.append(MacrophageRecruitment(config.getfloat("Events", "macrophage_recruitment_lymph"),
                                             network.lymph_nodes))
         events.append(MacrophageRecruitmentByCytokine(config.getfloat("Events", "macrophage_recruitment_lymph_infection"),
