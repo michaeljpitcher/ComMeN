@@ -51,8 +51,12 @@ class TBModelBPSLymph(Dynamics):
                 perfusions[bps] = config.getfloat('Perfusions', bps)
         except cp.NoSectionError as e:
             raise Exception("Configuration file error: {0}".format(e.message))
+
+        edge_joining = config.get('Network', 'BPS_edge_joining')
+
         # Create a network
-        network = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, ventilations, perfusions)
+        network = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, ventilations, perfusions,
+                                                                          edge_joining)
 
         # --------------------------------------------
         # EVENTS
