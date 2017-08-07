@@ -47,7 +47,7 @@ def draw_network(network, node_positions, node_size=3200, node_class_colours=Non
     # Get positions
     pos = {}
     for node_id in node_positions:
-        node = network.get_node_by_id(node_id)
+        node = network[node_id]
         pos[node] = node_positions[node_id]
 
     # If node colours specified, go through each class and pull nodes from that class, draw with associated colour
