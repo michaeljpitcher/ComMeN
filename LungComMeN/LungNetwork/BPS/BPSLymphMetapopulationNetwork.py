@@ -25,6 +25,7 @@ __status__ = "Development"
 JOINING_LOBE = 'joining_lobe'
 JOINING_ADJACENT_LOBE = 'joining_adjacent_lobe'
 JOINING_ALL = 'joining_all'
+JOINING_NONE = 'joining_none'
 
 
 def get_inter_lobe_edges(nodes):
@@ -51,6 +52,7 @@ def get_between_lobe_edges(nodes, lobe1, lobe2, edge_weight=1):
     :param nodes:
     :param lobe1:
     :param lobe2:
+    :param edge_weight:
     :return:
     """
     edges = []
@@ -107,7 +109,7 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetwork(MetapopulationNetw
             for i in range(len(LOBES) - 1):
                 for j in range(i+1, len(LOBES)):
                     edges += get_between_lobe_edges(nodes, LOBES[i], LOBES[j])
-        elif not edge_joining:
+        elif edge_joining == JOINING_NONE:
             # No edges between any BPS
             pass
         else:
