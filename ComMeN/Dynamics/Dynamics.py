@@ -48,11 +48,11 @@ class Dynamics:
         events = [e for e in events if e.reaction_parameter > 0]
         # Create update handler. Doing so attaches handler to every node (that has an event attached)
         update_handler = UpdateHandler(events)
-        self._network = network
+        self.network = network
         self._events = events
         self._time = 0.0
         self._compartments = []
-        for node in self._network.nodes:
+        for node in self.network.nodes:
             self._compartments += node.compartments
         # Remove any duplicates
         self._compartments = list(set(self._compartments))
@@ -71,7 +71,7 @@ class Dynamics:
         csv_writer = None
 
         # Seed the network with initial subpopulation counts
-        self._network.seed(seeding)
+        self.network.seed(seeding)
 
         # Data is to be written to an output file
         if output_data:
@@ -134,7 +134,7 @@ class Dynamics:
         :param csv_writer: CSV writer object (DictWriter)
         """
         # Loop through all nodes
-        for node in self._network.nodes:
+        for node in self.network.nodes:
             row = {TIMESTEP: self._time, NODE_ID: node.node_id}
             for c in node.compartments:
                 row[c] = node[c]

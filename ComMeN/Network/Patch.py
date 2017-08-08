@@ -45,6 +45,16 @@ class Patch:
     def __str__(self):
         return self.__class__.__name__ + ":" + str(self.node_id)
 
+    def reset(self):
+        """
+        Reset all counts for all compartments in subpopulation back to zero
+        :return:
+        """
+        updates = {}
+        for c in self.compartments:
+            updates[c] = -1 * self[c]
+        self.update(updates)
+
     def update(self, changes):
         """
         Change the value of the counts of sub-population compartments by an amount (new value cannot be negative)

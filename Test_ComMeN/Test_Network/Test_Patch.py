@@ -34,5 +34,14 @@ class PatchTestCase(unittest.TestCase):
         self.assertItemsEqual(self.patch.adjacent_edges.keys(), [Edge])
         self.assertItemsEqual(self.patch.adjacent_edges[Edge], [e])
 
+    def test_reset(self):
+        self.patch.update({'a':1,'b':2,'c':3})
+        self.assertEqual(self.patch['a'], 1)
+        self.assertEqual(self.patch['b'], 2)
+        self.assertEqual(self.patch['c'], 3)
+        self.patch.reset()
+        for comp in ['a','b','c']:
+            self.assertEqual(self.patch[comp], 0)
+
 if __name__ == '__main__':
     unittest.main()

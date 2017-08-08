@@ -49,6 +49,14 @@ class MetapopulationNetwork:
         except StopIteration:
             raise Exception, "Node with id '{0}' not found in network".format(item)
 
+    def reset(self):
+        """
+        Reset the entire network (reset all subpopulations counts for all nodes to zero).
+        :return:
+        """
+        for n in self.nodes:
+            n.reset()
+
     def seed(self, seeding):
         """
         Seed the network with values for sub-populations of nodes

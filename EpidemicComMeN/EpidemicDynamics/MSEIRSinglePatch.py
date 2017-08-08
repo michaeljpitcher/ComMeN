@@ -73,4 +73,4 @@ class MSEIRSinglePatchDynamics(Dynamics):
         End the simulation if the infection has been eliminated from the system
         :return: True if no exposed or infectious members, false otherwise
         """
-        return self._network.nodes[0][EXPOSED] == 0 and self._network.nodes[0][INFECTIOUS] == 0
+        return self.network.nodes[0][EXPOSED] == 0 and self.network.nodes[0][INFECTIOUS] == 0

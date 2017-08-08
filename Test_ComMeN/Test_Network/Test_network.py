@@ -47,3 +47,16 @@ class NetworkTestCase(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             a = self.network[1]
         self.assertEqual(str(context.exception), "Node with id '1' not found in network")
+
+    def test_reset(self):
+        updates_1 = {'a':1,'b':2,'c':3}
+        updates_2 = {'a':4,'b':5,'c':6}
+        self.nodes[0].update(updates_1)
+        self.nodes[1].update(updates_2)
+        for comp in updates_1:
+            self.assertEqual(self.nodes[0][comp], updates_1[comp])
+            self.assertEqual(self.nodes[1][comp], updates_2[comp])
+        self.network.reset()
+        for comp in updates_1:
+            self.assertEqual(self.nodes[0][comp], 0)
+            self.assertEqual(self.nodes[1][comp], 0)
