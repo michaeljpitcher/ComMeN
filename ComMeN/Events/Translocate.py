@@ -22,7 +22,7 @@ class Translocate(Event):
     """
     Translocate event - a member of one compartment moves from one node to another
     """
-    def __init__(self, reaction_parameter, nodes, compartment_translocating, edge_class=None,
+    def __init__(self, reaction_parameter, nodes, compartment_translocating, edge_class,
                  rate_increases_with_edges=True):
         """
         New translocate event. If rate_increases_with_edges, then the rate of the event increases the more edges there
@@ -64,19 +64,14 @@ class Translocate(Event):
         :return: Acceptable edges for this event object
         """
         # TODO - can this be stored in the event so it's not computed every time?
-        if self._edge_class:
-            if self._edge_class in node.adjacent_edges.keys():
-                edges_correct_class = node.adjacent_edges[self._edge_class]
-            else:
-                return []
+        if self._edge_class in node.adjacent_edges.keys():
+            viable_edges = []
+            for e in node.adjacent_edges[self._edge_class]:
+                if (e.directed and e.nodes[0] == node) or not e.directed:
+                    viable_edges.append(e)
+            return viable_edges
         else:
-            edges_correct_class = [j for i in node.adjacent_edges.values() for j in i]
-
-        viable_edges = []
-        for e in edges_correct_class:
-            if (e.directed and e.nodes[0] == node) or not e.directed:
-                viable_edges.append(e)
-        return viable_edges
+            return []
 
     def _update_node(self, node):
         """
