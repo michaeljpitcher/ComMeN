@@ -19,6 +19,6 @@ __status__ = "Development"
 
 class LymphEdge(Edge):
 
-    def __init__(self, node_1, node_2, directed, drainage):
+    def __init__(self, node_1, node_2, drainage):
         self.drainage = drainage
-        Edge.__init__(self, node_1, node_2, directed)
+        Edge.__init__(self, node_1, node_2, directed=True)

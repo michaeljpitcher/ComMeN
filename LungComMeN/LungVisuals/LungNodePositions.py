@@ -6,8 +6,8 @@ Long Docstring
 
 """
 
-from ..LungNetwork.Lobe.LungLobes import *
-from ..LungNetwork.BPS.BronchopulmonarySegments import *
+from LungComMeN.LungNetwork.BronchopulmonarySegments import *
+
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -17,10 +17,6 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-
-LOBE_POSITIONS_RIGHT = {SUPERIOR_RIGHT: (3, 10), MIDDLE_RIGHT: (2, 5), INFERIOR_RIGHT: (3.5, 1)}
-LOBE_POSITIONS_ALL = {SUPERIOR_RIGHT: (3, 10),MIDDLE_RIGHT: (2, 5), INFERIOR_RIGHT: (3.5, 1), SUPERIOR_LEFT: (7, 10),
-                      INFERIOR_LEFT: (7, 2)}
 
 BPS_POSITIONS_ALL = {APICAL_RIGHT: (0, 10), POSTERIOR_RIGHT: (0, 8), ANTERIOR_RIGHT: (3, 10),
                      LATERAL_RIGHT: (0, 6), MEDIAL_RIGHT: (0, 4),

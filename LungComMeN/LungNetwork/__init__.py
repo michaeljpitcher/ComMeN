@@ -20,5 +20,6 @@ from LungPatch import *
 from LymphPatch import *
 from LungEdge import *
 from LymphEdge import *
-from BPS import *
-from Lobe import *
+from BloodEdge import *
+from BronchopulmonarySegments import *
+from BPSLymphMetapopulationNetwork import *

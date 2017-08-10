@@ -7,11 +7,12 @@ Long Docstring
 """
 
 from ComMeN.Network import *
-from ..LungPatch import *
-from ..LymphPatch import *
-from ..LungEdge import *
-from ..LymphEdge import *
-from BronchopulmonarySegments import *
+from LungComMeN.LungNetwork.BronchopulmonarySegments import *
+from LungComMeN.LungNetwork.BloodEdge import *
+from LungComMeN.LungNetwork.LungEdge import *
+from LungComMeN.LungNetwork.LungPatch import *
+from LungComMeN.LungNetwork.LymphEdge import *
+from LungComMeN.LungNetwork.LymphPatch import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -28,10 +29,11 @@ JOINING_ALL = 'joining_all'
 JOINING_NONE = 'joining_none'
 
 
-def get_inter_lobe_edges(nodes):
+def get_inter_lobe_edges(nodes, weight=1):
     """
     Create edges between all bronchopulmonary segments in a lobe
     :param nodes:
+    :param weight:
     :return:
     """
     edges = []
@@ -39,10 +41,10 @@ def get_inter_lobe_edges(nodes):
     for lobe in LOBES:
         # In each lobe, add an edge between every BPS in lobe
         for index in range(len(lobe) - 1):
-            BPS_patch = nodes[lobe[index]]
+            bps_patch = nodes[lobe[index]]
             for index2 in range(index + 1, len(lobe)):
-                BPS_patch2 = nodes[lobe[index2]]
-                edges.append(LungEdge(BPS_patch, BPS_patch2, False, 1))
+                bps_patch2 = nodes[lobe[index2]]
+                edges.append(LungEdge(bps_patch, bps_patch2, weight))
     return edges
 
 
@@ -60,7 +62,7 @@ def get_between_lobe_edges(nodes, lobe1, lobe2, edge_weight=1):
         node1 = nodes[BPS]
         for BPS2 in lobe2:
             node2 = nodes[BPS2]
-            edges.append(LungEdge(node1, node2, False, edge_weight))
+            edges.append(LungEdge(node1, node2, edge_weight))
     return edges
 
 
@@ -71,7 +73,7 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetwork(MetapopulationNetw
     together based on the method chosen.
     """
 
-    def __init__(self, compartments, ventilation, perfusion, edge_joining=None):
+    def __init__(self, compartments, ventilation, perfusion, edge_joining=JOINING_NONE):
         """
         Create a new network
         :param compartments: Compartments within patches
@@ -80,17 +82,17 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetwork(MetapopulationNetw
         :param edge_joining: How to join BPS
         """
         # Keep lists of node types for convenience
-        self.BPS_nodes = []
-        self.lymph_nodes = []
+        self.lung_patches = []
+        self.lymph_patches = []
 
         # Node for every BPS
         nodes = {}
         for segment_id in ALL_BPS:
             nodes[segment_id] = LungPatch(segment_id, compartments, ventilation[segment_id], perfusion[segment_id])
-            self.BPS_nodes.append(nodes[segment_id])
+            self.lung_patches.append(nodes[segment_id])
         # Single node for the lymph system
         nodes[LYMPH] = LymphPatch(LYMPH, compartments)
-        self.lymph_nodes = [nodes[LYMPH]]
+        self.lymph_patches = [nodes[LYMPH]]
 
         # Edges
         edges = []
@@ -115,8 +117,10 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetwork(MetapopulationNetw
         else:
             raise Exception("Incorrect edge joining method: {0}".format(edge_joining))
 
-        # Add a lymph edge from lymph to every BPS
         for segment_id in ALL_BPS:
-            edges.append(LymphEdge(nodes[LYMPH], nodes[segment_id], False, 1))
+            # Add a lymph edge from lymph to every BPS
+            edges.append(LymphEdge(nodes[segment_id], nodes[LYMPH], 1))
+            # Add a blood edge from lymph to all BPS
+            edges.append(BloodEdge(nodes[LYMPH], nodes[segment_id]))
 
         MetapopulationNetwork.__init__(self, nodes.values(), edges)

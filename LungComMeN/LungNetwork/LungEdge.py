@@ -19,6 +19,6 @@ __status__ = "Development"
 
 class LungEdge(Edge):
 
-    def __init__(self, node_1, node_2, directed, weight):
+    def __init__(self, node_1, node_2, weight):
         self.weight = weight
-        Edge.__init__(self, node_1, node_2, directed)
+        Edge.__init__(self, node_1, node_2, False)
