@@ -16,9 +16,3 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from BloodTranslocatePerfusion import *
-from ChangeByOxygen import *
-from DepositionByVentilation import *
-from LungTranslocateWeight import *
-from LymphTranslocateDrainage import *
-from RecruitmentByPerfusion import *
