@@ -9,6 +9,7 @@ Long Docstring
 from LungComMeN import *
 from ComMeN import *
 from ..PulmonaryTBCompartments import *
+from ..PTBEvents import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -23,7 +24,7 @@ class PTBDynamics(Dynamics):
 
     def __init__(self, ventilations, perfusions, edge_joining, event_parameters):
 
-        compartments = ALL_BACTERIA + ALL_MACROPHAGES
+        compartments = ALL_BACTERIA + ALL_MACROPHAGES + ALL_T_CELLS
 
         # ===========================================
         # Network
@@ -85,24 +86,71 @@ class PTBDynamics(Dynamics):
             events.append(LymphTranslocateDrainage(event_parameters[state + '_translocate_lymph'], network.lung_patches,
                                                    state))
             # Macrophage death (standard)
-            events.append(Destroy(event_parameters[state + 'death_standard'], network.nodes, state))
+            events.append(Destroy(event_parameters[state + '_death_standard'], network.nodes, state))
 
         # Macrophage bursting
         # TODO - use Bacteria intracellular and capacity to determine
         events.append(Destroy(event_parameters['infected_macrophage_bursting'], network.nodes, MACROPHAGE_INFECTED,
                               [BACTERIUM_INTRACELLULAR]))
 
+        # TODO - one type of t-cell
         # T Cell destroys macrophage
         events.append(Destroy(event_parameters['infected_macrophage_bursting'], network.nodes, MACROPHAGE_INFECTED,
-                              [T_CELL_CYTOTOXIC_ACTIVATED]))
+                              [T_CELL_ACTIVATED]))
 
         # T Cell activates macrophage
         events.append(Change(event_parameters['regular_macrophage_activated_by_t_cell'], network.nodes,
-                             MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, [T_CELL_HELPER_ACTIVATED]))
+                             MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, [T_CELL_ACTIVATED]))
 
         # Cytokine activates macrophage
         # TODO - cytokine modelling
         events.append(Change(event_parameters['regular_macrophage_activated_by_t_cell'], network.nodes,
                              MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, [MACROPHAGE_INFECTED]))
+
+        # Phagocytosis
+        # events.append(Phagocytosis(event_parameters['regular_macrophage_phagocytosis_bacterium'], network.nodes,
+        #                            MACROPHAGE_REGULAR, BACTERIUM_FAST,
+        #                            event_parameters['prob_bacterium_fast_survive_phagocytosis_regular']))
+        # events.append(Phagocytosis(event_parameters['regular_macrophage_phagocytosis_bacterium'], network.nodes,
+        #                            MACROPHAGE_REGULAR, BACTERIUM_SLOW,
+        #                            event_parameters['prob_bacterium_slow_survive_phagocytosis_regular']))
+        # events.append(Phagocytosis(event_parameters['infected_macrophage_phagocytosis_bacterium'], network.nodes,
+        #                            MACROPHAGE_INFECTED, BACTERIUM_FAST,
+        #                            event_parameters['prob_bacterium_fast_survive_phagocytosis_regular']))
+        # events.append(Phagocytosis(event_parameters['infected_macrophage_phagocytosis_bacterium'], network.nodes,
+        #                            MACROPHAGE_INFECTED, BACTERIUM_SLOW,
+        #                            event_parameters['prob_bacterium_slow_survive_phagocytosis_regular']))
+        # events.append(Phagocytosis(event_parameters['activated_macrophage_phagocytosis_bacterium'], network.nodes,
+        #                            MACROPHAGE_ACTIVATED, BACTERIUM_FAST,
+        #                            event_parameters['prob_bacterium_fast_survive_phagocytosis_regular']))
+        # events.append(Phagocytosis(event_parameters['activated_macrophage_phagocytosis_bacterium'], network.nodes,
+        #                            MACROPHAGE_ACTIVATED, BACTERIUM_SLOW,
+        #                            event_parameters['prob_bacterium_slow_survive_phagocytosis_regular']))
+        for m in ALL_MACROPHAGES:
+            for b in EXTRACELLULAR_BACTERIA:
+                events.append(Phagocytosis(event_parameters[m + "_phagocytosis_bacterium"], network.nodes,
+                                           m, b, event_parameters['prob_' + b + '_survive_phagocytosis']))
+
+
+        # T-cell recruitment
+        # TODO - clarify the t-cell recruitment/priming process
+        events.append(Create(event_parameters[T_CELL_NAIVE + '_recruitment_rate'], network.lymph_patches, T_CELL_NAIVE))
+
+        # T-cell priming
+        # TODO - clarify which cells prime (i.e. are antigen-presenting)
+        events.append(Change(event_parameters[T_CELL_NAIVE + '_priming_rate'], network.nodes,
+                             T_CELL_NAIVE, T_CELL_ACTIVATED, [MACROPHAGE_INFECTED]))
+
+        # T-cell death
+        for t in ALL_T_CELLS:
+            events.append(Destroy(event_parameters[t + '_death_rate'], network.nodes, t))
+
+        # T-cell translocate
+        events.append(BloodTranslocatePerfusion(event_parameters[T_CELL_ACTIVATED + '_blood_translocation_rate'],
+                                                    network.lymph_patches, T_CELL_ACTIVATED))
+        # T-cell cloning
+        # TODO - maybe only occurs at lymph patches?
+        events.append(Create(event_parameters[T_CELL_ACTIVATED + '_cloning_rate'], network.nodes, T_CELL_ACTIVATED,
+                             [T_CELL_ACTIVATED]))
 
         Dynamics.__init__(self, network, events)
