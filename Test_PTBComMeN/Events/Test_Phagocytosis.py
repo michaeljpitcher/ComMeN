@@ -1,7 +1,6 @@
 import unittest
 from PTBComMeN import *
 from LungComMeN import *
-import numpy.random as rand
 
 
 class PhagocytosisTestCase(unittest.TestCase):
@@ -28,7 +27,6 @@ class PhagocytosisTestCase(unittest.TestCase):
         self.assertEqual(self.event_M_I.rate, 0.2 * 2 * 5)
 
     def test_update(self):
-        rand.seed(101)
         self.node.update({MACROPHAGE_REGULAR: 6, MACROPHAGE_INFECTED: 6,
                            BACTERIUM_FAST: 10, BACTERIUM_SLOW: 10})
         for e in self.events:
@@ -41,7 +39,6 @@ class PhagocytosisTestCase(unittest.TestCase):
         self.assertEqual(self.node[BACTERIUM_INTRACELLULAR], 1)
 
         self.node.reset()
-        rand.seed(10)
         self.node.update({MACROPHAGE_REGULAR: 6, MACROPHAGE_ACTIVATED: 6, MACROPHAGE_INFECTED: 6,
                           BACTERIUM_FAST: 10, BACTERIUM_SLOW: 10})
         for e in self.events:

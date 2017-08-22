@@ -18,3 +18,4 @@ __status__ = "Development"
 
 
 from PhagocytosisInfect import *
+from DendriticTranslocation import *
