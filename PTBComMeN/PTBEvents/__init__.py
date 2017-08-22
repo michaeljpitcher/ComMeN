@@ -17,4 +17,4 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-from Phagocytosis import *
+from PhagocytosisInfect import *

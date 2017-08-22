@@ -68,18 +68,18 @@ class PTBDynamics(Dynamics):
         # In lung, standard
         events.append(RecruitmentByPerfusion(event_parameters["macrophage_recruitment_lung_standard"],
                                              network.lung_patches, MACROPHAGE_REGULAR))
-        # In lung, by chemokine
-        # TODO - assumes equal chemokine by M_A and M_I
-        events.append(RecruitmentByPerfusion(event_parameters["macrophage_recruitment_lung_chemokine"],
-                                             network.lung_patches, MACROPHAGE_REGULAR,
-                                             [MACROPHAGE_INFECTED, MACROPHAGE_ACTIVATED]))
+
         # In lymph, standard
         events.append(Create(event_parameters['macrophage_recruitment_lymph_standard'], network.lymph_patches,
                              MACROPHAGE_REGULAR))
-        # In lymph, by chemokine
-        # TODO - assumes equal chemokine by M_A and M_I
-        events.append(Create(event_parameters['macrophage_recruitment_lymph_chemokine'], network.lymph_patches,
-                             MACROPHAGE_REGULAR))
+
+        for influencer in [MACROPHAGE_ACTIVATED, MACROPHAGE_INFECTED]:
+            # In lung
+            events.append(RecruitmentByPerfusion(event_parameters["macrophage_recruitment_lung_" + influencer],
+                                             network.lung_patches, MACROPHAGE_REGULAR, [influencer]))
+            # In lymph
+            events.append(Create(event_parameters['macrophage_recruitment_lymph_' + influencer], network.lymph_patches,
+                             MACROPHAGE_REGULAR, [influencer]))
 
         for state in ALL_MACROPHAGES:
             # Macrophage translocate to lymph
@@ -108,28 +108,19 @@ class PTBDynamics(Dynamics):
                              MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, [MACROPHAGE_INFECTED]))
 
         # Phagocytosis
-        # events.append(Phagocytosis(event_parameters['regular_macrophage_phagocytosis_bacterium'], network.nodes,
-        #                            MACROPHAGE_REGULAR, BACTERIUM_FAST,
-        #                            event_parameters['prob_bacterium_fast_survive_phagocytosis_regular']))
-        # events.append(Phagocytosis(event_parameters['regular_macrophage_phagocytosis_bacterium'], network.nodes,
-        #                            MACROPHAGE_REGULAR, BACTERIUM_SLOW,
-        #                            event_parameters['prob_bacterium_slow_survive_phagocytosis_regular']))
-        # events.append(Phagocytosis(event_parameters['infected_macrophage_phagocytosis_bacterium'], network.nodes,
-        #                            MACROPHAGE_INFECTED, BACTERIUM_FAST,
-        #                            event_parameters['prob_bacterium_fast_survive_phagocytosis_regular']))
-        # events.append(Phagocytosis(event_parameters['infected_macrophage_phagocytosis_bacterium'], network.nodes,
-        #                            MACROPHAGE_INFECTED, BACTERIUM_SLOW,
-        #                            event_parameters['prob_bacterium_slow_survive_phagocytosis_regular']))
-        # events.append(Phagocytosis(event_parameters['activated_macrophage_phagocytosis_bacterium'], network.nodes,
-        #                            MACROPHAGE_ACTIVATED, BACTERIUM_FAST,
-        #                            event_parameters['prob_bacterium_fast_survive_phagocytosis_regular']))
-        # events.append(Phagocytosis(event_parameters['activated_macrophage_phagocytosis_bacterium'], network.nodes,
-        #                            MACROPHAGE_ACTIVATED, BACTERIUM_SLOW,
-        #                            event_parameters['prob_bacterium_slow_survive_phagocytosis_regular']))
-        for m in ALL_MACROPHAGES:
-            for b in EXTRACELLULAR_BACTERIA:
-                events.append(Phagocytosis(event_parameters[m + "_phagocytosis_bacterium"], network.nodes,
-                                           m, b, event_parameters['prob_' + b + '_survive_phagocytosis']))
+        for b in EXTRACELLULAR_BACTERIA:
+            # Regular destroys bacteria
+            events.append(Destroy(event_parameters[MACROPHAGE_REGULAR + '_destroys_' + b], network.nodes, b,
+                                  [MACROPHAGE_REGULAR]))
+            # Regular retains bacteria, becomes infected
+            events.append(PhagocytosisInfect(event_parameters[MACROPHAGE_REGULAR + "_infected_by_" + b], network.nodes,
+                                             MACROPHAGE_REGULAR, b))
+            # Infected retains bacteria
+            events.append(PhagocytosisInfect(event_parameters[MACROPHAGE_INFECTED + "_infected_by_" + b], network.nodes,
+                                             MACROPHAGE_INFECTED, b))
+            # Activated destroys bacteria
+            events.append(Destroy(event_parameters[MACROPHAGE_ACTIVATED + '_destroys_' + b], network.nodes, b,
+                                  [MACROPHAGE_ACTIVATED]))
 
 
         # T-cell recruitment
