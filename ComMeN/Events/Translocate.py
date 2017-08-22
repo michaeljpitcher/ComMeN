@@ -23,7 +23,7 @@ class Translocate(Event):
     Translocate event - a member of one compartment moves from one node to another
     """
     def __init__(self, reaction_parameter, nodes, compartment_translocating, edge_class,
-                 rate_increases_with_edges=True):
+                 rate_increases_with_edges=True, influencing_compartments=None):
         """
         New translocate event. If rate_increases_with_edges, then the rate of the event increases the more edges there
         are at node. If false, then rate is only dependent on their being one edge.
@@ -32,10 +32,12 @@ class Translocate(Event):
         :param compartment_translocating: The compartment of the member translocating
         :param edge_class: Class of edge which this event occurs along
         :param rate_increases_with_edges: Does the rate increase the more viable edges there are at node?
+        :param influencing_compartments: External compartments which cause translocation
         """
         self._compartment_translocating = compartment_translocating
         self._rate_increases_with_edges = rate_increases_with_edges
         self._edge_class = edge_class
+        self._influencing_compartments = influencing_compartments
         Event.__init__(self, reaction_parameter, nodes)
 
     def _calculate_state_variable_at_node(self, node):
@@ -49,12 +51,19 @@ class Translocate(Event):
         viable_edges = self._viable_edges(node)
         # State variable depends on count of compartment
         state_variable = node[self._compartment_translocating]
+        if state_variable == 0:
+            return state_variable
         # If rate increases with edges, state variable is * by number of viable edges, else it is state variable * 1 if
         # any edge exists, and * 0 if no edge exists
         if self._rate_increases_with_edges:
-            return state_variable * len(viable_edges)
+            state_variable = state_variable * len(viable_edges)
         else:
-            return state_variable * (len(viable_edges) >= 1)
+            state_variable = state_variable * (len(viable_edges) >= 1)
+
+        if self._influencing_compartments:
+            state_variable = state_variable * sum([node[compartment] for compartment in self._influencing_compartments])
+
+        return state_variable
 
     def _viable_edges(self, node):
         """

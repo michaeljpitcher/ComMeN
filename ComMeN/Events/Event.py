@@ -18,7 +18,6 @@ __status__ = "Development"
 
 
 class Event:
-    # TODO: Terms taken from Gillespie but are a bit obtuse is this context. New terms needed?
     """
     An event to be performed upon the metapopulation network, altering the subpopulation of a patch.
 
