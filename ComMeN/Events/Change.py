@@ -56,5 +56,4 @@ class Change(Event):
         :param node: Node to update
         :return:
         """
-        node.update({self._compartment_from: -1})
-        node.update({self._compartment_to: 1})
+        node.update({self._compartment_from: -1, self._compartment_to: 1})
