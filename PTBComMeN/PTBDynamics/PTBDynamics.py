@@ -53,15 +53,14 @@ class PTBDynamics(Dynamics):
 
         # Bacteria translocate
         for state in EXTRACELLULAR_BACTERIA:
-            # TODO - assumes fast/slow doesn't affect translocation
             # Between Lung Patches
-            events.append(LungTranslocateWeight(event_parameters["bacteria_translocate_lung"], network.lung_patches,
+            events.append(LungTranslocateWeight(event_parameters[state + "_translocate_lung"], network.lung_patches,
                                                 state))
             # Lung to Lymph
-            events.append(LymphTranslocateDrainage(event_parameters["bacteria_translocate_lymph"], network.lung_patches,
-                                                state))
+            events.append(LymphTranslocateDrainage(event_parameters[state + "_translocate_lymph"],
+                                                   network.lung_patches, state))
             # Lymph to Lung (blood)
-            events.append(BloodTranslocatePerfusion(event_parameters["bacteria_translocate_blood"],
+            events.append(BloodTranslocatePerfusion(event_parameters[state + "_translocate_blood"],
                                                     network.lung_patches, state))
 
         # Macrophage recruitment
@@ -122,6 +121,19 @@ class PTBDynamics(Dynamics):
             events.append(Destroy(event_parameters[MACROPHAGE_ACTIVATED + '_destroys_' + b], network.nodes, b,
                                   [MACROPHAGE_ACTIVATED]))
 
+        # Immature dendritic recruitment standard
+        events.append(RecruitmentByPerfusion(event_parameters[DENDRITIC_IMMATURE + '_recruitment_lung_standard'],
+                                             network.lung_patches, DENDRITIC_IMMATURE))
+        # Immature dendritic recruitment by bacteria
+        events.append(RecruitmentByPerfusion(event_parameters[DENDRITIC_IMMATURE + '_recruitment_lung_bacteria'],
+                                             network.lung_patches, EXTRACELLULAR_BACTERIA))
+
+        # Dendritic cell death
+        for d in ALL_DENDRITIC_CELLS:
+            events.append(Destroy(event_parameters[d + '_death_standard'], network.nodes, d))
+
+        # Dendritic translocation
+        events
 
         # T-cell recruitment
         # TODO - clarify the t-cell recruitment/priming process
