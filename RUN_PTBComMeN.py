@@ -23,7 +23,7 @@ config = cp.ConfigParser()
 config.read(config_filename)
 
 # Network set-up
-joining_method = config.get("Network", "BPS_edge_joining")
+joining_method = config.get("Network", "lung_edge_joining")
 vents = {}
 for (bps_id, value) in config.items("Ventilations"):
     vents[bps_id] = float(value)
@@ -37,3 +37,11 @@ for (parameter, value) in config.items("Event_parameters"):
     event_parameters[parameter] = float(value)
 
 model = PTBDynamics(vents, perfs, joining_method, event_parameters)
+
+#
+# time_limit = 0
+#
+# # TODO - seeding
+# seeding = None
+#
+# model.run(time_limit, seeding)

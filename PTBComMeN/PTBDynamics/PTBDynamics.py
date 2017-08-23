@@ -80,22 +80,31 @@ class PTBDynamics(Dynamics):
             events.append(Create(event_parameters['macrophage_recruitment_lymph_' + influencer], network.lymph_patches,
                              MACROPHAGE_REGULAR, [influencer]))
 
-        for state in ALL_MACROPHAGES:
+        for state in [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED]:
             # Macrophage translocate to lymph
             events.append(LymphTranslocateDrainage(event_parameters[state + '_translocate_lymph'], network.lung_patches,
                                                    state))
+
+            # Macrophage translocate from lymph via blood
+            events.append(BloodTranslocatePerfusion(event_parameters[state + '_translocate_blood'],
+                                                    network.lymph_patches, state))
+
             # Macrophage death (standard)
             events.append(Destroy(event_parameters[state + '_death_standard'], network.nodes, state))
 
-        # Macrophage bursting
-        # TODO - use Bacteria intracellular and capacity to determine
-        events.append(Destroy(event_parameters['infected_macrophage_bursting'], network.nodes, MACROPHAGE_INFECTED,
-                              [BACTERIUM_INTRACELLULAR]))
+        # Macrophage infected deaths
+        # Regular
+        events.append(MacrophageDeath(event_parameters[MACROPHAGE_INFECTED + '_death_standard'], network.nodes,
+                                      MACROPHAGE_INFECTED, destroy_bacteria=False))
 
-        # TODO - one type of t-cell
+        # Bursting
+        # TODO - use Bacteria intracellular and capacity to determine
+        events.append(MacrophageDeath(event_parameters[MACROPHAGE_INFECTED + '_bursting'], network.nodes,
+                                      MACROPHAGE_INFECTED, [BACTERIUM_INTRACELLULAR], destroy_bacteria=False))
+
         # T Cell destroys macrophage
-        events.append(Destroy(event_parameters['infected_macrophage_bursting'], network.nodes, MACROPHAGE_INFECTED,
-                              [T_CELL_ACTIVATED]))
+        events.append(MacrophageDeath(event_parameters[T_CELL_ACTIVATED + '_destroys_' + MACROPHAGE_INFECTED],
+                                      network.nodes, MACROPHAGE_INFECTED, [T_CELL_ACTIVATED], destroy_bacteria=True))
 
         # T Cell activates macrophage
         events.append(Change(event_parameters['regular_macrophage_activated_by_t_cell'], network.nodes,
@@ -121,28 +130,14 @@ class PTBDynamics(Dynamics):
             events.append(Destroy(event_parameters[MACROPHAGE_ACTIVATED + '_destroys_' + b], network.nodes, b,
                                   [MACROPHAGE_ACTIVATED]))
 
-        # Immature dendritic recruitment standard
-        events.append(RecruitmentByPerfusion(event_parameters[DENDRITIC_IMMATURE + '_recruitment_lung_standard'],
-                                             network.lung_patches, DENDRITIC_IMMATURE))
-        # Immature dendritic recruitment by bacteria
-        events.append(RecruitmentByPerfusion(event_parameters[DENDRITIC_IMMATURE + '_recruitment_lung_bacteria'],
-                                             network.lung_patches, EXTRACELLULAR_BACTERIA))
-
-        # Dendritic cell death
-        for d in ALL_DENDRITIC_CELLS:
-            events.append(Destroy(event_parameters[d + '_death_standard'], network.nodes, d))
-
-        # Dendritic translocation
-        events
-
         # T-cell recruitment
         # TODO - clarify the t-cell recruitment/priming process
         events.append(Create(event_parameters[T_CELL_NAIVE + '_recruitment_rate'], network.lymph_patches, T_CELL_NAIVE))
 
-        # T-cell priming
-        # TODO - clarify which cells prime (i.e. are antigen-presenting)
-        events.append(Change(event_parameters[T_CELL_NAIVE + '_priming_rate'], network.nodes,
-                             T_CELL_NAIVE, T_CELL_ACTIVATED, [MACROPHAGE_INFECTED]))
+        # T-cell priming (just infected macrophages currently)
+        for apc in [MACROPHAGE_INFECTED]:
+            events.append(Change(event_parameters[T_CELL_NAIVE + '_priming_rate_' + apc], network.nodes,
+                                 T_CELL_NAIVE, T_CELL_ACTIVATED, [apc]))
 
         # T-cell death
         for t in ALL_T_CELLS:

@@ -68,7 +68,7 @@ class Translocate(Event):
     def _viable_edges(self, node):
         """
         Return the neighbours which are acceptable for this event. If class has been specified, then will restrict to
-        only edges matching that class (if edge is directed, will not appear in node's adjacent edges)
+        only edges matching that class
         :param node:
         :return: Acceptable edges for this event object
         """
@@ -84,19 +84,14 @@ class Translocate(Event):
 
     def _update_node(self, node):
         """
-        Update the node by removing a member from one compartment and adding a member into another compartment
+        Update the node by finding a viable edge and then moving the member to the neighbour on that edge
         :param node: Node to update
         """
         # Get all acceptable edges
         viable_edges = self._viable_edges(node)
         # Choose an edge
         chosen_edge = self._pick_edge(viable_edges)
-        # Remove member from the node
-        node.update({self._compartment_translocating: -1})
-        # Get neighbour from edge
-        neighbour = chosen_edge[node]
-        # Add member to the neighbour
-        neighbour.update({self._compartment_translocating: 1})
+        self._move(node, chosen_edge[node])
 
     def _pick_edge(self, edges):
         """
@@ -106,3 +101,15 @@ class Translocate(Event):
         :return: Chosen edge
         """
         return rand.choice(edges)
+
+    def _move(self, node, neighbour):
+        """
+        Move compartment from one node to neighbour. Can be overriden in subclasses to move others (e.g. internals)
+        :param node:
+        :param chosen_edge:
+        :return:
+        """
+        # Remove member from the node
+        node.update({self._compartment_translocating: -1})
+        # Add member to the neighbour
+        neighbour.update({self._compartment_translocating: 1})

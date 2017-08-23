@@ -17,5 +17,6 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-from PhagocytosisInfect import *
+from MacrophagePhagocytosis import *
 from DendriticTranslocation import *
+from MacrophageDeath import *
