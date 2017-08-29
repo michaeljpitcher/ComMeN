@@ -23,6 +23,11 @@ def get_t_cell_death_events(nodes, standard_death_rates, external_death_rates=No
     # Standard
     for t in ALL_T_CELLS:
         events.append(TCellDeath(standard_death_rates[t], nodes, t))
+    # External
+    if external_death_rates:
+        for tcell, externals in external_death_rates.iteritems():
+            for external, value in externals.iteritems():
+                events.append(TCellDeath(value, nodes, tcell, external))
     return events
 
 
