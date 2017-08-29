@@ -17,6 +17,14 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-from MacrophagePhagocytosis import *
-from DendriticTranslocation import *
+from BacteriaChangeState import *
+from BacteriaReplication import *
+from BacteriaTranslocate import *
+from MacrophageActivation import *
 from MacrophageDeath import *
+from MacrophagePhagocytosis import *
+from MacrophageRecruitment import *
+from MacrophageTranslocation import *
+from TCellActivation import *
+from TCellDeath import *
+from TCellRecruitment import *
