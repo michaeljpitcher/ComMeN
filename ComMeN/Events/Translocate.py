@@ -56,10 +56,10 @@ class Translocate(Event):
         # If rate increases with edges, state variable is * by number of viable edges, else it is state variable * 1 if
         # any edge exists, and * 0 if no edge exists
         if self._rate_increases_with_edges:
-            state_variable = state_variable * len(viable_edges)
+            state_variable = float(state_variable * len(viable_edges))
         else:
-            state_variable = state_variable * (len(viable_edges) >= 1)
-
+            state_variable = float(state_variable * (len(viable_edges) >= 1))
+        # Influencing compartments
         if self._influencing_compartments:
             state_variable = state_variable * sum([node[compartment] for compartment in self._influencing_compartments])
 
