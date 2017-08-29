@@ -10,7 +10,8 @@ from ..PulmonaryTBCompartments import *
 from LungComMeN.LungEvents.LungTranslocateWeight import *
 from LungComMeN.LungEvents.LymphTranslocateDrainage import *
 from LungComMeN.LungEvents.BloodTranslocatePerfusion import *
-
+from LungComMeN.LungNetwork.LungPatch import *
+from LungComMeN.LungNetwork.LymphPatch import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -37,12 +38,16 @@ def _move_with_internals(compartment_translocating, node, neighbour):
     neighbour.update(neighbour_changes)
 
 
-def get_bacteria_translocation_events(lung_nodes, lymph_nodes, lung_rates, lymph_rates, blood_rates):
+def get_macrophage_translocation_events(lung_nodes, lymph_nodes, lung_rates, lymph_rates, blood_rates):
+    for n in lung_nodes:
+        assert isinstance(n, LungPatch), "Patches must be instances of LungPatch"
+    for n in lymph_nodes:
+        assert isinstance(n, LymphPatch), "Patches must be instances of LymphPatch"
     events = []
-    for b in EXTRACELLULAR_BACTERIA:
-        events.append(MacrophageTranslocateLung(lung_rates[b], lung_nodes, b))
-        events.append(MacrophageTranslocateLymph(lymph_rates[b], lung_nodes, b))
-        events.append(MacrophageTranslocateBlood(blood_rates[b], lymph_nodes, b))
+    for m in ALL_MACROPHAGES:
+        events.append(MacrophageTranslocateLung(lung_rates[m], lung_nodes, m))
+        events.append(MacrophageTranslocateLymph(lymph_rates[m], lung_nodes, m))
+        events.append(MacrophageTranslocateBlood(blood_rates[m], lymph_nodes, m))
     return events
 
 

@@ -10,6 +10,8 @@ from ..PulmonaryTBCompartments import *
 from LungComMeN.LungEvents.LungTranslocateWeight import *
 from LungComMeN.LungEvents.LymphTranslocateDrainage import *
 from LungComMeN.LungEvents.BloodTranslocatePerfusion import *
+from LungComMeN.LungNetwork.LungPatch import *
+from LungComMeN.LungNetwork.LymphPatch import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -22,6 +24,10 @@ __status__ = "Development"
 
 def get_bacteria_translocation_events(lung_nodes, lymph_nodes, lung_rates, lymph_rates, blood_rates):
     events = []
+    for n in lung_nodes:
+        assert isinstance(n, LungPatch), "Patches must be instances of LungPatch"
+    for n in lymph_nodes:
+        assert isinstance(n, LymphPatch), "Patches must be instances of LymphPatch"
     for b in EXTRACELLULAR_BACTERIA:
         events.append(BacteriaTranslocateLung(lung_rates[b], lung_nodes, b))
         events.append(BacteriaTranslocateLymph(lymph_rates[b], lung_nodes, b))
