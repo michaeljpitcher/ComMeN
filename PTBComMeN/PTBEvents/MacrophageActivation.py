@@ -26,5 +26,5 @@ def get_macrophage_activation_events(nodes, influencers_rates):
 
 
 class MacrophageActivation(Change):
-    def __init__(self, reaction_parameter, nodes, external=None):
+    def __init__(self, reaction_parameter, nodes, external):
         Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, [external])
