@@ -6,8 +6,8 @@ class TCellActivationTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [T_CELL_NAIVE, T_CELL_ACTIVATED, MACROPHAGE_INFECTED, BACTERIUM_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.event = TCellActivation(0.1, self.nodes, MACROPHAGE_INFECTED)
-        self.event2 = TCellActivation(0.2, self.nodes, BACTERIUM_FAST)
+        self.event = TCellActivationByExternal(0.1, self.nodes, MACROPHAGE_INFECTED)
+        self.event2 = TCellActivationByExternal(0.2, self.nodes, BACTERIUM_FAST)
         uh = UpdateHandler([self.event, self.event2])
 
     def test_rate(self):
@@ -49,7 +49,7 @@ class GetTCellActivationEventsTestCase(unittest.TestCase):
         self.assertEqual(len(self.events), len(self.rates))
         for key,value in self.rates.iteritems():
             event = next(e for e in self.events if e._influencing_compartments[0] == key)
-            self.assertTrue(isinstance(event, TCellActivation))
+            self.assertTrue(isinstance(event, TCellActivationByExternal))
             self.assertEqual(event._compartment_from, T_CELL_NAIVE)
             self.assertEqual(event._compartment_to, T_CELL_ACTIVATED)
             self.assertEqual(event.reaction_parameter, value)

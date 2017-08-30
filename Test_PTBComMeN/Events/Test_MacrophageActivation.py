@@ -6,7 +6,7 @@ class MacrophageActivationTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, BACTERIUM_FAST, BACTERIUM_SLOW, T_CELL_ACTIVATED]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.event = MacrophageActivation(0.1, self.nodes, BACTERIUM_FAST)
+        self.event = MacrophageActivationByExternal(0.1, self.nodes, BACTERIUM_FAST)
         uh = UpdateHandler([self.event])
 
     def test_rate(self):

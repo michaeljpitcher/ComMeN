@@ -17,10 +17,12 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+BACTERIA_REPLICATION_OPTIONS = ALL_BACTERIA
+
 
 def get_bacteria_replication_events(nodes, rates):
     events = []
-    for compartment in ALL_BACTERIA:
+    for compartment in BACTERIA_REPLICATION_OPTIONS:
         rate = rates[compartment]
         events.append(BacteriaReplication(rate, nodes, compartment))
     return events

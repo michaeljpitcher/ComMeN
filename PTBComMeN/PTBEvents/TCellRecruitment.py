@@ -18,13 +18,18 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+STANDARD = 'standard'
+T_CELL_RECRUITMENT_OPTIONS = [STANDARD, MACROPHAGE_INFECTED]
 
-def get_t_cell_recruitment_events(lymph_nodes, standard_lymph_rate, external_rates=None):
-    events = [TCellRecruitmentLymph(standard_lymph_rate, lymph_nodes)]
+
+def get_t_cell_recruitment_events(lymph_nodes, lymph_rates):
     for n in lymph_nodes:
         assert isinstance(n, LymphPatch), "Nodes must be instances of LymphPatch class"
-    if external_rates:
-        for external, rate in external_rates.iteritems():
+    events = []
+    for external, rate in lymph_rates.iteritems():
+        if external == STANDARD:
+            events.append(TCellRecruitmentLymph(rate, lymph_nodes))
+        else:
             events.append(TCellRecruitmentLymph(rate, lymph_nodes, external))
     return events
 

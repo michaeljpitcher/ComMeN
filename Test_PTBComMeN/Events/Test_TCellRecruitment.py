@@ -30,8 +30,8 @@ class GetTCellRecruitmentEventsTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
         self.nodes = [LymphPatch(0, compartments)]
-        self.external_rates = {MACROPHAGE_INFECTED: 0.2, BACTERIUM_FAST: 0.3}
-        self.events = get_t_cell_recruitment_events(self.nodes, 0.1, self.external_rates)
+        self.rates = {STANDARD: 0.1, MACROPHAGE_INFECTED: 0.2, BACTERIUM_FAST: 0.3}
+        self.events = get_t_cell_recruitment_events(self.nodes, self.rates)
 
     def test_events(self):
         self.assertEqual(len(self.events), 3)

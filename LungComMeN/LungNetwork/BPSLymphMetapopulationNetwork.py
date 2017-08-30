@@ -88,7 +88,10 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetwork(MetapopulationNetw
         # Node for every BPS
         nodes = {}
         for segment_id in ALL_BPS:
-            nodes[segment_id] = LungPatch(segment_id, compartments, ventilation[segment_id], perfusion[segment_id])
+            try:
+                nodes[segment_id] = LungPatch(segment_id, compartments, ventilation[segment_id], perfusion[segment_id])
+            except KeyError as e:
+                raise KeyError("Patch {0} is missing value for ventilation/perfusion".format(e.message))
             self.lung_patches.append(nodes[segment_id])
         # Single node for the lymph system
         nodes[LYMPH] = LymphPatch(LYMPH, compartments)

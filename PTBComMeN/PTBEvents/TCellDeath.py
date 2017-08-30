@@ -17,17 +17,14 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+T_CELL_DEATH_OPTIONS = ALL_T_CELLS
 
-def get_t_cell_death_events(nodes, standard_death_rates, external_death_rates=None):
+
+def get_t_cell_death_events(nodes, standard_death_rates):
     events = []
     # Standard
     for t in ALL_T_CELLS:
         events.append(TCellDeath(standard_death_rates[t], nodes, t))
-    # External
-    if external_death_rates:
-        for tcell, externals in external_death_rates.iteritems():
-            for external, value in externals.iteritems():
-                events.append(TCellDeath(value, nodes, tcell, external))
     return events
 
 

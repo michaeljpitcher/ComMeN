@@ -62,35 +62,29 @@ class GetMacrophagePhagocytosisEventsTestCase(unittest.TestCase):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, MACROPHAGE_ACTIVATED, BACTERIUM_FAST, BACTERIUM_SLOW,
                         BACTERIUM_INTRACELLULAR]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.regular_infect_rates = {BACTERIUM_FAST: 0.1, BACTERIUM_SLOW: 0.2}
-        self.regular_destroy_rates = {BACTERIUM_FAST: 0.3, BACTERIUM_SLOW: 0.4}
-        self.infected_retain_rates = {BACTERIUM_FAST: 0.5, BACTERIUM_SLOW: 0.6}
-        self.activated_destroy_rates= {BACTERIUM_FAST: 0.7, BACTERIUM_SLOW: 0.8}
-        self.events = get_phagocytosis_events(self.nodes, self.regular_infect_rates, self.regular_destroy_rates,
-                                              self.infected_retain_rates, self.activated_destroy_rates)
+
+        self.destroy_rates = {}
+        counter = 0.1
+        for o in MACROPHAGE_PHAGOCYTOSIS_DESTROY_OPTIONS:
+            self.destroy_rates[o] = counter
+            counter += 0.1
+        self.retain_rates = {}
+        counter = 0.1
+        for o in MACROPHAGE_PHAGOCYTOSIS_RETAIN_OPTIONS:
+            self.retain_rates[o] = counter
+            counter += 0.1
+        self.events = get_phagocytosis_events(self.nodes, self.destroy_rates, self.retain_rates)
 
     def test_events(self):
         self.assertEqual(len(self.events), 8)
-        for b in self.regular_infect_rates.keys():
-            regular_infect_event = next(n for n in self.events if isinstance(n, PhagocytosisRetain) and
-                                   n._influencing_compartments[0] == MACROPHAGE_REGULAR and
-                                   n._compartment_from == b)
-            self.assertEqual(regular_infect_event.reaction_parameter, self.regular_infect_rates[b])
-        for b in self.regular_destroy_rates.keys():
-            regular_destroy_event = next(n for n in self.events if isinstance(n, PhagocytosisDestroy) and
-                                   n._influencing_compartments[0] == MACROPHAGE_REGULAR and
-                                   n._compartment_destroyed == b)
-            self.assertEqual(regular_destroy_event.reaction_parameter, self.regular_destroy_rates[b])
-        for b in self.infected_retain_rates.keys():
-            infected_infect_event = next(n for n in self.events if isinstance(n, PhagocytosisRetain) and
-                                   n._influencing_compartments[0] == MACROPHAGE_INFECTED and
-                                   n._compartment_from == b)
-            self.assertEqual(infected_infect_event.reaction_parameter, self.infected_retain_rates[b])
-        for b in self.activated_destroy_rates.keys():
-            activated_destroy_event = next(n for n in self.events if isinstance(n, PhagocytosisDestroy) and
-                                   n._influencing_compartments[0] == MACROPHAGE_ACTIVATED and
-                                   n._compartment_destroyed == b)
-            self.assertEqual(activated_destroy_event.reaction_parameter, self.activated_destroy_rates[b])
+        destroy = [e for e in self.events if isinstance(e, PhagocytosisDestroy)]
+        for d in destroy:
+            key = d._influencing_compartments[0] + "_" + d._compartment_destroyed
+            self.assertEqual(self.destroy_rates[key], d.reaction_parameter)
+        retain = [e for e in self.events if isinstance(e, PhagocytosisRetain)]
+        for r in retain:
+            key = r._influencing_compartments[0] + "_" + r._compartment_from
+            self.assertEqual(self.retain_rates[key], r.reaction_parameter)
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,20 +20,26 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+STANDARD = 'standard'
+MACROPHAGE_RECRUITMENT_OPTIONS = [STANDARD]
+MACROPHAGE_RECRUITMENT_OPTIONS += [m for m in [MACROPHAGE_INFECTED, MACROPHAGE_ACTIVATED]]
 
-def get_macrophage_recruitment_events(lung_nodes, lymph_nodes, standard_lung_rate, standard_lymph_rate,
-                                      external_lung_rates=None, external_lymph_rates=None):
+
+def get_macrophage_recruitment_events(lung_nodes, lymph_nodes, lung_rates, lymph_rates):
     for n in lung_nodes:
         assert isinstance(n, LungPatch), "Patches must be instances of LungPatch"
     for n in lymph_nodes:
         assert isinstance(n, LymphPatch), "Patches must be instances of LymphPatch"
-    events = [MacrophageRecruitmentLung(standard_lung_rate, lung_nodes),
-              MacrophageRecruitmentLymph(standard_lymph_rate, lymph_nodes)]
-    if external_lung_rates:
-        for external, rate in external_lung_rates.iteritems():
+    events = []
+    for external, rate in lung_rates.iteritems():
+        if external == STANDARD:
+            events.append(MacrophageRecruitmentLung(rate, lung_nodes))
+        else:
             events.append(MacrophageRecruitmentLung(rate, lung_nodes, external))
-    if external_lymph_rates:
-        for external, rate in external_lymph_rates.iteritems():
+    for external, rate in lymph_rates.iteritems():
+        if external == STANDARD:
+            events.append(MacrophageRecruitmentLymph(rate, lymph_nodes))
+        else:
             events.append(MacrophageRecruitmentLymph(rate, lymph_nodes, external))
     return events
 

@@ -19,18 +19,29 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-def get_phagocytosis_events(nodes, regular_infect_rates, regular_destroy_rates, infected_retain_rates,
-                            activated_destroy_rates):
+MACROPHAGE_PHAGOCYTOSIS_DESTROY_OPTIONS = []
+MACROPHAGE_PHAGOCYTOSIS_RETAIN_OPTIONS = []
+for b in EXTRACELLULAR_BACTERIA:
+    for m in [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED]:
+        MACROPHAGE_PHAGOCYTOSIS_DESTROY_OPTIONS.append(m + "_" + b)
+    for m in [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED]:
+        MACROPHAGE_PHAGOCYTOSIS_RETAIN_OPTIONS.append(m + "_" + b)
+
+
+def get_phagocytosis_events(nodes, destroy_rates, retain_rates):
     events = []
     for bacterium in EXTRACELLULAR_BACTERIA:
         # Regular - infect
-        events.append(PhagocytosisRetain(regular_infect_rates[bacterium], nodes, bacterium, MACROPHAGE_REGULAR))
+        key = MACROPHAGE_REGULAR + "_" + bacterium
+        events.append(PhagocytosisRetain(retain_rates[key], nodes, bacterium, MACROPHAGE_REGULAR))
         # Regular - destroy
-        events.append(PhagocytosisDestroy(regular_destroy_rates[bacterium], nodes, bacterium, MACROPHAGE_REGULAR))
+        events.append(PhagocytosisDestroy(destroy_rates[key], nodes, bacterium, MACROPHAGE_REGULAR))
         # Activated - destroy only
-        events.append(PhagocytosisDestroy(activated_destroy_rates[bacterium], nodes, bacterium, MACROPHAGE_ACTIVATED))
+        key = MACROPHAGE_ACTIVATED + "_" + bacterium
+        events.append(PhagocytosisDestroy(destroy_rates[key], nodes, bacterium, MACROPHAGE_ACTIVATED))
         # Infected - retain only
-        events.append(PhagocytosisRetain(infected_retain_rates[bacterium], nodes, bacterium, MACROPHAGE_INFECTED))
+        key = MACROPHAGE_INFECTED + "_" + bacterium
+        events.append(PhagocytosisRetain(retain_rates[key], nodes, bacterium, MACROPHAGE_INFECTED))
     return events
 
 

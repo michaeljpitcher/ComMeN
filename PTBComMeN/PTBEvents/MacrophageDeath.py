@@ -17,17 +17,20 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+MACROPHAGE_DEATH_OPTIONS = ALL_MACROPHAGES
+INFECTED_MACROPHAGE_DEATH_OPTIONS = [T_CELL_ACTIVATED, BACTERIUM_INTRACELLULAR]
 
-def get_macrophage_death_events(nodes, standard_death_rates, death_by_t_cell_rate, death_bursting_rate):
+
+def get_macrophage_death_events(nodes, standard_rates, infected_mac_rates):
     events = []
     # Standard
     for m in ALL_MACROPHAGES:
-        # TODO - what to do with intracell during natural death? Currently they die
-        events.append(MacrophageDeath(standard_death_rates[m], nodes, m))
+        events.append(MacrophageDeath(standard_rates[m], nodes, m))
     # By T-cell
-    events.append(MacrophageDeath(death_by_t_cell_rate, nodes, MACROPHAGE_INFECTED, T_CELL_ACTIVATED))
+    events.append(MacrophageDeath(infected_mac_rates[T_CELL_ACTIVATED], nodes, MACROPHAGE_INFECTED, T_CELL_ACTIVATED))
     # By bursting
-    events.append(MacrophageDeath(death_bursting_rate, nodes, MACROPHAGE_INFECTED, BACTERIUM_INTRACELLULAR, False))
+    events.append(MacrophageDeath(infected_mac_rates[BACTERIUM_INTRACELLULAR], nodes, MACROPHAGE_INFECTED,
+                                  BACTERIUM_INTRACELLULAR, False))
     return events
 
 
@@ -48,3 +51,9 @@ class MacrophageDeath(Destroy):
             if not self._destroy_bacteria:
                 changes[BACTERIUM_SLOW] = bacteria_inside
         node.update(changes)
+
+
+class InfectedMacrophageDeathExternal(MacrophageDeath):
+    def __init__(self, reaction_parameter, nodes, influencing_compartment, destroy_bacteria=True):
+        MacrophageDeath.__init__(self, reaction_parameter, nodes, MACROPHAGE_INFECTED, influencing_compartment,
+                                 destroy_bacteria)

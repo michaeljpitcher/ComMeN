@@ -21,6 +21,8 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+MACROPHAGE_TRANSLOCATION_OPTIONS = ALL_MACROPHAGES
+
 
 def _move_with_internals(compartment_translocating, node, neighbour):
     """

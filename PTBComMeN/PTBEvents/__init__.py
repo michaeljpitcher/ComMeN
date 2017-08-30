@@ -25,6 +25,7 @@ from MacrophageDeath import *
 from MacrophagePhagocytosis import *
 from MacrophageRecruitment import *
 from MacrophageTranslocation import *
-from TCellActivation import *
+from TCellActivationByExternal import *
 from TCellDeath import *
 from TCellRecruitment import *
+from TCellTranslocation import *

@@ -6,9 +6,8 @@ Long Docstring
 
 """
 
-from LungComMeN import *
 from ComMeN import *
-from ..PulmonaryTBCompartments import *
+from LungComMeN import *
 from ..PTBEvents import *
 
 __author__ = "Michael Pitcher"
@@ -19,136 +18,120 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+DEFAULT_NETWORK_CONFIG_FILE = "PTBModel_Network.cfg"
+DEFAULT_EVENT_CONFIG_FILE = "PTBModel_Events.cfg"
+
+NETWORK_CONFIGURATION_SECTIONS = ['Network_joining', 'Ventilations', 'Perfusions']
+LUNG_EDGE_JOINING = "lung_edge_joining"
+
+EVENT_CONFIGURATION_SECTIONS = [BacteriaChangeByOxygen.__name__, BacteriaReplication.__name__,
+                                BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
+                                BacteriaTranslocateBlood.__name__, MacrophageActivationByExternal.__name__,
+                                MacrophageDeath.__name__, InfectedMacrophageDeathExternal.__name__,
+                                PhagocytosisDestroy.__name__, PhagocytosisRetain.__name__,
+                                MacrophageRecruitmentLung.__name__, MacrophageRecruitmentLymph.__name__,
+                                MacrophageTranslocateLung.__name__, MacrophageTranslocateLymph.__name__,
+                                MacrophageTranslocateBlood.__name__, TCellActivationByExternal.__name__,
+                                TCellDeath.__name__, TCellRecruitmentLymph.__name__, TCellTranslocationBlood.__name__]
+
+
+def get_rates(event_classname, event_config):
+    return dict([(k,float(v)) for (k,v) in event_config.items(event_classname)])
+
 
 class PTBDynamics(Dynamics):
 
-    def __init__(self, ventilations, perfusions, edge_joining, event_parameters):
+    def __init__(self, network_config, event_config):
 
         compartments = ALL_BACTERIA + ALL_MACROPHAGES + ALL_T_CELLS
 
-        # ===========================================
+        # --------------------------------------------------
         # Network
-        for bps in ALL_BPS:
-            assert bps in ventilations, "Missing ventilation value for {0}".format(bps)
-            assert bps in perfusions, "Missing perfusion value for {0}".format(bps)
+        # --------------------------------------------------
+        for section in NETWORK_CONFIGURATION_SECTIONS:
+            assert section in network_config.sections(), "Section {0} missing from network config. Use " \
+                                                         "create_network_config_file() to generate a correct " \
+                                                         "configuration file".format(section)
+
+        edge_joining = network_config.get(NETWORK_CONFIGURATION_SECTIONS[0], LUNG_EDGE_JOINING)
+
+        ventilations = {}
+        for (bps_id, value) in network_config.items(NETWORK_CONFIGURATION_SECTIONS[1]):
+            ventilations[bps_id] = float(value)
+        perfusions = {}
+        for (bps_id, value) in network_config.items(NETWORK_CONFIGURATION_SECTIONS[2]):
+            perfusions[bps_id] = float(value)
 
         network = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, ventilations, perfusions,
-                                                                          edge_joining)
+                                                                           edge_joining)
 
-        # ===========================================
+        # --------------------------------------------------
         # Events
+        # --------------------------------------------------
         events = []
+        for section in EVENT_CONFIGURATION_SECTIONS:
+            assert section in event_config.sections(), "Section {0} missing from event config. Use " \
+                                                       "create_event_config_file() to generate a correct " \
+                                                       "configuration file".format(section)
 
-        # Bacteria replication
-        # TODO - intracellular may need constraining by capacity
-        for state in ALL_BACTERIA:
-            events.append(Create(event_parameters[state + '_replication_rate'], network.nodes, state, [state]))
+        # Bacteria change state
+        rates = get_rates(BacteriaChangeByOxygen.__name__, event_config)
+        events += get_bacteria_change_events(network.lung_patches, rates)
 
-        # Bacteria change
-        # TODO - other means of bacteria state change
-        events.append(ChangeByOxygen(event_parameters['bacterium_change_oxygen_fast_to_slow'], network.lung_patches,
-                                     BACTERIUM_FAST, BACTERIUM_SLOW, True))
-        events.append(ChangeByOxygen(event_parameters['bacterium_change_oxygen_slow_to_fast'], network.lung_patches,
-                                     BACTERIUM_SLOW, BACTERIUM_FAST, False))
+        # Bacteria replicate
+        rates = get_rates(BacteriaReplication.__name__, event_config)
+        events += get_bacteria_replication_events(network.nodes, rates)
 
         # Bacteria translocate
-        for state in EXTRACELLULAR_BACTERIA:
-            # Between Lung Patches
-            events.append(LungTranslocateWeight(event_parameters[state + "_translocate_lung"], network.lung_patches,
-                                                state))
-            # Lung to Lymph
-            events.append(LymphTranslocateDrainage(event_parameters[state + "_translocate_lymph"],
-                                                   network.lung_patches, state))
-            # Lymph to Lung (blood)
-            events.append(BloodTranslocatePerfusion(event_parameters[state + "_translocate_blood"],
-                                                    network.lung_patches, state))
+        lung_rates = get_rates(BacteriaTranslocateLung.__name__, event_config)
+        lymph_rates = get_rates(BacteriaTranslocateLymph.__name__, event_config)
+        blood_rates = get_rates(BacteriaTranslocateBlood.__name__, event_config)
+        events += get_bacteria_translocation_events(network.lung_patches, network.lymph_patches, lung_rates,
+                                                    lymph_rates, blood_rates)
+
+        # Macrophage activation
+        rates = get_rates(MacrophageActivationByExternal.__name__, event_config)
+        events += get_macrophage_activation_events(network.nodes, rates)
+
+        # Macrophage death
+        standard_rates = get_rates(MacrophageDeath.__name__, event_config)
+        infected_rates = get_rates(InfectedMacrophageDeathExternal.__name__, event_config)
+        events += get_macrophage_death_events(network.nodes, standard_rates, infected_rates)
+
+        # Macrophage phagocytosis
+        destroy_rates = get_rates(PhagocytosisDestroy.__name__, event_config)
+        retain_rates = get_rates(PhagocytosisRetain.__name__, event_config)
+        events += get_phagocytosis_events(network.nodes, destroy_rates, retain_rates)
 
         # Macrophage recruitment
-        # In lung, standard
-        events.append(RecruitmentByPerfusion(event_parameters["macrophage_recruitment_lung_standard"],
-                                             network.lung_patches, MACROPHAGE_REGULAR))
+        lung_rates = get_rates(MacrophageRecruitmentLung.__name__, event_config)
+        lymph_rates = get_rates(MacrophageRecruitmentLymph.__name__, event_config)
+        events += get_macrophage_recruitment_events(network.lung_patches, network.lymph_patches, lung_rates,
+                                                    lymph_rates)
 
-        # In lymph, standard
-        events.append(Create(event_parameters['macrophage_recruitment_lymph_standard'], network.lymph_patches,
-                             MACROPHAGE_REGULAR))
+        # Macrophage translocation
+        lung_rates = get_rates(MacrophageTranslocateLung.__name__, event_config)
+        lymph_rates = get_rates(MacrophageTranslocateLymph.__name__, event_config)
+        blood_rates = get_rates(MacrophageTranslocateLung.__name__, event_config)
+        events += get_macrophage_translocation_events(network.lung_patches, network.lymph_patches, lung_rates,
+                                                      lymph_rates, blood_rates)
 
-        for influencer in [MACROPHAGE_ACTIVATED, MACROPHAGE_INFECTED]:
-            # In lung
-            events.append(RecruitmentByPerfusion(event_parameters["macrophage_recruitment_lung_" + influencer],
-                                             network.lung_patches, MACROPHAGE_REGULAR, [influencer]))
-            # In lymph
-            events.append(Create(event_parameters['macrophage_recruitment_lymph_' + influencer], network.lymph_patches,
-                             MACROPHAGE_REGULAR, [influencer]))
+        # T cell activation
+        rates = get_rates(TCellActivationByExternal.__name__, event_config)
+        events += get_t_cell_activation_events(network.nodes, rates)
 
-        for state in [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED]:
-            # Macrophage translocate to lymph
-            events.append(LymphTranslocateDrainage(event_parameters[state + '_translocate_lymph'], network.lung_patches,
-                                                   state))
+        # T cell death
+        rates = get_rates(TCellDeath.__name__, event_config)
+        events += get_t_cell_death_events(network.nodes, rates)
 
-            # Macrophage translocate from lymph via blood
-            events.append(BloodTranslocatePerfusion(event_parameters[state + '_translocate_blood'],
-                                                    network.lymph_patches, state))
+        # T cell recruitment
+        rates = get_rates(TCellRecruitmentLymph.__name__, event_config)
+        events += get_t_cell_recruitment_events(network.lymph_patches, rates)
 
-            # Macrophage death (standard)
-            events.append(Destroy(event_parameters[state + '_death_standard'], network.nodes, state))
-
-        # Macrophage infected deaths
-        # Regular
-        events.append(MacrophageDeath(event_parameters[MACROPHAGE_INFECTED + '_death_standard'], network.nodes,
-                                      MACROPHAGE_INFECTED, destroy_bacteria=False))
-
-        # Bursting
-        # TODO - use Bacteria intracellular and capacity to determine
-        events.append(MacrophageDeath(event_parameters[MACROPHAGE_INFECTED + '_bursting'], network.nodes,
-                                      MACROPHAGE_INFECTED, [BACTERIUM_INTRACELLULAR], destroy_bacteria=False))
-
-        # T Cell destroys macrophage
-        events.append(MacrophageDeath(event_parameters[T_CELL_ACTIVATED + '_destroys_' + MACROPHAGE_INFECTED],
-                                      network.nodes, MACROPHAGE_INFECTED, [T_CELL_ACTIVATED], destroy_bacteria=True))
-
-        # T Cell activates macrophage
-        events.append(Change(event_parameters['regular_macrophage_activated_by_t_cell'], network.nodes,
-                             MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, [T_CELL_ACTIVATED]))
-
-        # Cytokine activates macrophage
-        # TODO - cytokine modelling
-        events.append(Change(event_parameters['regular_macrophage_activated_by_t_cell'], network.nodes,
-                             MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, [MACROPHAGE_INFECTED]))
-
-        # Phagocytosis
-        for b in EXTRACELLULAR_BACTERIA:
-            # Regular destroys bacteria
-            events.append(Destroy(event_parameters[MACROPHAGE_REGULAR + '_destroys_' + b], network.nodes, b,
-                                  [MACROPHAGE_REGULAR]))
-            # Regular retains bacteria, becomes infected
-            events.append(PhagocytosisInfect(event_parameters[MACROPHAGE_REGULAR + "_infected_by_" + b], network.nodes,
-                                             MACROPHAGE_REGULAR, b))
-            # Infected retains bacteria
-            events.append(PhagocytosisInfect(event_parameters[MACROPHAGE_INFECTED + "_infected_by_" + b], network.nodes,
-                                             MACROPHAGE_INFECTED, b))
-            # Activated destroys bacteria
-            events.append(Destroy(event_parameters[MACROPHAGE_ACTIVATED + '_destroys_' + b], network.nodes, b,
-                                  [MACROPHAGE_ACTIVATED]))
-
-        # T-cell recruitment
-        # TODO - clarify the t-cell recruitment/priming process
-        events.append(Create(event_parameters[T_CELL_NAIVE + '_recruitment_rate'], network.lymph_patches, T_CELL_NAIVE))
-
-        # T-cell priming (just infected macrophages currently)
-        for apc in [MACROPHAGE_INFECTED]:
-            events.append(Change(event_parameters[T_CELL_NAIVE + '_priming_rate_' + apc], network.nodes,
-                                 T_CELL_NAIVE, T_CELL_ACTIVATED, [apc]))
-
-        # T-cell death
-        for t in ALL_T_CELLS:
-            events.append(Destroy(event_parameters[t + '_death_rate'], network.nodes, t))
-
-        # T-cell translocate
-        events.append(BloodTranslocatePerfusion(event_parameters[T_CELL_ACTIVATED + '_blood_translocation_rate'],
-                                                    network.lymph_patches, T_CELL_ACTIVATED))
-        # T-cell cloning
-        # TODO - maybe only occurs at lymph patches?
-        events.append(Create(event_parameters[T_CELL_ACTIVATED + '_cloning_rate'], network.nodes, T_CELL_ACTIVATED,
-                             [T_CELL_ACTIVATED]))
+        # T cell translocation
+        rates = get_rates(TCellTranslocationBlood.__name__, event_config)
+        events += get_t_cell_translocation_events(network.lymph_patches, rates)
 
         Dynamics.__init__(self, network, events)
+
+

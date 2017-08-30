@@ -55,10 +55,10 @@ class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3), LymphPatch(1, compartments)]
-        self.external_lung_rates = {MACROPHAGE_INFECTED: 0.3, BACTERIUM_FAST: 0.4}
-        self.external_lymph_rates = {MACROPHAGE_INFECTED: 0.5, BACTERIUM_FAST: 0.6}
-        self.events = get_macrophage_recruitment_events([self.nodes[0]], [self.nodes[1]], 0.1, 0.2,
-                                                        self.external_lung_rates, self.external_lymph_rates)
+        self.lung_rates = {STANDARD: 0.1, MACROPHAGE_INFECTED: 0.3, BACTERIUM_FAST: 0.4}
+        self.lymph_rates = {STANDARD:0.2, MACROPHAGE_INFECTED: 0.5, BACTERIUM_FAST: 0.6}
+        self.events = get_macrophage_recruitment_events([self.nodes[0]], [self.nodes[1]],
+                                                        self.lung_rates, self.lymph_rates)
 
     def test_events(self):
         self.assertEqual(len(self.events), 6)

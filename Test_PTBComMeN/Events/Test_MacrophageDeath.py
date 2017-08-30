@@ -73,8 +73,9 @@ class GetMacrophageDeathEventsTestCase(unittest.TestCase):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, MACROPHAGE_ACTIVATED, BACTERIUM_INTRACELLULAR,
                         BACTERIUM_SLOW, T_CELL_ACTIVATED]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.standard_death_rates = {MACROPHAGE_REGULAR: 0.1, MACROPHAGE_ACTIVATED: 0.2, MACROPHAGE_INFECTED: 0.3}
-        self.events = get_macrophage_death_events(self.nodes, self.standard_death_rates, 0.4, 0.5)
+        self.rates = {MACROPHAGE_REGULAR: 0.1, MACROPHAGE_ACTIVATED: 0.2, MACROPHAGE_INFECTED: 0.3}
+        self.inf_rates = {T_CELL_ACTIVATED: 0.4, BACTERIUM_INTRACELLULAR: 0.5}
+        self.events = get_macrophage_death_events(self.nodes, self.rates, self.inf_rates)
 
     def test_events(self):
         self.assertEqual(len(self.events), 5)

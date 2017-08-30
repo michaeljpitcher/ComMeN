@@ -17,3 +17,5 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 from PTBDynamics import *
+from PTBDynamics import *
+from CreateConfigFiles import *
