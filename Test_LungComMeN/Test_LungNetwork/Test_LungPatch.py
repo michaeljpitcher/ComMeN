@@ -14,10 +14,10 @@ class LungPatchTestCase(unittest.TestCase):
     def test_initialise(self):
         self.assertEqual(self.patch.ventilation, self.vent)
         self.assertEqual(self.patch.perfusion, self.perf)
-        self.assertEqual(self.patch.oxygen_tension, self.vent-self.perf)
+        self.assertEqual(self.patch.oxygen_tension, self.vent/self.perf*1.0)
         self.assertEqual(self.patch_no_o2.ventilation, self.vent2)
         self.assertEqual(self.patch_no_o2.perfusion, self.perf2)
-        self.assertEqual(self.patch_no_o2.oxygen_tension, 0)
+        self.assertEqual(self.patch_no_o2.oxygen_tension, self.vent2/self.perf2*1.0)
 
 
 if __name__ == '__main__':

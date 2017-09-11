@@ -133,5 +133,3 @@ class PTBDynamics(Dynamics):
         events += get_t_cell_translocation_events(network.lymph_patches, rates)
 
         Dynamics.__init__(self, network, events)
-
-

@@ -18,7 +18,7 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetworkTestCase(unittest.T
         self.perf = {}
         for node_id in ALL_BPS:
             self.vent[node_id] = rand.randint(5, 10)
-            self.perf[node_id] = rand.randint(0, 5)
+            self.perf[node_id] = rand.randint(1, 5)
 
         self.network_all = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, self.vent, self.perf,
                                                                                    JOINING_ALL)
