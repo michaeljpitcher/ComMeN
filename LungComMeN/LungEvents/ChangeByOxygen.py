@@ -51,3 +51,32 @@ class ChangeByOxygen(Change):
                 return Change._calculate_state_variable_at_node(self, node) * (1.0 / node.oxygen_tension)
         else:
             return Change._calculate_state_variable_at_node(self, node) * node.oxygen_tension
+
+
+class ChangeByOxygenVersion2(Change):
+    """
+    A member changes its compartment with probability based on the oxygen of the patch.
+    """
+
+    def __init__(self, reaction_parameter, nodes, compartment_from, compartment_to, sigmoid, half_sat):
+        """
+        Create oxygen change event
+        :param reaction_parameter:
+        :param nodes:
+        :param compartment_from:
+        :param compartment_to:
+        :param sigmoid:
+        :param half_sat:
+        """
+        self._sigmoid = sigmoid
+        self._half_sat = half_sat
+        Change.__init__(self, reaction_parameter, nodes, compartment_from, compartment_to)
+
+    def _calculate_state_variable_at_node(self, node):
+        """
+        State variable from node
+        :param node:
+        :return:
+        """
+        return (node[self._compartment_from] * (node.oxygen_tension ** self._sigmoid)) / \
+               (self._half_sat ** self._sigmoid + node.oxygen_tension ** self._sigmoid)
