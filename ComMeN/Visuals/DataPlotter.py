@@ -47,3 +47,36 @@ def draw_single_population_graph(filename, compartments, show_total=False, title
     if title:
         plt.title(str(title))
     plt.show()
+
+
+def draw_multiple_nodes_graph(filename, compartments, show_total=False, title=None):
+    csv_file = open(filename, 'r')
+    csv_reader = csv.DictReader(csv_file)
+    time = []
+    data = {}
+    for c in compartments:
+        data[c] = {}
+
+    current_time = -1.0
+
+    print "Collecting data..."
+    for row in csv_reader:
+        if float(row['timestep']) != current_time:
+            time.append(float(row['timestep']))
+            current_time = float(row['timestep'])
+        for c in compartments:
+            comp_data = data[c]
+            if row['node_id'] not in comp_data:
+                comp_data[row['node_id']] = []
+            comp_data[row['node_id']].append(row[c])
+
+    print "Plotting data"
+    for c in compartments:
+        legend = []
+        comp_data = data[c]
+        for key in comp_data:
+            legend.append(key)
+            plt.plot(time, comp_data[key], label=key)
+        # plt.legend()
+        plt.title(c)
+        plt.show()
