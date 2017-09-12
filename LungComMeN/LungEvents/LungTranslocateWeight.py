@@ -25,15 +25,7 @@ class LungTranslocateWeight(Translocate):
     def __init__(self, reaction_parameter, nodes, compartment_translocating):
         Translocate.__init__(self, reaction_parameter, nodes, compartment_translocating, edge_class=LungEdge)
 
-    def _calculate_state_variable_at_node(self, node):
-        """
-        Calculate the state variable contribution from node, based on edges and their weight values
-        :param node:
-        :return: State variable contribution
-        """
-        # Pass to translocate to calculate state variable based on edges, then multiply by drainage value of all edges
-        return Translocate._calculate_state_variable_at_node(self, node) * \
-            sum([e.weight for e in self._viable_edges(node)])
+    # TODO: state variable doesn't affect node choice. Check accuracy of this.
 
     def _pick_edge(self, edges):
         """
