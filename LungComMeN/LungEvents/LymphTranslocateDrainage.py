@@ -27,24 +27,19 @@ class LymphTranslocateDrainage(Translocate):
 
     def _calculate_state_variable_at_node(self, node):
         """
-        Calulcate the state variable contribution from node, based on edges and thier drainage values
+        Calculate the state variable contribution from node, based on edges and their drainage values
         :param node:
         :return: State variable contribution
         """
-        # Pass to translocate to calculate state variable based on edges, then multiply by drainage value of all edges
-        return Translocate._calculate_state_variable_at_node(self, node) * \
-            sum([e.drainage for e in self._viable_edges(node)])
+        # Get all acceptable edges
+        viable_edges = self._viable_edges(node)
+        # State variable depends on count of compartment
+        state_variable = node[self._compartment_translocating]
+        if state_variable == 0:
+            return state_variable
+        # Rate depends on the drainage values of lymph edges
+        state_variable = state_variable * sum([n.drainage for n in viable_edges])
 
-    def _pick_edge(self, edges):
-        """
-        Pick an edge, probabilistically based on drainage
-        :param edges: Edges to choose from
-        :return: Edge chosen
-        """
-        total_drainage = sum([e.drainage for e in edges])
-        r = rand.random() * total_drainage
-        running_total = 0
-        for e in edges:
-            running_total += e.drainage
-            if running_total >= r:
-                return e
+        return state_variable
+
+    # TODO - only one lymph edge per lung patch, if changes, need a pick edge function
