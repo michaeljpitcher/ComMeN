@@ -17,7 +17,7 @@ class BacteriaChangeStateTestCase(unittest.TestCase):
         self.assertEqual(self.event_f.rate, 0.1 * 2 * (1 / self.nodes[0].oxygen_tension))
         self.assertEqual(self.event_s.rate, 0)
         self.nodes[0].update({BACTERIUM_SLOW: 3})
-        self.assertEqual(self.event_s.rate, 0.2 * 3 * self.nodes[0].oxygen_tension)
+        self.assertEqual(self.event_s.rate, 1.8)
 
     def test_update(self):
         self.nodes[0].update({BACTERIUM_SLOW: 2, BACTERIUM_FAST: 3})
