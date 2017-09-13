@@ -14,9 +14,9 @@ class BacteriaTranslocationLungTestCase(unittest.TestCase):
     def test_rate(self):
         self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({BACTERIUM_FAST: 3})
-        self.assertEqual(self.event.rate, 0.27)
+        self.assertEqual(self.event.rate, 0.1 * 3)
         self.nodes[1].update({BACTERIUM_FAST: 7})
-        self.assertEqual(self.event.rate, 0.9)
+        self.assertEqual(self.event.rate, 0.1 * 10)
 
     def test_update(self):
         self.nodes[0].update({BACTERIUM_FAST: 3})
