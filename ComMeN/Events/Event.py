@@ -59,6 +59,8 @@ class Event:
         change = value_after - self.state_variable_composition[node]
         # No change, so quit
         if change == 0:
+            # TODO - some means of update where we don't get this far if change will be zero (i.e. base updates on
+            # compartments affected, not just nodes)
             return
         # Set new value
         self.state_variable_composition[node] = value_after

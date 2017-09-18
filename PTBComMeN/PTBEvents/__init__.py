@@ -18,6 +18,7 @@ __status__ = "Development"
 
 
 from BacteriaChangeState import *
+from BacteriaChangeStateVersion2 import *
 from BacteriaReplication import *
 from BacteriaTranslocate import *
 from MacrophageActivation import *
