@@ -8,8 +8,8 @@ class ChangeByOxygenTestCase(unittest.TestCase):
 
         self.nodes = [LungPatch(1, self.compartments, 0.9, 1.0),
                       LungPatch(2, self.compartments, 2.0, 1.0)]
-        self.event_high = ChangeByOxygen(0.1, self.nodes, self.compartments[0], self.compartments[1], False)
-        self.event_low = ChangeByOxygen(0.1, self.nodes, self.compartments[1], self.compartments[0], True)
+        self.event_high = ChangeByOxygen_OLD(0.1, self.nodes, self.compartments[0], self.compartments[1], False)
+        self.event_low = ChangeByOxygen_OLD(0.1, self.nodes, self.compartments[1], self.compartments[0], True)
         uh = UpdateHandler([self.event_high, self.event_low])
 
     def test_initialise(self):
@@ -51,10 +51,10 @@ class ChangeByOxygenVersion2TestCase(unittest.TestCase):
 
         self.nodes = [LungPatch(1, self.compartments, 0.5, 1.0),
                       LungPatch(2, self.compartments, 2.0, 1.0)]
-        self.event_high = ChangeByOxygenVersion2(0.1, self.nodes, self.compartments[0], self.compartments[1],
-                                                 self.sigmoid_high, self.half_sat)
-        self.event_low = ChangeByOxygenVersion2(0.1, self.nodes, self.compartments[1], self.compartments[0],
-                                                self.sigmoid_low, self.half_sat)
+        self.event_high = ChangeByOxygen(0.1, self.nodes, self.compartments[0], self.compartments[1],
+                                         self.sigmoid_high, self.half_sat)
+        self.event_low = ChangeByOxygen(0.1, self.nodes, self.compartments[1], self.compartments[0],
+                                        self.sigmoid_low, self.half_sat)
         uh = UpdateHandler([self.event_high, self.event_low])
 
     def test_initialise(self):

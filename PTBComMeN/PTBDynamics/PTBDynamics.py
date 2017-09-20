@@ -6,7 +6,6 @@ Long Docstring
 
 """
 
-from ComMeN import *
 from LungComMeN import *
 from ..PTBEvents import *
 
@@ -37,13 +36,12 @@ EVENT_CONFIGURATION_SECTIONS = [BacteriaChangeByOxygen.__name__, BacteriaReplica
 
 
 def get_rates(event_classname, event_config):
-    return dict([(k,float(v)) for (k,v) in event_config.items(event_classname)])
+    return dict([(k, float(v)) for (k, v) in event_config.items(event_classname)])
 
 
 class PTBDynamics(Dynamics):
 
     def __init__(self, network_config, event_config):
-
 
         # --------------------------------------------------
         # Network
@@ -63,7 +61,7 @@ class PTBDynamics(Dynamics):
             perfusions[bps_id] = float(value)
 
         network = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(ALL_TB_COMPARTMENTS, ventilations, perfusions,
-                                                                           edge_joining)
+                                                                          edge_joining)
 
         # --------------------------------------------------
         # Events
