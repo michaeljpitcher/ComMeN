@@ -90,3 +90,14 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
     # Write to file and close
     config_event.write(config_event_file)
     config_event_file.close()
+
+
+def create_seeding_config_file(filename=DEFAULT_SEEDING_CONFIG_FILE):
+    config_seeding_file = open(filename, 'w')
+    config_seeding = ConfigParser.ConfigParser()
+    for n in ALL_BPS + [LYMPH]:
+        config_seeding.add_section(n)
+        for c in ALL_TB_COMPARTMENTS:
+            config_seeding.set(n, c, 0)
+    config_seeding.write(config_seeding_file)
+    config_seeding_file.close()

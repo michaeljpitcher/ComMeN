@@ -20,6 +20,7 @@ __status__ = "Development"
 
 DEFAULT_NETWORK_CONFIG_FILE = "PTBModel_Network.cfg"
 DEFAULT_EVENT_CONFIG_FILE = "PTBModel_Events.cfg"
+DEFAULT_SEEDING_CONFIG_FILE = "PTBModel_Seeding.cfg"
 
 NETWORK_CONFIGURATION_SECTIONS = ['Network_joining', 'Ventilations', 'Perfusions']
 LUNG_EDGE_JOINING = "lung_edge_joining"
@@ -43,7 +44,6 @@ class PTBDynamics(Dynamics):
 
     def __init__(self, network_config, event_config):
 
-        compartments = ALL_BACTERIA + ALL_MACROPHAGES + ALL_T_CELLS
 
         # --------------------------------------------------
         # Network
@@ -62,7 +62,7 @@ class PTBDynamics(Dynamics):
         for (bps_id, value) in network_config.items(NETWORK_CONFIGURATION_SECTIONS[2]):
             perfusions[bps_id] = float(value)
 
-        network = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, ventilations, perfusions,
+        network = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(ALL_TB_COMPARTMENTS, ventilations, perfusions,
                                                                            edge_joining)
 
         # --------------------------------------------------
