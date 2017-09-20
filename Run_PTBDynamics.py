@@ -17,6 +17,8 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+run_id = 1
+time_limit = 5
 
 network_config_filename = DEFAULT_NETWORK_CONFIG_FILE
 network_config = cp.ConfigParser()
@@ -28,7 +30,18 @@ event_config.read(event_config_filename)
 
 model = PTBDynamics(network_config, event_config)
 
+# Seed
+seeding_config_filename = 'PTBModel_Seeding.cfg'
+seeding_config = cp.ConfigParser()
+seeding_config.read(seeding_config_filename)
 seeding = {}
-model.run(10, seeding, True, 1)
+for node_id in ALL_BPS + [LYMPH]:
+    if node_id in seeding_config.sections():
+        seeding[node_id] = {}
+        for compartment, value in seeding_config.items(node_id):
+            seeding[node_id][compartment] = float(value)
 
-draw_multiple_nodes_graph("1.csv", [MACROPHAGE_REGULAR])
+
+# model.run(time_limit, seeding, True, run_id)
+
+# draw_multiple_nodes_graph("1.csv", [MACROPHAGE_REGULAR])

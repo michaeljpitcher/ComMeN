@@ -51,11 +51,11 @@ class Dynamics:
         self.network = network
         self._events = events
         self._time = 0.0
-        self._compartments = []
+        self.compartments = []
         for node in self.network.nodes:
-            self._compartments += node.compartments
+            self.compartments += node.compartments
         # Remove any duplicates
-        self._compartments = list(set(self._compartments))
+        self.compartments = list(set(self.compartments))
 
     def run(self, time_limit, seeding, output_data=False, run_id=None):
         """
@@ -83,7 +83,7 @@ class Dynamics:
                 filename = ''.join(current_time) + '.csv'
             csv_file = open(filename, 'w')
 
-            csv_writer = csv.DictWriter(csv_file, [TIMESTEP, NODE_ID] + self._compartments)
+            csv_writer = csv.DictWriter(csv_file, [TIMESTEP, NODE_ID] + self.compartments)
             csv_writer.writeheader()
             print "Data output to:", filename
 
