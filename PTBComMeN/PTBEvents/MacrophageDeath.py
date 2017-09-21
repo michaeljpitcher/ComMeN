@@ -25,12 +25,13 @@ def get_macrophage_death_events(nodes, standard_rates, infected_mac_rates):
     events = []
     # Standard
     for m in ALL_MACROPHAGES:
+        # TODO - assumes natural death of infected macrophage kills all internal bacteria
         events.append(MacrophageDeath(standard_rates[m], nodes, m))
     # By T-cell
-    events.append(MacrophageDeath(infected_mac_rates[T_CELL_ACTIVATED], nodes, MACROPHAGE_INFECTED, T_CELL_ACTIVATED))
+    events.append(InfectedMacrophageDeathExternal(infected_mac_rates[T_CELL_ACTIVATED], nodes, T_CELL_ACTIVATED))
     # By bursting
-    events.append(MacrophageDeath(infected_mac_rates[BACTERIUM_INTRACELLULAR], nodes, MACROPHAGE_INFECTED,
-                                  BACTERIUM_INTRACELLULAR, False))
+    events.append(InfectedMacrophageDeathExternal(infected_mac_rates[BACTERIUM_INTRACELLULAR], nodes,
+                                                  BACTERIUM_INTRACELLULAR, False))
     return events
 
 
