@@ -20,14 +20,10 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetworkTestCase(unittest.T
             self.vent[node_id] = rand.randint(5, 10)
             self.perf[node_id] = rand.randint(1, 5)
 
-        self.network_all = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, self.vent, self.perf,
-                                                                                   JOINING_ALL)
-        self.network_adjacent = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, self.vent,
-                                                                                        self.perf, JOINING_ADJACENT_LOBE)
-        self.network_lobe = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, self.vent, self.perf,
-                                                                                    JOINING_LOBE)
-        self.network_none = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(compartments, self.vent, self.perf,
-                                                                                    JOINING_NONE)
+        self.network_all = PulmonaryNetwork(compartments, self.vent, self.perf, JOINING_ALL)
+        self.network_adjacent = PulmonaryNetwork(compartments, self.vent, self.perf, JOINING_ADJACENT_LOBE)
+        self.network_lobe = PulmonaryNetwork(compartments, self.vent, self.perf, JOINING_LOBE)
+        self.network_none = PulmonaryNetwork(compartments, self.vent, self.perf, JOINING_NONE)
 
     def test_initialise(self):
         self.assertItemsEqual([n.node_id for n in self.network_all.nodes], ALL_BPS + [LYMPH])
@@ -38,12 +34,6 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetworkTestCase(unittest.T
             self.assertTrue(isinstance(p, LungPatch))
         for p in self.network_all.lymph_patches:
             self.assertTrue(isinstance(p, LymphPatch))
-
-        # All
-        for p in ALL_BPS:
-            expected = list(ALL_BPS)
-            expected.remove(p)
-            self.assertItemsEqual(get_neighbour_ids(self.network_all, p, LungEdge), expected)
 
         # Adjacent
         adjacency = [RIGHT_INFERIOR, RIGHT_MIDDLE, RIGHT_SUPERIOR, LEFT_SUPERIOR, LEFT_INFERIOR]
@@ -60,17 +50,6 @@ class BronchopulmonarySegmentSingleLymphMetapopulationNetworkTestCase(unittest.T
             expected = list(LEFT_INFERIOR) + list(LEFT_SUPERIOR)
             expected.remove(p)
             self.assertItemsEqual(get_neighbour_ids(self.network_adjacent, p, LungEdge), expected)
-
-        # Lobe
-        for lobe in LOBES:
-            for p in lobe:
-                expected = list(lobe)
-                expected.remove(p)
-                self.assertItemsEqual(get_neighbour_ids(self.network_lobe, p, LungEdge), expected)
-
-        # None
-        for p in ALL_BPS:
-            self.assertTrue(LungEdge not in self.network_none[ANTERIOR_LEFT].adjacent_edges.keys())
 
         # Lymph and blood edges
         for p in ALL_BPS:

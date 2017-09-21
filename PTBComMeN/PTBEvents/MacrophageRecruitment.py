@@ -6,10 +6,8 @@ Long Docstring
 
 """
 
-from ComMeN.Events.Create import *
 from LungComMeN.LungEvents.RecruitmentByPerfusion import *
-from LungComMeN.LungNetwork.LungPatch import *
-from LungComMeN.LungNetwork.LymphPatch import *
+from LungComMeN.LungNetwork.PulmonaryPatch import *
 from ..PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"

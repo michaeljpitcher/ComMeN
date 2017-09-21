@@ -19,22 +19,8 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-def create_network_config_file(filename=DEFAULT_NETWORK_CONFIG_FILE):
-    config_network_file = open(filename, 'w')
-    config_network = ConfigParser.ConfigParser(allow_no_value=True)
-    for n in NETWORK_CONFIGURATION_SECTIONS:
-        config_network.add_section(n)
-    # Set value for joining
-    config_network.set(NETWORK_CONFIGURATION_SECTIONS[0], LUNG_EDGE_JOINING, JOINING_NONE)
-    config_network.set(NETWORK_CONFIGURATION_SECTIONS[1], "# Ventilation values for lung patches")
-    config_network.set(NETWORK_CONFIGURATION_SECTIONS[2], "# Perfusion values for lung patches")
-    # Set ventilation / perfusion values (as 1)
-    for bps in ALL_BPS:
-        config_network.set(NETWORK_CONFIGURATION_SECTIONS[1], bps, 1.0)
-        config_network.set(NETWORK_CONFIGURATION_SECTIONS[2], bps, 1.0)
-    # Write to file and close
-    config_network.write(config_network_file)
-    config_network_file.close()
+DEFAULT_EVENT_CONFIG_FILE = "PTBModel_Events.cfg"
+DEFAULT_SEEDING_CONFIG_FILE = "PTBModel_Seeding.cfg"
 
 
 def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):

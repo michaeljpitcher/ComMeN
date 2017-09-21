@@ -16,10 +16,8 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from LungPatch import *
-from LymphPatch import *
-from LungEdge import *
-from LymphEdge import *
-from BloodEdge import *
+from PulmonaryPatch import *
+from PulmonaryEdge import *
 from BronchopulmonarySegments import *
-from BPSLymphMetapopulationNetwork import *
+from PulmonaryNetwork import *
+from PulmonaryNetworkConfigFile import *

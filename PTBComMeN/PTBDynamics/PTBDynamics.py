@@ -17,12 +17,8 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-DEFAULT_NETWORK_CONFIG_FILE = "PTBModel_Network.cfg"
-DEFAULT_EVENT_CONFIG_FILE = "PTBModel_Events.cfg"
-DEFAULT_SEEDING_CONFIG_FILE = "PTBModel_Seeding.cfg"
 
-NETWORK_CONFIGURATION_SECTIONS = ['Network_joining', 'Ventilations', 'Perfusions']
-LUNG_EDGE_JOINING = "lung_edge_joining"
+
 
 EVENT_CONFIGURATION_SECTIONS = [BacteriaChangeByOxygen.__name__, BacteriaReplication.__name__,
                                 BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
@@ -51,7 +47,8 @@ class PTBDynamics(Dynamics):
                                                          "create_network_config_file() to generate a correct " \
                                                          "configuration file".format(section)
 
-        edge_joining = network_config.get(NETWORK_CONFIGURATION_SECTIONS[0], LUNG_EDGE_JOINING)
+        edge_weight_within_lobe = network_config.get(NETWORK_CONFIGURATION_SECTIONS[0], EDGE_WEIGHT_WITHIN_LOBE)
+        edge_weight_adjacent_lobe = network_config.get(NETWORK_CONFIGURATION_SECTIONS[0], EDGE_WEIGHT_BETWEEN_LOBE)
 
         ventilations = {}
         for (bps_id, value) in network_config.items(NETWORK_CONFIGURATION_SECTIONS[1]):
@@ -60,8 +57,18 @@ class PTBDynamics(Dynamics):
         for (bps_id, value) in network_config.items(NETWORK_CONFIGURATION_SECTIONS[2]):
             perfusions[bps_id] = float(value)
 
-        network = BronchopulmonarySegmentSingleLymphMetapopulationNetwork(ALL_TB_COMPARTMENTS, ventilations, perfusions,
-                                                                          edge_joining)
+        # Lymphatic drainage
+        lymph_drainage_values = None
+
+        print network_config.sections()
+        print LYMPH_DRAINAGE
+
+        if network_config.has_section(LYMPH_DRAINAGE):
+            print "YASS"
+            lymph_drainage_values = dict(network_config.items(LYMPH_DRAINAGE))
+
+        network = PulmonaryNetwork(ALL_TB_COMPARTMENTS, ventilations, perfusions, edge_weight_within_lobe,
+                                   edge_weight_adjacent_lobe, lymph_drainage_values)
 
         # --------------------------------------------------
         # Events

@@ -71,7 +71,6 @@ class ChangeByOxygen_OLD(Change):
         :param node:
         :return:
         """
-        # TODO - review this RE case when oxygen == 0.
         if self._oxygen_low:
             # Avoid division by zero error by dividing by v. small value
             if node.oxygen_tension == 0:

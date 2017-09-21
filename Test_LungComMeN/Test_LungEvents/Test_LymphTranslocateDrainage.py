@@ -1,6 +1,5 @@
 import unittest
 from LungComMeN import *
-import numpy as np
 
 
 class LymphTranslocateDrainageTestCase(unittest.TestCase):

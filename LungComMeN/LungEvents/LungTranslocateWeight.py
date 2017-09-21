@@ -7,7 +7,7 @@ Long Docstring
 """
 
 from ComMeN.Events.Translocate import *
-from ..LungNetwork.LungEdge import *
+from LungComMeN.LungNetwork.PulmonaryEdge.LungEdge import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"

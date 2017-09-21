@@ -6,12 +6,11 @@ Long Docstring
 
 """
 
-from ..PulmonaryTBCompartments import *
+from LungComMeN.LungEvents.BloodTranslocatePerfusion import *
 from LungComMeN.LungEvents.LungTranslocateWeight import *
 from LungComMeN.LungEvents.LymphTranslocateDrainage import *
-from LungComMeN.LungEvents.BloodTranslocatePerfusion import *
-from LungComMeN.LungNetwork.LungPatch import *
-from LungComMeN.LungNetwork.LymphPatch import *
+from LungComMeN.LungNetwork.PulmonaryPatch import *
+from ..PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"

@@ -16,7 +16,6 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-from LungComMeN import *
-from PulmonaryTBCompartments import *
-from PTBDynamics import *
-from PTBEvents import *
+from BloodEdge import *
+from LungEdge import *
+from LymphEdge import *

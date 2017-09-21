@@ -7,8 +7,8 @@ Long Docstring
 """
 
 from LungComMeN.LungEvents.BloodTranslocatePerfusion import *
+from LungComMeN.LungNetwork.PulmonaryPatch.LymphPatch import *
 from ..PulmonaryTBCompartments import *
-from LungComMeN.LungNetwork.LymphPatch import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"

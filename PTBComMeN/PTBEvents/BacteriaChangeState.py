@@ -7,7 +7,7 @@ Long Docstring
 """
 
 from LungComMeN.LungEvents.ChangeByOxygen import *
-from LungComMeN.LungNetwork.LungPatch import *
+from LungComMeN.LungNetwork.PulmonaryPatch.LungPatch import *
 from ..PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"

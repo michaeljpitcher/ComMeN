@@ -34,7 +34,6 @@ class LungPatch(Patch):
         self.ventilation = ventilation
         self.perfusion = perfusion
 
-        # TODO: oxygen tension probably needs to be more complex than this
         self.oxygen_tension = ventilation / (1.0 * perfusion)
 
         Patch.__init__(self, node_id, compartments)
