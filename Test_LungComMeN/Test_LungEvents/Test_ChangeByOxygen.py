@@ -2,7 +2,7 @@ import unittest
 from LungComMeN import *
 
 
-class ChangeByOxygenTestCase(unittest.TestCase):
+class ChangeByOxygenOLDTestCase(unittest.TestCase):
     def setUp(self):
         self.compartments = ['a', 'b']
 
@@ -40,7 +40,7 @@ class ChangeByOxygenTestCase(unittest.TestCase):
         self.assertEqual(state_var_low, 3 * (1 / self.nodes[1].oxygen_tension))
 
 
-class ChangeByOxygenVersion2TestCase(unittest.TestCase):
+class ChangeByOxygenTestCase(unittest.TestCase):
     def setUp(self):
         self.compartments = ['a', 'b']
 
