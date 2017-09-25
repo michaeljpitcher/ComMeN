@@ -20,7 +20,8 @@ __status__ = "Development"
 
 
 
-EVENT_CONFIGURATION_SECTIONS = [BacteriaChangeByOxygen.__name__, BacteriaReplication.__name__,
+EVENT_CONFIGURATION_SECTIONS = [BacteriaChangeByOxygen.__name__,
+                                ExtracellularBacteriaReplication.__name__, IntracellularBacteriaReplication.__name__,
                                 BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
                                 BacteriaTranslocateBlood.__name__, MacrophageActivationByExternal.__name__,
                                 MacrophageDeath.__name__, InfectedMacrophageDeathExternal.__name__,
@@ -82,8 +83,9 @@ class PTBDynamics(Dynamics):
         events += get_bacteria_change_events(network.lung_patches, rates)
 
         # Bacteria replicate
-        rates = get_rates(BacteriaReplication.__name__, event_config)
-        events += get_bacteria_replication_events(network.nodes, rates)
+        ext_rates = get_rates(ExtracellularBacteriaReplication.__name__, event_config)
+        int_rates = get_rates(IntracellularBacteriaReplication.__name__, event_config)
+        events += get_bacteria_replication_events(network.nodes, ext_rates, int_rates)
 
         # Bacteria translocate
         lung_rates = get_rates(BacteriaTranslocateLung.__name__, event_config)

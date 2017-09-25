@@ -32,8 +32,11 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
     for o in BACTERIA_CHANGE_STATE_OPTIONS:
         config_event.set(BacteriaChangeByOxygen.__name__, o, 0.0)
 
-    for o in BACTERIA_REPLICATION_OPTIONS:
-        config_event.set(BacteriaReplication.__name__, o, 0.0)
+    for o in EXTRACELLULAR_BACTERIA_REPLICATION_OPTIONS:
+        config_event.set(ExtracellularBacteriaReplication.__name__, o, 0.0)
+
+    for o in INTRACELLULAR_BACTERIA_REPLICATION_OPTIONS:
+        config_event.set(IntracellularBacteriaReplication.__name__, o, 0.0)
 
     for o in BACTERIA_TRANSLOCATION_OPTIONS:
         config_event.set(BacteriaTranslocateLung.__name__, o, 0.0)

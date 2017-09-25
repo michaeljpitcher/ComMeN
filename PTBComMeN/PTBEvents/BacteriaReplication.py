@@ -17,17 +17,39 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-BACTERIA_REPLICATION_OPTIONS = ALL_BACTERIA
+EXTRACELLULAR_BACTERIA_REPLICATION_OPTIONS = EXTRACELLULAR_BACTERIA
+
+REPLICATION_RATE_INTRACELLULAR = 'replication_rate_intracellular'
+MACROPHAGE_CARRYING_CAPACITY = 'macrophage_internal_carrying_capcity'
+
+INTRACELLULAR_BACTERIA_REPLICATION_OPTIONS = [REPLICATION_RATE_INTRACELLULAR, MACROPHAGE_CARRYING_CAPACITY]
 
 
-def get_bacteria_replication_events(nodes, rates):
+def get_bacteria_replication_events(nodes, rates_extracellular, rates_intracellular):
     events = []
-    for compartment in BACTERIA_REPLICATION_OPTIONS:
-        rate = rates[compartment]
-        events.append(BacteriaReplication(rate, nodes, compartment))
+    for compartment in EXTRACELLULAR_BACTERIA:
+        rate = rates_extracellular[compartment]
+        events.append(ExtracellularBacteriaReplication(rate, nodes, compartment))
+    rate_replication = rates_intracellular[REPLICATION_RATE_INTRACELLULAR]
+    carrying_capacity = rates_intracellular[MACROPHAGE_CARRYING_CAPACITY]
+    events.append(IntracellularBacteriaReplication(rate_replication, nodes, carrying_capacity))
     return events
 
 
-class BacteriaReplication(Create):
+class ExtracellularBacteriaReplication(Create):
     def __init__(self, reaction_parameter, nodes, compartment_replicating):
         Create.__init__(self, reaction_parameter, nodes, compartment_replicating, [compartment_replicating])
+
+
+class IntracellularBacteriaReplication(Create):
+    def __init__(self, reaction_parameter, nodes, macrophage_carrying_capacity):
+        self._macrophage_carrying_capacity = macrophage_carrying_capacity
+        Create.__init__(self, reaction_parameter, nodes, BACTERIUM_INTRACELLULAR, [BACTERIUM_INTRACELLULAR])
+
+    def _calculate_state_variable_at_node(self, node):
+        # Need to cope for case when no intracellular bacteria to avoid division by 0 error
+        if node[BACTERIUM_INTRACELLULAR] == 0:
+            return 0
+        else:
+            return node[BACTERIUM_INTRACELLULAR] * (1 - (node[BACTERIUM_INTRACELLULAR] * 1.0 /
+                    (node[BACTERIUM_INTRACELLULAR] + (self._macrophage_carrying_capacity * node[MACROPHAGE_INFECTED]))))
