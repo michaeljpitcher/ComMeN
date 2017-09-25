@@ -60,12 +60,10 @@ class PTBDynamics(Dynamics):
         # Lymphatic drainage
         lymph_drainage_values = None
 
-        print network_config.sections()
-        print LYMPH_DRAINAGE
-
         if network_config.has_section(LYMPH_DRAINAGE):
-            print "YASS"
-            lymph_drainage_values = dict(network_config.items(LYMPH_DRAINAGE))
+            lymph_drainage_values = {}
+            for node_id, value in network_config.items(LYMPH_DRAINAGE):
+                lymph_drainage_values[node_id] = float(value)
 
         network = PulmonaryNetwork(ALL_TB_COMPARTMENTS, ventilations, perfusions, edge_weight_within_lobe,
                                    edge_weight_adjacent_lobe, lymph_drainage_values)
