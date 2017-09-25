@@ -6,12 +6,12 @@ Long Docstring
 
 """
 
-from ..PulmonaryTBCompartments import *
+from LungComMeN.LungNetwork.PulmonaryPatch import *
+
+from LungComMeN.LungEvents.BloodTranslocatePerfusion import *
 from LungComMeN.LungEvents.LungTranslocateWeight import *
 from LungComMeN.LungEvents.LymphTranslocateDrainage import *
-from LungComMeN.LungEvents.BloodTranslocatePerfusion import *
-from LungComMeN.LungNetwork.LungPatch import *
-from LungComMeN.LungNetwork.LymphPatch import *
+from ..PulmonaryTBCompartments import *
 
 __author__ = "Michael Pitcher"
 __copyright__ = "Copyright 2017"
@@ -35,6 +35,7 @@ def get_bacteria_translocation_events(lung_nodes, lymph_nodes, lung_rates, lymph
         events.append(BacteriaTranslocateLymph(lymph_rates[b], lung_nodes, b))
         events.append(BacteriaTranslocateBlood(blood_rates[b], lymph_nodes, b))
     return events
+
 
 class BacteriaTranslocateLung(LungTranslocateWeight):
     def __init__(self, reaction_parameter, nodes, compartment_translocating):
