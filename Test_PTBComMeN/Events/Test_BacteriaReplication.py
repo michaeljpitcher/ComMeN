@@ -40,7 +40,8 @@ class IntracellularBacteriaReplicationTestCase(unittest.TestCase):
         compartments = [BACTERIUM_INTRACELLULAR, MACROPHAGE_INFECTED]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.carrying_capacity = 10
-        self.event_i = IntracellularBacteriaReplication(0.3, self.nodes, self.carrying_capacity)
+        self.hill_exponent = 2
+        self.event_i = IntracellularBacteriaReplication(0.3, self.nodes, self.carrying_capacity, self.hill_exponent)
         uh = UpdateHandler([self.event_i])
 
     def test_rate(self):
@@ -50,20 +51,21 @@ class IntracellularBacteriaReplicationTestCase(unittest.TestCase):
         bi = 1
         self.nodes[0].reset()
         self.nodes[0].update({MACROPHAGE_INFECTED: mi, BACTERIUM_INTRACELLULAR: bi})
-        self.assertEqual(self.event_i.rate, 0.3 * bi * (1 - (1.0 * bi / (bi + self.carrying_capacity * mi))))
+        self.assertEqual(self.event_i.rate, 0.3 * bi * (1 - float(bi**self.hill_exponent) / (bi**self.hill_exponent +
+                                                   (self.carrying_capacity * mi)**self.hill_exponent)))
 
         mi = 1
         bi = 10
         self.nodes[0].reset()
         self.nodes[0].update({MACROPHAGE_INFECTED: mi, BACTERIUM_INTRACELLULAR: bi})
-        self.assertEqual(self.event_i.rate, 0.3 * bi * (1 - (1.0 * bi / (bi + self.carrying_capacity * mi))))
-
+        self.assertEqual(self.event_i.rate, 0.3 * bi * (1 - float(bi ** self.hill_exponent) / (bi ** self.hill_exponent +
+                                                 (self.carrying_capacity * mi) ** self.hill_exponent)))
         mi = 4
         bi = 10
         self.nodes[0].reset()
         self.nodes[0].update({MACROPHAGE_INFECTED: mi, BACTERIUM_INTRACELLULAR: bi})
-        self.assertAlmostEqual(self.event_i.rate, 0.3 * bi * (1 - (1.0 * bi / (bi + self.carrying_capacity * mi))))
-
+        self.assertAlmostEqual(self.event_i.rate, 0.3 * bi * (1 - float(bi ** self.hill_exponent) / (
+                         bi ** self.hill_exponent + (self.carrying_capacity * mi) ** self.hill_exponent)))
 
     def test_update(self):
         self.nodes[0].update({MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR: 5})
@@ -77,8 +79,11 @@ class GetBacteriaReplicationEventsTestCase(unittest.TestCase):
         compartments = [BACTERIUM_FAST, BACTERIUM_SLOW, BACTERIUM_INTRACELLULAR]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.rates_int = {BACTERIUM_FAST: 0.1, BACTERIUM_SLOW: 0.2}
-        self.rates_ext = {REPLICATION_RATE_INTRACELLULAR: 0.3, MACROPHAGE_CARRYING_CAPACITY: 10}
-        self.events = get_bacteria_replication_events(self.nodes, self.rates_int, self.rates_ext)
+        self.rate_ext = 0.3
+        self.carrying_capacity = 20
+        self.hill_exponent = 2
+        self.events = get_bacteria_replication_events(self.nodes, self.rates_int, self.rate_ext, self.carrying_capacity,
+                                                      self.hill_exponent)
 
     def test_events(self):
         self.assertEqual(len(self.events), 3)
@@ -94,7 +99,7 @@ class GetBacteriaReplicationEventsTestCase(unittest.TestCase):
         self.assertEqual(len(int_events), 1)
         int = int_events[0]
         self.assertEqual(int.reaction_parameter, 0.3)
-        self.assertEqual(int._macrophage_carrying_capacity, 10)
+        self.assertEqual(int._macrophage_carrying_capacity, self.carrying_capacity)
 
 
 if __name__ == '__main__':

@@ -4,67 +4,76 @@ from PTBComMeN import *
 
 class MacrophageDeathTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, MACROPHAGE_INFECTED, BACTERIUM_INTRACELLULAR,
-                        BACTERIUM_SLOW, T_CELL_ACTIVATED]
+        compartments = [MACROPHAGE_REGULAR]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.event = MacrophageDeath(0.1, self.nodes, MACROPHAGE_REGULAR)
-        self.event_inf_release = MacrophageDeath(0.2, self.nodes, MACROPHAGE_INFECTED, destroy_bacteria=False)
-        self.event_inf_destroy = MacrophageDeath(0.3, self.nodes, MACROPHAGE_INFECTED,
-                                                 influencing_compartment=T_CELL_ACTIVATED, destroy_bacteria=True)
-        uh = UpdateHandler([self.event, self.event_inf_release, self.event_inf_destroy])
+        uh = UpdateHandler([self.event])
 
     def test_rate(self):
-        for e in [self.event, self.event_inf_destroy, self.event_inf_release]:
-            self.assertEqual(e.rate, 0)
+        self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({MACROPHAGE_REGULAR: 2})
         self.assertEqual(self.event.rate, 0.1 * 2)
-        self.assertEqual(self.event_inf_release.rate, 0)
-        self.assertEqual(self.event_inf_destroy.rate, 0)
-        self.nodes[0].update({MACROPHAGE_INFECTED: 3})
-        self.assertEqual(self.event.rate, 0.1 * 2)
-        self.assertEqual(self.event_inf_release.rate, 0.2 * 3)
-        self.assertEqual(self.event_inf_destroy.rate, 0)
-        self.nodes[0].update({T_CELL_ACTIVATED: 4})
-        self.assertEqual(self.event.rate, 0.1 * 2)
-        self.assertEqual(self.event_inf_release.rate, 0.2 * 3)
-        self.assertEqual(self.event_inf_destroy.rate, 0.3 * 3 * 4)
 
     def test_update(self):
         self.nodes[0].update({MACROPHAGE_REGULAR: 2})
         self.event.perform()
-        for t in self.nodes[0].compartments:
-            if t != MACROPHAGE_REGULAR:
-                self.assertEqual(self.nodes[0][t], 0)
-            else:
-                self.assertEqual(self.nodes[0][MACROPHAGE_REGULAR], 1)
+        self.assertEqual(self.nodes[0][MACROPHAGE_REGULAR], 1)
+
+
+class InfectedMacrophageDeathByTCellTestCase(unittest.TestCase):
+
+    def setUp(self):
+        compartments = [MACROPHAGE_INFECTED, T_CELL_ACTIVATED, BACTERIUM_INTRACELLULAR]
+        self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
+        self.event = InfectedMacrophageDeathByTCell(0.1, self.nodes)
+        uh = UpdateHandler([self.event])
+
+    def test_rate(self):
+        self.assertEqual(self.event.rate, 0)
+        self.nodes[0].update({MACROPHAGE_INFECTED: 2})
+        self.assertEqual(self.event.rate, 0)
+        self.nodes[0].update({T_CELL_ACTIVATED: 3})
+        self.assertEqual(self.event.rate, 0.1 * 2 * 3)
+
+    def test_update(self):
+        self.nodes[0].update({MACROPHAGE_INFECTED: 2, T_CELL_ACTIVATED: 3, BACTERIUM_INTRACELLULAR:10})
+        self.event.perform()
+        self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
+        self.assertEqual(self.nodes[0][T_CELL_ACTIVATED], 3)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 10)
+
+
+class InfectedMacrophageBurstsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        compartments = [MACROPHAGE_INFECTED, BACTERIUM_INTRACELLULAR, BACTERIUM_SLOW]
+        self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
+        self.carrying_capacity = 20
+        self.hill_exponent = 2
+        self.event = InfectedMacrophageBursts(1.0, self.nodes, self.carrying_capacity, self.hill_exponent)
+        uh = UpdateHandler([self.event])
+
+    def test_rate(self):
+        self.assertEqual(self.event.rate, 0)
+        mac = 2
+        bac = 20
+        self.nodes[0].update({MACROPHAGE_INFECTED: mac, BACTERIUM_INTRACELLULAR: bac})
+        self.assertEqual(self.event.rate, 1.0 * mac * (1.0 * bac ** self.hill_exponent / (
+                        bac ** self.hill_exponent + (self.carrying_capacity * mac) ** self.hill_exponent)))
+
+    def test_perform(self):
+        self.nodes[0].update({MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR: 20})
+        self.event.perform()
+        self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 0)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 0)
+        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 20)
 
         self.nodes[0].reset()
-        self.nodes[0].update({MACROPHAGE_INFECTED: 5, BACTERIUM_INTRACELLULAR: 10})
-        self.event_inf_release.perform()
-        self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 4)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 8)
-        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 2)
-
-        self.nodes[0].reset()
-        self.nodes[0].update({MACROPHAGE_INFECTED: 5, BACTERIUM_INTRACELLULAR: 9})
-        self.event_inf_release.perform()
-        self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 4)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 7)
-        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 2)
-
-        self.nodes[0].reset()
-        self.nodes[0].update({MACROPHAGE_INFECTED: 5, BACTERIUM_INTRACELLULAR: 6})
-        self.event_inf_release.perform()
-        self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 4)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 5)
-        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 1)
-
-        self.nodes[0].reset()
-        self.nodes[0].update({MACROPHAGE_INFECTED: 5, BACTERIUM_INTRACELLULAR: 10, T_CELL_ACTIVATED: 10})
-        self.event_inf_destroy.perform()
-        self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 4)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 8)
-        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 0)
+        self.nodes[0].update({MACROPHAGE_INFECTED: 2, BACTERIUM_INTRACELLULAR: 39})
+        self.event.perform()
+        self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 19)
+        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 20)
 
 
 class GetMacrophageDeathEventsTestCase(unittest.TestCase):
@@ -74,32 +83,33 @@ class GetMacrophageDeathEventsTestCase(unittest.TestCase):
                         BACTERIUM_SLOW, T_CELL_ACTIVATED]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.rates = {MACROPHAGE_REGULAR: 0.1, MACROPHAGE_ACTIVATED: 0.2, MACROPHAGE_INFECTED: 0.3}
-        self.inf_rates = {T_CELL_ACTIVATED: 0.4, BACTERIUM_INTRACELLULAR: 0.5}
-        self.events = get_macrophage_death_events(self.nodes, self.rates, self.inf_rates)
+        self.t_cell_death_rate = 0.4
+        self.bursting_rate = 0.5
+        self.carrying_capacity = 20
+        self.hill_exponent = 2
+
+        self.events = get_macrophage_death_events(self.nodes, self.rates, self.t_cell_death_rate, self.bursting_rate,
+                                                  self.carrying_capacity, self.hill_exponent)
 
     def test_events(self):
         self.assertEqual(len(self.events), 5)
-        for a in self.events:
-            self.assertTrue(isinstance(a, MacrophageDeath))
-        m_r_standard = next(i for i in self.events if i._compartment_destroyed == MACROPHAGE_REGULAR)
-        self.assertEqual(m_r_standard.reaction_parameter, 0.1)
-        self.assertFalse(m_r_standard._influencing_compartments)
-        m_a_standard = next(i for i in self.events if i._compartment_destroyed == MACROPHAGE_ACTIVATED)
-        self.assertEqual(m_a_standard.reaction_parameter, 0.2)
-        self.assertFalse(m_a_standard._influencing_compartments)
-        m_i_standard = next(i for i in self.events if i._compartment_destroyed == MACROPHAGE_INFECTED and
-                            not i._influencing_compartments)
-        self.assertEqual(m_i_standard.reaction_parameter, 0.3)
+        standard_regular = next(i for i in self.events if isinstance(i, MacrophageDeath) and
+                                i._compartment_destroyed == MACROPHAGE_REGULAR)
+        self.assertEqual(standard_regular.reaction_parameter, 0.1)
+        standard_activated = next(i for i in self.events if isinstance(i, MacrophageDeath) and
+                                  i._compartment_destroyed == MACROPHAGE_ACTIVATED)
+        self.assertEqual(standard_activated.reaction_parameter, 0.2)
+        standard_infected = next(i for i in self.events if isinstance(i, MacrophageDeath) and
+                                  i._compartment_destroyed == MACROPHAGE_INFECTED)
+        self.assertEqual(standard_infected.reaction_parameter, 0.3)
 
-        m_i_t_cell = next(i for i in self.events if i._compartment_destroyed == MACROPHAGE_INFECTED and
-                          i._influencing_compartments == [T_CELL_ACTIVATED])
-        self.assertEqual(m_i_t_cell.reaction_parameter, 0.4)
-        self.assertTrue(m_i_t_cell._destroy_bacteria)
+        infected_t_cell = next(i for i in self.events if isinstance(i, InfectedMacrophageDeathByTCell))
+        self.assertEqual(infected_t_cell.reaction_parameter, 0.4)
 
-        m_i_intracell = next(i for i in self.events if i._compartment_destroyed == MACROPHAGE_INFECTED and
-                          i._influencing_compartments == [BACTERIUM_INTRACELLULAR])
-        self.assertEqual(m_i_intracell.reaction_parameter, 0.5)
-        self.assertFalse(m_i_intracell._destroy_bacteria)
+        infected_bursts = next(i for i in self.events if isinstance(i, InfectedMacrophageBursts))
+        self.assertEqual(infected_bursts.reaction_parameter, 0.5)
+        self.assertEqual(infected_bursts._carrying_capacity, self.carrying_capacity)
+        self.assertEqual(infected_bursts._hill_exponent, self.hill_exponent)
 
 
 if __name__ == '__main__':
