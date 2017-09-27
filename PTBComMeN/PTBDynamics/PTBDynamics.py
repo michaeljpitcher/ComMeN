@@ -20,7 +20,9 @@ __status__ = "Development"
 RATE = 'rate'
 
 MACROPHAGE_ATTRIBUTES = 'MacrophageAttributes'
+MACROPHAGE_CARRYING_CAPACITY = 'macrophage_internal_carrying_capacity'
 BACTERIAL_ATTRIBUTES = 'BacterialAttributes'
+INTRACELLULAR_BACTERIUM_HILL_EXPONENT = 'intracellular_bacterium_hill_exponent'
 
 EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
                                 ExtracellularBacteriaReplication.__name__, IntracellularBacteriaReplication.__name__,
