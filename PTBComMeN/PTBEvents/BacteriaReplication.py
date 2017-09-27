@@ -19,13 +19,11 @@ __status__ = "Development"
 
 EXTRACELLULAR_BACTERIA_REPLICATION_OPTIONS = EXTRACELLULAR_BACTERIA
 
-REPLICATION_RATE_INTRACELLULAR = 'replication_rate_intracellular'
-MACROPHAGE_CARRYING_CAPACITY = 'macrophage_internal_carrying_capcity'
-
-INTRACELLULAR_BACTERIA_REPLICATION_OPTIONS = [REPLICATION_RATE_INTRACELLULAR, MACROPHAGE_CARRYING_CAPACITY]
+MACROPHAGE_CARRYING_CAPACITY = 'macrophage_internal_carrying_capacity'
+INTRACELLULAR_BACTERIUM_HILL_EXPONENT = 'intracellular_bacterium_hill_exponent'
 
 
-def get_bacteria_replication_events(nodes, rates_extracellular, rate_intracellular, carrying_capacity, hill_exponent=2):
+def get_bacteria_replication_events(nodes, rates_extracellular, rate_intracellular, carrying_capacity, hill_exponent):
     events = []
     for compartment in EXTRACELLULAR_BACTERIA:
         rate = rates_extracellular[compartment]

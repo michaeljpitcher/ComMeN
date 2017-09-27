@@ -17,19 +17,23 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
+RATE = 'rate'
 
+MACROPHAGE_ATTRIBUTES = 'MacrophageAttributes'
+BACTERIAL_ATTRIBUTES = 'BacterialAttributes'
 
-
-EVENT_CONFIGURATION_SECTIONS = [BacteriaChangeByOxygen.__name__,
+EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
                                 ExtracellularBacteriaReplication.__name__, IntracellularBacteriaReplication.__name__,
                                 BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
                                 BacteriaTranslocateBlood.__name__, MacrophageActivationByExternal.__name__,
-                                MacrophageDeath.__name__, InfectedMacrophageDeathExternal.__name__,
+                                MacrophageDeath.__name__, InfectedMacrophageDeathByTCell.__name__,
+                                InfectedMacrophageBursts.__name__,
                                 PhagocytosisDestroy.__name__, PhagocytosisRetain.__name__,
                                 MacrophageRecruitmentLung.__name__, MacrophageRecruitmentLymph.__name__,
                                 MacrophageTranslocateLung.__name__, MacrophageTranslocateLymph.__name__,
                                 MacrophageTranslocateBlood.__name__, TCellActivationByExternal.__name__,
                                 TCellDeath.__name__, TCellRecruitmentLymph.__name__, TCellTranslocationBlood.__name__]
+
 
 
 def get_rates(event_classname, event_config):
@@ -78,14 +82,18 @@ class PTBDynamics(Dynamics):
                                                        "create_event_config_file() to generate a correct " \
                                                        "configuration file".format(section)
 
+        # Compartment attributes (used in multiple events)
+        carrying_capacity = event_config.getfloat(MACROPHAGE_ATTRIBUTES, MACROPHAGE_CARRYING_CAPACITY)
+        hill_exponent = event_config.getfloat(BACTERIAL_ATTRIBUTES, INTRACELLULAR_BACTERIUM_HILL_EXPONENT)
+
         # Bacteria change state
         rates = get_rates(BacteriaChangeByOxygen.__name__, event_config)
         events += get_bacteria_change_events(network.lung_patches, rates)
 
         # Bacteria replicate
         ext_rates = get_rates(ExtracellularBacteriaReplication.__name__, event_config)
-        int_rates = get_rates(IntracellularBacteriaReplication.__name__, event_config)
-        events += get_bacteria_replication_events(network.nodes, ext_rates, int_rates)
+        int_rate = event_config.getfloat(IntracellularBacteriaReplication.__name__, RATE)
+        events += get_bacteria_replication_events(network.nodes, ext_rates, int_rate, carrying_capacity, hill_exponent)
 
         # Bacteria translocate
         lung_rates = get_rates(BacteriaTranslocateLung.__name__, event_config)
@@ -100,8 +108,9 @@ class PTBDynamics(Dynamics):
 
         # Macrophage death
         standard_rates = get_rates(MacrophageDeath.__name__, event_config)
-        infected_rates = get_rates(InfectedMacrophageDeathExternal.__name__, event_config)
-        events += get_macrophage_death_events(network.nodes, standard_rates, infected_rates)
+        t_cell_death_rate = event_config.getfloat(InfectedMacrophageDeathByTCell.__name__, RATE)
+        bursting_rate = event_config.getfloat(InfectedMacrophageBursts.__name__, RATE)
+        events += get_macrophage_death_events(network.nodes, standard_rates, t_cell_death_rate, bursting_rate, carrying_capacity, hill_exponent)
 
         # Macrophage phagocytosis
         destroy_rates = get_rates(PhagocytosisDestroy.__name__, event_config)

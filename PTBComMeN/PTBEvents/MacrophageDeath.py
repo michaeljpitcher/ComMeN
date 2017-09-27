@@ -18,8 +18,6 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 MACROPHAGE_DEATH_OPTIONS = ALL_MACROPHAGES
-INFECTED_MACROPHAGE_DEATH_OPTIONS = [T_CELL_ACTIVATED, BACTERIUM_INTRACELLULAR]
-
 
 def get_macrophage_death_events(nodes, standard_rates, t_cell_death_rate, bursting_rate, carrying_capacity, hill_exponent):
     events = []
