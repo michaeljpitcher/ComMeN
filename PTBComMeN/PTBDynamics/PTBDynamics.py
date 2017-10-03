@@ -27,7 +27,8 @@ INTRACELLULAR_BACTERIUM_HILL_EXPONENT = 'intracellular_bacterium_hill_exponent'
 EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
                                 ExtracellularBacteriaReplication.__name__, IntracellularBacteriaReplication.__name__,
                                 BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
-                                BacteriaTranslocateBlood.__name__, MacrophageActivationByExternal.__name__,
+                                BacteriaTranslocateBlood.__name__, MacrophageActivation.__name__,
+                                MacrophageDeactivation.__name__,
                                 MacrophageDeath.__name__, InfectedMacrophageDeathByTCell.__name__,
                                 InfectedMacrophageBursts.__name__,
                                 PhagocytosisDestroy.__name__, PhagocytosisRetain.__name__,
@@ -105,8 +106,14 @@ class PTBDynamics(Dynamics):
                                                     lymph_rates, blood_rates)
 
         # Macrophage activation
-        rates = get_rates(MacrophageActivationByExternal.__name__, event_config)
-        events += get_macrophage_activation_events(network.nodes, rates)
+        rate = event_config.getfloat(MacrophageActivation.__name__, RATE)
+        half_sat = event_config.getfloat(MacrophageActivation.__name__, HALF_SAT)
+        events += get_macrophage_activation_events(network.nodes, rate, half_sat)
+
+        # Macrophage deactivation
+        rate = event_config.getfloat(MacrophageDeactivation.__name__, RATE)
+        half_sat = event_config.getfloat(MacrophageDeactivation.__name__, HALF_SAT)
+        events += get_macrophage_deactivation_events(network.nodes, rate, half_sat)
 
         # Macrophage death
         standard_rates = get_rates(MacrophageDeath.__name__, event_config)

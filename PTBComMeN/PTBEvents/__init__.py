@@ -21,6 +21,7 @@ from BacteriaChangeState import *
 from BacteriaReplication import *
 from BacteriaTranslocate import *
 from MacrophageActivation import *
+from MacrophageDeactivation import *
 from MacrophageDeath import *
 from MacrophagePhagocytosis import *
 from MacrophageRecruitment import *

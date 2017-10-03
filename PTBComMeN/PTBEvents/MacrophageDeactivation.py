@@ -18,19 +18,19 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-def get_macrophage_activation_events(nodes, rate, half_sat):
-    return [MacrophageActivation(rate, nodes, half_sat)]
+def get_macrophage_deactivation_events(nodes, rate, half_sat):
+    return [MacrophageDeactivation(rate, nodes, half_sat)]
 
 # TODO - assumes only T-cell activated causes macrophage activation
 
 
-class MacrophageActivation(Change):
+class MacrophageDeactivation(Change):
     def __init__(self, reaction_parameter, nodes, half_sat):
         self._half_sat = half_sat
-        Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED)
+        Change.__init__(self, reaction_parameter, nodes, MACROPHAGE_ACTIVATED, MACROPHAGE_REGULAR)
 
     def _calculate_state_variable_at_node(self, node):
         if node[T_CELL_ACTIVATED] + self._half_sat == 0.0:
             return 0
         else:
-            return node[MACROPHAGE_REGULAR] * (float(node[T_CELL_ACTIVATED]) / (node[T_CELL_ACTIVATED] + self._half_sat))
+            return node[MACROPHAGE_ACTIVATED] * (float(self._half_sat) / (node[T_CELL_ACTIVATED] + self._half_sat))
