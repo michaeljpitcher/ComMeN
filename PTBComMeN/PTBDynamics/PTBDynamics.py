@@ -29,7 +29,7 @@ EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, Bac
                                 BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
                                 BacteriaTranslocateBlood.__name__, MacrophageActivation.__name__,
                                 MacrophageDeactivation.__name__,
-                                MacrophageDeath.__name__, InfectedMacrophageDeathByTCell.__name__,
+                                MacrophageDeathStandard.__name__, InfectedMacrophageDeathByTCell.__name__,
                                 InfectedMacrophageBursts.__name__,
                                 PhagocytosisDestroy.__name__, PhagocytosisRetain.__name__,
                                 MacrophageRecruitmentLung.__name__, MacrophageRecruitmentLymph.__name__,
@@ -116,10 +116,16 @@ class PTBDynamics(Dynamics):
         events += get_macrophage_deactivation_events(network.nodes, rate, half_sat)
 
         # Macrophage death
-        standard_rates = get_rates(MacrophageDeath.__name__, event_config)
-        t_cell_death_rate = event_config.getfloat(InfectedMacrophageDeathByTCell.__name__, RATE)
+        standard_rates = get_rates(MacrophageDeathStandard.__name__, event_config)
+        events += get_macrophage_standard_death_events(network.nodes, standard_rates)
+
+        # Macrophage death by T-cell
+        t_cell_kill_macrophage_rate = event_config.getfloat(InfectedMacrophageDeathByTCell.__name__, RATE)
+        events += get_macrophage_death_by_t_cell_events(network.nodes, t_cell_kill_macrophage_rate)
+
+        # Macrophage burst
         bursting_rate = event_config.getfloat(InfectedMacrophageBursts.__name__, RATE)
-        events += get_macrophage_death_events(network.nodes, standard_rates, t_cell_death_rate, bursting_rate, carrying_capacity, hill_exponent)
+        events += get_macrophage_bursting_events(network.nodes, bursting_rate, carrying_capacity, hill_exponent)
 
         # Macrophage phagocytosis
         destroy_rates = get_rates(PhagocytosisDestroy.__name__, event_config)

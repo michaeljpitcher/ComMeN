@@ -17,29 +17,9 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-MACROPHAGE_DEATH_OPTIONS = ALL_MACROPHAGES
 
-def get_macrophage_death_events(nodes, standard_rates, t_cell_death_rate, bursting_rate, carrying_capacity, hill_exponent):
-    events = []
-    # Standard
-    for m in ALL_MACROPHAGES:
-        # TODO - assumes natural death of infected macrophage kills all internal bacteria
-        events.append(MacrophageDeath(standard_rates[m], nodes, m))
-    # By T-cell
-    events.append(InfectedMacrophageDeathByTCell(t_cell_death_rate, nodes))
-    # By bursting
-    events.append(InfectedMacrophageBursts(bursting_rate, nodes, carrying_capacity, hill_exponent))
-    return events
-
-
-class MacrophageDeath(Destroy):
-    def __init__(self, reaction_parameter, nodes, compartment_destroyed):
-        Destroy.__init__(self, reaction_parameter, nodes, compartment_destroyed)
-
-
-class InfectedMacrophageDeathByTCell(Destroy):
-    def __init__(self, reaction_parameter, nodes):
-        Destroy.__init__(self, reaction_parameter, nodes, MACROPHAGE_INFECTED, [T_CELL_ACTIVATED])
+def get_macrophage_bursting_events(nodes, bursting_rate, carrying_capacity, hill_exponent):
+    return [InfectedMacrophageBursts(bursting_rate, nodes, carrying_capacity, hill_exponent)]
 
 
 class InfectedMacrophageBursts(Event):
@@ -50,7 +30,8 @@ class InfectedMacrophageBursts(Event):
 
     def _calculate_state_variable_at_node(self, node):
         # Account for possible division by zero
-        if node[MACROPHAGE_INFECTED] == 0:
+        if node[BACTERIUM_INTRACELLULAR] ** self._hill_exponent + \
+           (self._carrying_capacity * node[MACROPHAGE_INFECTED]) ** self._hill_exponent == 0:
             return 0
         else:
             return node[MACROPHAGE_INFECTED] * (node[BACTERIUM_INTRACELLULAR] ** self._hill_exponent * 1.0 / (

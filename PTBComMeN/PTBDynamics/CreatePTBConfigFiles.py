@@ -49,7 +49,7 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
     config_event.set(MacrophageDeactivation.__name__, HALF_SAT, 0.0)
 
     for o in MACROPHAGE_DEATH_OPTIONS:
-        config_event.set(MacrophageDeath.__name__, o, 0.0)
+        config_event.set(MacrophageDeathStandard.__name__, o, 0.0)
 
     config_event.set(InfectedMacrophageDeathByTCell.__name__, RATE, 0.0)
 

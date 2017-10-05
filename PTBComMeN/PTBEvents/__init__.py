@@ -22,7 +22,9 @@ from BacteriaReplication import *
 from BacteriaTranslocate import *
 from MacrophageActivation import *
 from MacrophageDeactivation import *
-from MacrophageDeath import *
+from MacrophageDeathStandard import *
+from MacrophageBursting import *
+from MacrophageDeathByTCell import *
 from MacrophagePhagocytosis import *
 from MacrophageRecruitment import *
 from MacrophageTranslocation import *
