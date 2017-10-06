@@ -47,7 +47,7 @@ class Destroy(Event):
         state_variable = node[self._compartment_destroyed]
         # Multiply by influencing compartments, if specified
         if self._influencing_compartments:
-            state_variable = state_variable * sum([node[c] for c in self._influencing_compartments])
+            state_variable *= sum([node[c] for c in self._influencing_compartments])
         return state_variable
 
     def _update_node(self, node):
