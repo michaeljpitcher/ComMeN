@@ -31,12 +31,12 @@ EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, Bac
                                 MacrophageDeactivation.__name__,
                                 MacrophageDeathStandard.__name__, InfectedMacrophageDeathByTCell.__name__,
                                 InfectedMacrophageBursts.__name__,
-                                PhagocytosisDestroy.__name__, PhagocytosisRetain.__name__,
+                                RegularMacrophageDestroysBacteria.__name__,
+                                ActivatedMacrophageDestroysBacteria.__name__,
+                                MacrophageBecomesInfected.__name__,
                                 MacrophageRecruitmentLung.__name__, MacrophageRecruitmentLymph.__name__,
-                                MacrophageTranslocateLung.__name__, MacrophageTranslocateLymph.__name__,
-                                MacrophageTranslocateBlood.__name__, TCellActivationByExternal.__name__,
+                                InfectedMacrophageTranslocateLymph.__name__, TCellActivationByExternal.__name__,
                                 TCellDeath.__name__, TCellRecruitmentLymph.__name__, TCellTranslocationBlood.__name__]
-
 
 
 def get_rates(event_classname, event_config):
@@ -106,14 +106,14 @@ class PTBDynamics(Dynamics):
                                                     lymph_rates, blood_rates)
 
         # Macrophage activation
-        rate = event_config.getfloat(MacrophageActivation.__name__, RATE)
-        half_sat = event_config.getfloat(MacrophageActivation.__name__, HALF_SAT)
-        events += get_macrophage_activation_events(network.nodes, rate, half_sat)
+        mac_act_rate = event_config.getfloat(MacrophageActivation.__name__, RATE)
+        mac_act_half_sat = event_config.getfloat(MacrophageActivation.__name__, HALF_SAT)
+        events += get_macrophage_activation_events(network.nodes, mac_act_rate, mac_act_half_sat)
 
         # Macrophage deactivation
-        rate = event_config.getfloat(MacrophageDeactivation.__name__, RATE)
-        half_sat = event_config.getfloat(MacrophageDeactivation.__name__, HALF_SAT)
-        events += get_macrophage_deactivation_events(network.nodes, rate, half_sat)
+        mac_deact_rate = event_config.getfloat(MacrophageDeactivation.__name__, RATE)
+        mac_deact_half_sat = event_config.getfloat(MacrophageDeactivation.__name__, HALF_SAT)
+        events += get_macrophage_deactivation_events(network.nodes, mac_deact_rate, mac_deact_half_sat)
 
         # Macrophage death
         standard_rates = get_rates(MacrophageDeathStandard.__name__, event_config)
@@ -121,16 +121,21 @@ class PTBDynamics(Dynamics):
 
         # Macrophage death by T-cell
         t_cell_kill_macrophage_rate = event_config.getfloat(InfectedMacrophageDeathByTCell.__name__, RATE)
-        events += get_macrophage_death_by_t_cell_events(network.nodes, t_cell_kill_macrophage_rate)
+        t_cell_kill_half_sat = event_config.getfloat(InfectedMacrophageDeathByTCell.__name__, HALF_SAT)
+        events += get_macrophage_death_by_t_cell_events(network.nodes, t_cell_kill_macrophage_rate, t_cell_kill_half_sat)
 
         # Macrophage burst
         bursting_rate = event_config.getfloat(InfectedMacrophageBursts.__name__, RATE)
         events += get_macrophage_bursting_events(network.nodes, bursting_rate, carrying_capacity, hill_exponent)
 
-        # Macrophage phagocytosis
-        destroy_rates = get_rates(PhagocytosisDestroy.__name__, event_config)
-        retain_rates = get_rates(PhagocytosisRetain.__name__, event_config)
-        events += get_phagocytosis_events(network.nodes, destroy_rates, retain_rates)
+        # Macrophage destroys bacteria
+        regular_destroy_rates = get_rates(RegularMacrophageDestroysBacteria.__name__, event_config)
+        activated_destroy_rates = get_rates(ActivatedMacrophageDestroysBacteria.__name__, event_config)
+        events += get_macrophage_destroy_bacteria_events(network.nodes, regular_destroy_rates, activated_destroy_rates)
+
+        # Macrophage becomes infected
+        rates = get_rates(MacrophageBecomesInfected.__name__, event_config)
+        events += get_macrophage_becomes_infected_events(network.nodes, rates)
 
         # Macrophage recruitment
         lung_rates = get_rates(MacrophageRecruitmentLung.__name__, event_config)
@@ -139,11 +144,8 @@ class PTBDynamics(Dynamics):
                                                     lymph_rates)
 
         # Macrophage translocation
-        lung_rates = get_rates(MacrophageTranslocateLung.__name__, event_config)
-        lymph_rates = get_rates(MacrophageTranslocateLymph.__name__, event_config)
-        blood_rates = get_rates(MacrophageTranslocateLung.__name__, event_config)
-        events += get_macrophage_translocation_events(network.lung_patches, network.lymph_patches, lung_rates,
-                                                      lymph_rates, blood_rates)
+        mac_translocate_rate = event_config.getfloat(InfectedMacrophageTranslocateLymph.__name__, RATE)
+        events += get_macrophage_translocation_events(network.lung_patches, mac_translocate_rate)
 
         # T cell activation
         rates = get_rates(TCellActivationByExternal.__name__, event_config)

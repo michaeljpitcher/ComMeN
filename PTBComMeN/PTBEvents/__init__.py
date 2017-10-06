@@ -25,7 +25,8 @@ from MacrophageDeactivation import *
 from MacrophageDeathStandard import *
 from MacrophageBursting import *
 from MacrophageDeathByTCell import *
-from MacrophagePhagocytosis import *
+from MacrophageBecomesInfected import *
+from MacrophageDestroysBacteria import *
 from MacrophageRecruitment import *
 from MacrophageTranslocation import *
 from TCellActivationByExternal import *
