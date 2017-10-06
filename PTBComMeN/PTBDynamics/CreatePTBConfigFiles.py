@@ -72,8 +72,8 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
     for o in T_CELL_DEATH_OPTIONS:
         config_event.set(TCellDeath.__name__, o, 0.0)
 
-    for o in T_CELL_RECRUITMENT_OPTIONS:
-        config_event.set(TCellRecruitmentLymph.__name__, o, 0.0)
+    config_event.set(TCellRecruitmentStandard.__name__, RATE, 0.0)
+    config_event.set(TCellRecruitmentByInfectedMacrophage.__name__, RATE, 0.0)
 
     for o in T_CELL_TRANSLOCATION_OPTIONS:
         config_event.set(TCellTranslocationBlood.__name__, o, 0.0)

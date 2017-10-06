@@ -36,7 +36,7 @@ EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, Bac
                                 MacrophageBecomesInfected.__name__,
                                 MacrophageRecruitmentLung.__name__, MacrophageRecruitmentLymph.__name__,
                                 InfectedMacrophageTranslocateLymph.__name__, TCellActivationByExternal.__name__,
-                                TCellDeath.__name__, TCellRecruitmentLymph.__name__, TCellTranslocationBlood.__name__]
+                                TCellDeath.__name__, TCellRecruitmentStandard.__name__, TCellTranslocationBlood.__name__]
 
 
 def get_rates(event_classname, event_config):
@@ -156,8 +156,9 @@ class PTBDynamics(Dynamics):
         events += get_t_cell_death_events(network.nodes, rates)
 
         # T cell recruitment
-        rates = get_rates(TCellRecruitmentLymph.__name__, event_config)
-        events += get_t_cell_recruitment_events(network.lymph_patches, rates)
+        standard_rate = event_config.getfloat(TCellRecruitmentStandard.__name__, RATE)
+        infected_mac_rate = event_config.getfloat(TCellRecruitmentByInfectedMacrophage.__name__, RATE)
+        events += get_t_cell_recruitment_events(network.lymph_patches, standard_rate, infected_mac_rate)
 
         # T cell translocation
         rates = get_rates(TCellTranslocationBlood.__name__, event_config)

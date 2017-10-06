@@ -2,27 +2,39 @@ import unittest
 from PTBComMeN import *
 
 
-class TCellRecruitmentLungTestCase(unittest.TestCase):
+class TCellRecruitmentStandardTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [T_CELL_NAIVE, MACROPHAGE_INFECTED]
+        compartments = [T_CELL_NAIVE]
         self.nodes = [LymphPatch(0, compartments)]
-        self.event = TCellRecruitmentLymph(0.1, self.nodes)
-        self.event_external = TCellRecruitmentLymph(0.2, self.nodes, MACROPHAGE_INFECTED)
-        uh = UpdateHandler([self.event, self.event_external])
+        self.event = TCellRecruitmentStandard(0.1, self.nodes)
+        uh = UpdateHandler([self.event])
 
     def test_rate(self):
         self.assertEqual(self.event.rate, 0.1)
-        self.assertEqual(self.event_external.rate, 0)
-        self.nodes[0].update({MACROPHAGE_INFECTED: 4})
-        self.assertEqual(self.event.rate, 0.1)
-        self.assertEqual(self.event_external.rate, 0.2 * 4)
 
     def test_update(self):
-        self.nodes[0].update({MACROPHAGE_INFECTED: 1})
+        self.assertEqual(self.nodes[0][T_CELL_NAIVE], 0)
         self.event.perform()
         self.assertEqual(self.nodes[0][T_CELL_NAIVE], 1)
-        self.event_external.perform()
-        self.assertEqual(self.nodes[0][T_CELL_NAIVE], 2)
+
+
+class TCellRecruitmentByInfectedMacrophageTestCase(unittest.TestCase):
+    def setUp(self):
+        compartments = [T_CELL_NAIVE, MACROPHAGE_INFECTED]
+        self.nodes = [LymphPatch(0, compartments)]
+        self.event = TCellRecruitmentByInfectedMacrophage(0.1, self.nodes)
+        uh = UpdateHandler([self.event])
+
+    def test_rate(self):
+        self.assertEqual(self.event.rate, 0.0)
+        self.nodes[0].update({MACROPHAGE_INFECTED: 4})
+        self.assertEqual(self.event.rate, 0.1 * 4)
+
+    def test_update(self):
+        self.nodes[0].update({MACROPHAGE_INFECTED: 4})
+        self.assertEqual(self.nodes[0][T_CELL_NAIVE], 0)
+        self.event.perform()
+        self.assertEqual(self.nodes[0][T_CELL_NAIVE], 1)
 
 
 class GetTCellRecruitmentEventsTestCase(unittest.TestCase):
@@ -30,19 +42,16 @@ class GetTCellRecruitmentEventsTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
         self.nodes = [LymphPatch(0, compartments)]
-        self.rates = {STANDARD: 0.1, MACROPHAGE_INFECTED: 0.2, BACTERIUM_FAST: 0.3}
-        self.events = get_t_cell_recruitment_events(self.nodes, self.rates)
+        self.rate_standard = 0.1
+        self.rate_infected = 0.2
+        self.events = get_t_cell_recruitment_events(self.nodes, self.rate_standard, self.rate_infected)
 
     def test_events(self):
-        self.assertEqual(len(self.events), 3)
-        for e in self.events:
-            self.assertTrue(isinstance(e, TCellRecruitmentLymph))
-        standard = next(e for e in self.events if not e._influencing_compartments)
+        self.assertEqual(len(self.events), 2)
+        standard = next(i for i in self.events if isinstance(i, TCellRecruitmentStandard))
         self.assertEqual(standard.reaction_parameter, 0.1)
-        external_1 = next(e for e in self.events if e._influencing_compartments == [MACROPHAGE_INFECTED])
-        self.assertEqual(external_1.reaction_parameter, 0.2)
-        external_2 = next(e for e in self.events if e._influencing_compartments == [BACTERIUM_FAST])
-        self.assertEqual(external_2.reaction_parameter, 0.3)
+        infected = next(i for i in self.events if isinstance(i, TCellRecruitmentByInfectedMacrophage))
+        self.assertEqual(infected.reaction_parameter, 0.2)
 
 
 if __name__ == '__main__':
