@@ -23,13 +23,18 @@ def get_macrophage_destroy_bacteria_events(nodes, regular_rates, activated_rates
     events = []
     for bacterium in EXTRACELLULAR_BACTERIA:
         # Regular
-        events.append(MacrophageDestroysBacteria(regular_rates[bacterium], nodes, bacterium, MACROPHAGE_REGULAR))
+        events.append(RegularMacrophageDestroysBacteria(regular_rates[bacterium], nodes, bacterium,))
         # Activated
-        events.append(MacrophageDestroysBacteria(activated_rates[bacterium], nodes, bacterium, MACROPHAGE_ACTIVATED))
+        events.append(ActivatedMacrophageDestroysBacteria(activated_rates[bacterium], nodes, bacterium))
 
     return events
 
 
-class MacrophageDestroysBacteria(Destroy):
-    def __init__(self, reaction_parameter, nodes, bacterium, macrophage):
-        Destroy.__init__(self, reaction_parameter, nodes, bacterium, [macrophage])
+class RegularMacrophageDestroysBacteria(Destroy):
+    def __init__(self, reaction_parameter, nodes, bacterium):
+        Destroy.__init__(self, reaction_parameter, nodes, bacterium, [MACROPHAGE_REGULAR])
+
+
+class ActivatedMacrophageDestroysBacteria(Destroy):
+    def __init__(self, reaction_parameter, nodes, bacterium):
+        Destroy.__init__(self, reaction_parameter, nodes, bacterium, [MACROPHAGE_ACTIVATED])
