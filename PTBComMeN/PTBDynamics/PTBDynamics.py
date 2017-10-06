@@ -35,8 +35,10 @@ EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, Bac
                                 ActivatedMacrophageDestroysBacteria.__name__,
                                 MacrophageBecomesInfected.__name__,
                                 MacrophageRecruitmentLung.__name__, MacrophageRecruitmentLymph.__name__,
-                                InfectedMacrophageTranslocateLymph.__name__, TCellActivationByExternal.__name__,
-                                TCellDeath.__name__, TCellRecruitmentStandard.__name__, TCellTranslocationBlood.__name__]
+                                InfectedMacrophageTranslocateLymph.__name__,
+                                TCellDifferentiationByInfectedMacrophages.__name__,
+                                TCellDeath.__name__, TCellRecruitmentStandard.__name__,
+                                TCellTranslocationBlood.__name__]
 
 
 def get_rates(event_classname, event_config):
@@ -134,8 +136,8 @@ class PTBDynamics(Dynamics):
         events += get_macrophage_destroy_bacteria_events(network.nodes, regular_destroy_rates, activated_destroy_rates)
 
         # Macrophage becomes infected
-        rates = get_rates(MacrophageBecomesInfected.__name__, event_config)
-        events += get_macrophage_becomes_infected_events(network.nodes, rates)
+        mac_infection_rates = get_rates(MacrophageBecomesInfected.__name__, event_config)
+        events += get_macrophage_becomes_infected_events(network.nodes, mac_infection_rates)
 
         # Macrophage recruitment
         lung_rates = get_rates(MacrophageRecruitmentLung.__name__, event_config)
@@ -147,9 +149,9 @@ class PTBDynamics(Dynamics):
         mac_translocate_rate = event_config.getfloat(InfectedMacrophageTranslocateLymph.__name__, RATE)
         events += get_macrophage_translocation_events(network.lung_patches, mac_translocate_rate)
 
-        # T cell activation
-        rates = get_rates(TCellActivationByExternal.__name__, event_config)
-        events += get_t_cell_activation_events(network.nodes, rates)
+        # T cell differentiation
+        tcell_differentiation_rate = event_config.getfloat(TCellDifferentiationByInfectedMacrophages.__name__, RATE)
+        events += get_t_cell_differentiation_events(network.nodes, tcell_differentiation_rate)
 
         # T cell death
         rates = get_rates(TCellDeath.__name__, event_config)

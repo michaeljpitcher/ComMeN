@@ -2,11 +2,11 @@ import unittest
 from PTBComMeN import *
 
 
-class MacrophageDestroysBacteriaTestCase(unittest.TestCase):
+class RegularMacrophageDestroysBacteriaTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_REGULAR, BACTERIUM_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.event = MacrophageDestroysBacteria(0.1, self.nodes, BACTERIUM_FAST, MACROPHAGE_REGULAR)
+        self.event = RegularMacrophageDestroysBacteria(0.1, self.nodes, BACTERIUM_FAST)
         uh = UpdateHandler([self.event])
 
     def test_rate(self):
@@ -22,6 +22,28 @@ class MacrophageDestroysBacteriaTestCase(unittest.TestCase):
         self.assertEqual(self.nodes[0][MACROPHAGE_REGULAR], 2)
         self.assertEqual(self.nodes[0][BACTERIUM_FAST], 4)
 
+
+class ActivatedMacrophageDestroysBacteriaTestCase(unittest.TestCase):
+    def setUp(self):
+        compartments = [MACROPHAGE_ACTIVATED, BACTERIUM_FAST]
+        self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
+        self.event = ActivatedMacrophageDestroysBacteria(0.1, self.nodes, BACTERIUM_FAST)
+        uh = UpdateHandler([self.event])
+
+    def test_rate(self):
+        self.assertEqual(self.event.rate, 0)
+        self.nodes[0].update({MACROPHAGE_ACTIVATED: 2})
+        self.assertEqual(self.event.rate, 0)
+        self.nodes[0].update({BACTERIUM_FAST: 3})
+        self.assertEqual(self.event.rate, 0.1 * 2 * 3)
+
+    def test_update(self):
+        self.nodes[0].update({MACROPHAGE_ACTIVATED: 2, BACTERIUM_FAST:5})
+        self.event.perform()
+        self.assertEqual(self.nodes[0][MACROPHAGE_ACTIVATED], 2)
+        self.assertEqual(self.nodes[0][BACTERIUM_FAST], 4)
+
+
 class GetMacrophageDestroyBacteriaEventsTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -34,16 +56,16 @@ class GetMacrophageDestroyBacteriaEventsTestCase(unittest.TestCase):
 
     def test_events(self):
         self.assertEqual(len(self.events), 4)
-        regular_fast = next(e for e in self.events if e._influencing_compartments[0] == MACROPHAGE_REGULAR and
+        regular_fast = next(e for e in self.events if isinstance(e, RegularMacrophageDestroysBacteria) and
                             e._compartment_destroyed == BACTERIUM_FAST)
         self.assertEqual(regular_fast.reaction_parameter, 0.1)
-        regular_slow = next(e for e in self.events if e._influencing_compartments[0] == MACROPHAGE_REGULAR and
+        regular_slow = next(e for e in self.events if isinstance(e, RegularMacrophageDestroysBacteria) and
                             e._compartment_destroyed == BACTERIUM_SLOW)
         self.assertEqual(regular_slow.reaction_parameter, 0.2)
-        activated_fast = next(e for e in self.events if e._influencing_compartments[0] == MACROPHAGE_ACTIVATED and
+        activated_fast = next(e for e in self.events if isinstance(e, ActivatedMacrophageDestroysBacteria) and
                             e._compartment_destroyed == BACTERIUM_FAST)
         self.assertEqual(activated_fast.reaction_parameter, 0.3)
-        activated_slow = next(e for e in self.events if e._influencing_compartments[0] == MACROPHAGE_ACTIVATED and
+        activated_slow = next(e for e in self.events if isinstance(e, ActivatedMacrophageDestroysBacteria) and
                             e._compartment_destroyed == BACTERIUM_SLOW)
         self.assertEqual(activated_slow.reaction_parameter, 0.4)
 

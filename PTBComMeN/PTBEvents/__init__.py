@@ -29,7 +29,7 @@ from MacrophageBecomesInfected import *
 from MacrophageDestroysBacteria import *
 from MacrophageRecruitment import *
 from MacrophageTranslocation import *
-from TCellActivationByExternal import *
+from TCellDifferentiation import *
 from TCellDeath import *
 from TCellRecruitment import *
 from TCellTranslocation import *

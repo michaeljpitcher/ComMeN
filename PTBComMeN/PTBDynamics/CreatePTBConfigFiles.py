@@ -66,8 +66,7 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
 
     config_event.set(InfectedMacrophageTranslocateLymph.__name__, RATE, 0.0)
 
-    for o in T_CELL_ACTIVATION_OPTIONS:
-        config_event.set(TCellActivationByExternal.__name__, o, 0.0)
+    config_event.set(TCellDifferentiationByInfectedMacrophages.__name__, RATE, 0.0)
 
     for o in T_CELL_DEATH_OPTIONS:
         config_event.set(TCellDeath.__name__, o, 0.0)
