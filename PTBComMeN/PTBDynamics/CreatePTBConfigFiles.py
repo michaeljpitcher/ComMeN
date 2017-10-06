@@ -48,26 +48,23 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
     config_event.set(MacrophageDeactivation.__name__, RATE, 0.0)
     config_event.set(MacrophageDeactivation.__name__, HALF_SAT, 0.0)
 
-    for o in MACROPHAGE_DEATH_OPTIONS:
+    for o in ALL_MACROPHAGES:
         config_event.set(MacrophageDeathStandard.__name__, o, 0.0)
 
     config_event.set(InfectedMacrophageDeathByTCell.__name__, RATE, 0.0)
 
     config_event.set(InfectedMacrophageBursts.__name__, RATE, 0.0)
 
-    for o in MACROPHAGE_PHAGOCYTOSIS_DESTROY_OPTIONS:
-        config_event.set(PhagocytosisDestroy.__name__, o, 0.0)
-    for o in MACROPHAGE_PHAGOCYTOSIS_RETAIN_OPTIONS:
-        config_event.set(PhagocytosisRetain.__name__, o, 0.0)
+    for o in EXTRACELLULAR_BACTERIA:
+        config_event.set(RegularMacrophageDestroysBacteria.__name__, o, 0.0)
+        config_event.set(ActivatedMacrophageDestroysBacteria.__name__, o, 0.0)
+        config_event.set(MacrophageBecomesInfected.__name__, o, 0.0)
 
     for o in MACROPHAGE_RECRUITMENT_OPTIONS:
         config_event.set(MacrophageRecruitmentLung.__name__, o, 0.0)
         config_event.set(MacrophageRecruitmentLymph.__name__, o, 0.0)
 
-    for o in MACROPHAGE_TRANSLOCATION_OPTIONS:
-        config_event.set(MacrophageTranslocateLung.__name__, o, 0.0)
-        config_event.set(MacrophageTranslocateLymph.__name__, o, 0.0)
-        config_event.set(MacrophageTranslocateBlood.__name__, o, 0.0)
+    config_event.set(InfectedMacrophageTranslocateLymph.__name__, RATE, 0.0)
 
     for o in T_CELL_ACTIVATION_OPTIONS:
         config_event.set(TCellActivationByExternal.__name__, o, 0.0)
