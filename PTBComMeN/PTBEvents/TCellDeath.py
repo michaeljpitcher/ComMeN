@@ -29,8 +29,5 @@ def get_t_cell_death_events(nodes, standard_death_rates):
 
 
 class TCellDeath(Destroy):
-    def __init__(self, reaction_parameter, nodes, compartment_destroyed, external=None):
-        if external:
-            Destroy.__init__(self, reaction_parameter, nodes, compartment_destroyed, [external])
-        else:
-            Destroy.__init__(self, reaction_parameter, nodes, compartment_destroyed)
+    def __init__(self, reaction_parameter, nodes, compartment_destroyed):
+        Destroy.__init__(self, reaction_parameter, nodes, compartment_destroyed)

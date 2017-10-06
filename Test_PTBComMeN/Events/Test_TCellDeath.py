@@ -7,32 +7,17 @@ class TCellDeathTestCase(unittest.TestCase):
         compartments = [T_CELL_NAIVE, T_CELL_ACTIVATED, BACTERIUM_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.event = TCellDeath(0.1, self.nodes, T_CELL_NAIVE)
-        self.event_external = TCellDeath(0.2, self.nodes, T_CELL_ACTIVATED, BACTERIUM_FAST)
-        uh = UpdateHandler([self.event, self.event_external])
+        uh = UpdateHandler([self.event])
 
     def test_rate(self):
-        for e in [self.event, self.event_external]:
-            self.assertEqual(e.rate, 0)
+        self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({T_CELL_NAIVE: 2})
         self.assertEqual(self.event.rate, 0.1 * 2)
-        self.assertEqual(self.event_external.rate, 0)
-        self.nodes[0].update({BACTERIUM_FAST: 3})
-        self.assertEqual(self.event.rate, 0.1 * 2)
-        self.assertEqual(self.event_external.rate, 0)
-        self.nodes[0].update({T_CELL_ACTIVATED: 5})
-        self.assertEqual(self.event.rate, 0.1 * 2)
-        self.assertEqual(self.event_external.rate, 3.0)
 
     def test_update(self):
-        self.nodes[0].update({T_CELL_NAIVE:1, T_CELL_ACTIVATED:1, BACTERIUM_FAST:2})
+        self.nodes[0].update({T_CELL_NAIVE:1})
         self.event.perform()
         self.assertEqual(self.nodes[0][T_CELL_NAIVE], 0)
-        self.assertEqual(self.nodes[0][T_CELL_ACTIVATED], 1)
-        self.assertEqual(self.nodes[0][BACTERIUM_FAST], 2)
-        self.event_external.perform()
-        self.assertEqual(self.nodes[0][T_CELL_NAIVE], 0)
-        self.assertEqual(self.nodes[0][T_CELL_ACTIVATED], 0)
-        self.assertEqual(self.nodes[0][BACTERIUM_FAST], 2)
 
 
 class GetTCellDeathEventsTestCase(unittest.TestCase):
