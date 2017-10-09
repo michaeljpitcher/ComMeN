@@ -92,8 +92,8 @@ class Event:
         running_total = 0
         # Loop through all nodes which contribute to this event, summing state variables. Once greater than r, choose
         # that node
-        for node in self.state_variable_composition:
-            running_total += self.state_variable_composition[node]
+        for node, composition in self.state_variable_composition.items():
+            running_total += composition
             if running_total >= r:
                 # Update node, finish
                 self._update_node(node)

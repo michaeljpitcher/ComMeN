@@ -30,4 +30,4 @@ class DynamicsTestCase(unittest.TestCase):
         rand.seed(101)
         seeding = {0: {'a':2}}
 
-        self.dynamics.run(time_limit=1000, seeding=seeding, output_data=True, run_id=99)
+        self.dynamics.run(time_limit=100, seeding=seeding, run_id=99, timestep_for_data_record=1)
