@@ -99,11 +99,12 @@ class Dynamics:
             # Update time
             self._time += tau
 
-            # Record data. Use the timestep interval to record - use while loop in case mutliple intervals have been
+            # Record data. Use the timestep interval to record - use while loop in case multiple intervals have been
             # passed
             while self._time > counter:
                 self._record_data(data, counter)
                 counter = counter + timestep_for_data_record
+                self._timestep_print()
 
             for e in self._events:
                 running_total += e.rate
@@ -111,7 +112,7 @@ class Dynamics:
                     e.perform()
                     break
 
-            self._timestep_print()
+
 
         # Write data
         csv_file = open(str(run_id) + '.csv', 'w')
