@@ -57,7 +57,7 @@ class Dynamics:
         # Remove any duplicates
         self.compartments = list(set(self.compartments))
 
-    def run(self, time_limit, seeding, output_data=False, run_id=None):
+    def run(self, time_limit, seeding, run_id, timestep_for_data_record=1):
         """
         Run the simulation, performing events upon the network, until time limit is reached or no event can occur.
         :param time_limit: Maximum simulation time to run dynamics until - will terminate once this is exceeded
@@ -68,26 +68,13 @@ class Dynamics:
         :return:
         """
         print "ComMeN Simulation"
-        csv_writer = None
 
         # Seed the network with initial subpopulation counts
         self.network.seed(seeding)
 
-        # Data is to be written to an output file
-        if output_data:
-            if run_id:
-                filename = str(run_id) + '.csv'
-            else:
-                current_time = [str(time.localtime()[n])+'_' for n in range(5)]
-                current_time.append(str(time.localtime()[5]))
-                filename = ''.join(current_time) + '.csv'
-            csv_file = open(filename, 'w')
-
-            csv_writer = csv.DictWriter(csv_file, [TIMESTEP, NODE_ID] + self.compartments)
-            csv_writer.writeheader()
-            print "Data output to:", filename
-
-            self._record_data(csv_writer)
+        data = []
+        self._record_data(data, 0)
+        counter = timestep_for_data_record
 
         self._timestep_print()
 
@@ -108,17 +95,30 @@ class Dynamics:
             # Choose which event has occurred
             r2 = rand.random() * total_rate
             running_total = 0.0
+
+            # Update time
+            self._time += tau
+
+            # Record data. Use the timestep interval to record - use while loop in case mutliple intervals have been
+            # passed
+            while self._time > counter:
+                self._record_data(data, counter)
+                counter = counter + timestep_for_data_record
+
             for e in self._events:
                 running_total += e.rate
                 if running_total >= r2:
                     e.perform()
                     break
-            # Update time
-            self._time += tau
-            if output_data:
-                # Record data. Use the timestep interval to record
-                self._record_data(csv_writer)
+
             self._timestep_print()
+
+        # Write data
+        csv_file = open(str(run_id) + '.csv', 'w')
+        csv_writer = csv.DictWriter(csv_file, [TIMESTEP, NODE_ID] + self.compartments)
+        csv_writer.writeheader()
+        for row in data:
+            csv_writer.writerow(row)
 
     def _end_simulation(self):
         """
@@ -128,17 +128,18 @@ class Dynamics:
         """
         return False
 
-    def _record_data(self, csv_writer):
+    def _record_data(self, data, counter):
         """
         Write the current state of the network nodes to a csv file. One row = one patch at the current time
         :param csv_writer: CSV writer object (DictWriter)
         """
         # Loop through all nodes
         for node in self.network.nodes:
-            row = {TIMESTEP: self._time, NODE_ID: node.node_id}
+            row = {TIMESTEP: counter, NODE_ID: node.node_id}
             for c in node.compartments:
                 row[c] = node[c]
-            csv_writer.writerow(row)
+            data.append(row)
+        return data
 
     def _timestep_print(self):
         """

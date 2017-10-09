@@ -62,6 +62,7 @@ class MetapopulationNetwork:
         Seed the network with values for sub-populations of nodes
         :param seeding: Dict of seeding. Key=node_id, value=dict, key=compartment, value=subpopulation value
         """
+        self.reset()
         for node_id, node_seeding in seeding.iteritems():
             self[node_id].update(node_seeding)
 
