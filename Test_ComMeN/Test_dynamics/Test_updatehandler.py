@@ -18,7 +18,7 @@ class NonAbstractEvent(Event):
 class UpdateHandlerTestCase(unittest.TestCase):
     def setUp(self):
         compartments = ['a','b']
-        self.nodes = [Patch(None, compartments), Patch(None, compartments)]
+        self.nodes = [Patch(0, compartments), Patch(1, compartments)]
         self.nodes[0]._subpopulation['a'] = 1
         self.nodes[1]._subpopulation['a'] = 13
         self.events = [NonAbstractEvent(0.1, [self.nodes[0]]), NonAbstractEvent(0.2, [self.nodes[1]]),

@@ -37,9 +37,9 @@ class UpdateHandler:
                 if not node.update_handler:
                     node.update_handler = self
                 # Add a record to the dictionary if one doesn't exist already
-                if node not in self._node_dependencies:
-                    self._node_dependencies[node] = []
-                self._node_dependencies[node].append(event)
+                if node.node_id not in self._node_dependencies:
+                    self._node_dependencies[node.node_id] = []
+                self._node_dependencies[node.node_id].append(event)
 
     def propagate_node_update(self, node):
         """
@@ -48,6 +48,6 @@ class UpdateHandler:
         :param node: The node whose subpopulation has been amended
         :return:
         """
-        events = self._node_dependencies[node]
+        events = self._node_dependencies[node.node_id]
         for e in events:
             e.update_state_variable_from_node(node)
