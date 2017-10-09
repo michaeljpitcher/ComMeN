@@ -56,7 +56,7 @@ class GetMacrophageTranslocationEventsTestCase(unittest.TestCase):
         self.assertEqual(len(self.events), 1)
         self.assertTrue(isinstance(self.events[0], InfectedMacrophageTranslocateLymph))
         self.assertEqual(self.events[0].reaction_parameter, 0.1)
-        self.assertItemsEqual(self.events[0].state_variable_composition.keys(), self.nodes)
+        self.assertItemsEqual(self.events[0].state_variable_composition.keys(), [n.node_id for n in self.nodes])
 
 
 if __name__ == '__main__':

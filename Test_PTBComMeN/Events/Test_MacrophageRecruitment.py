@@ -67,7 +67,7 @@ class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
         self.assertEqual(standard_lung.reaction_parameter, 0.1)
         standard_lymph = next(n for n in self.events if isinstance(n, Create) and
                               not n._influencing_compartments and
-                              n.state_variable_composition.keys() == [self.nodes[1]])
+                              n.state_variable_composition.keys() == [self.nodes[1].node_id])
         self.assertEqual(standard_lymph.reaction_parameter, 0.2)
         m_i_lung = next(n for n in self.events if isinstance(n, RecruitmentByPerfusion) and
                              n._influencing_compartments == [MACROPHAGE_INFECTED])
@@ -77,11 +77,11 @@ class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
         self.assertEqual(b_f_lung.reaction_parameter, 0.4)
         m_i_lymph = next(n for n in self.events if isinstance(n, Create) and
                               n._influencing_compartments == [MACROPHAGE_INFECTED] and
-                              n.state_variable_composition.keys() == [self.nodes[1]])
+                              n.state_variable_composition.keys() == [self.nodes[1].node_id])
         self.assertEqual(m_i_lymph.reaction_parameter, 0.5)
         b_f_lymph = next(n for n in self.events if isinstance(n, Create) and
                          n._influencing_compartments == [BACTERIUM_FAST] and
-                         n.state_variable_composition.keys() == [self.nodes[1]])
+                         n.state_variable_composition.keys() == [self.nodes[1].node_id])
         self.assertEqual(b_f_lymph.reaction_parameter, 0.6)
 
 if __name__ == '__main__':

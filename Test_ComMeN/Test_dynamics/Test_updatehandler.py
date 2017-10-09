@@ -28,9 +28,9 @@ class UpdateHandlerTestCase(unittest.TestCase):
     def test_initialise(self):
         self.assertEqual(self.nodes[0]._subpopulation['a'], 1)
         self.assertEqual(self.nodes[1]._subpopulation['a'], 13)
-        self.assertItemsEqual(self.events[0].state_variable_composition.keys(), [self.nodes[0]])
-        self.assertItemsEqual(self.events[1].state_variable_composition.keys(), [self.nodes[1]])
-        self.assertItemsEqual(self.events[2].state_variable_composition.keys(), [self.nodes[0]])
+        self.assertItemsEqual(self.events[0].state_variable_composition.keys(), [self.nodes[0].node_id])
+        self.assertItemsEqual(self.events[1].state_variable_composition.keys(), [self.nodes[1].node_id])
+        self.assertItemsEqual(self.events[2].state_variable_composition.keys(), [self.nodes[0].node_id])
         self.assertEqual(self.events[0].rate, 0.1 * 1)
         self.assertEqual(self.events[1].rate, 0.2 * 13)
         self.assertEqual(self.events[2].rate, 0.3 * 1)

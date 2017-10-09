@@ -19,7 +19,7 @@ class EventTestCase(unittest.TestCase):
     def setUp(self):
         compartments = ['a','b']
         self.reaction_parameter = 0.1
-        self.nodes = [Patch(None, compartments), Patch(None, compartments)]
+        self.nodes = [Patch(0, compartments), Patch(1, compartments)]
         self.event = NonAbstractEvent(self.reaction_parameter, self.nodes)
 
     def test_initialise(self):

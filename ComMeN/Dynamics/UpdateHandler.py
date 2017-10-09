@@ -32,7 +32,7 @@ class UpdateHandler:
         self._node_dependencies = dict()
 
         for event in events:
-            for node in event.state_variable_composition:
+            for node in event.nodes:
                 # Attaches itself to the node (if no update handler already)
                 if not node.update_handler:
                     node.update_handler = self

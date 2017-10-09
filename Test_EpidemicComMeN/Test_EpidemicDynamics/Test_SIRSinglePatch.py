@@ -16,4 +16,4 @@ class InfectTestCase(unittest.TestCase):
 
     def test_run(self):
         seeding = {0:{SUSCEPTIBLE: 10000-10, INFECTIOUS: 10}}
-        self.dynamics.run(10, seeding)
+        self.dynamics.run(10, seeding, 1)

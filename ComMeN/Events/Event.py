@@ -44,8 +44,11 @@ class Event:
         self._state_variable = 0
         self.state_variable_composition = dict()
         # Write a record in the dictionary for every node where this event can happen, update with value from node.
+        self.nodes = nodes
         for n in nodes:
-            self.state_variable_composition[n] = 0.0
+            # Keys are node IDs - this dict is referenced a lot so more efficient to use ID for lookup rather than whole
+            # object
+            self.state_variable_composition[n.node_id] = 0.0
             self.update_state_variable_from_node(n)
 
     def update_state_variable_from_node(self, node):
@@ -56,14 +59,14 @@ class Event:
         # Get new value
         value_after = self._calculate_state_variable_at_node(node)
         # Calculate change
-        change = value_after - self.state_variable_composition[node]
+        change = value_after - self.state_variable_composition[node.node_id]
         # No change, so quit
-        if change == 0:
+        if not change:
             # TODO - some means of update where we don't get this far if change will be zero (i.e. base updates on
             # compartments affected, not just nodes)
             return
         # Set new value
-        self.state_variable_composition[node] = value_after
+        self.state_variable_composition[node.node_id] = value_after
         # Alter the total state variable by the change of amount
         self._state_variable += change
         # Recalculate rate
@@ -92,10 +95,11 @@ class Event:
         running_total = 0
         # Loop through all nodes which contribute to this event, summing state variables. Once greater than r, choose
         # that node
-        for node, composition in self.state_variable_composition.items():
+        for node_id, composition in self.state_variable_composition.items():
             running_total += composition
             if running_total >= r:
                 # Update node, finish
+                node = next(n for n in self.nodes if n.node_id == node_id)
                 self._update_node(node)
                 return
 
