@@ -7,7 +7,7 @@ class InfectedMacrophageBurstsTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_INFECTED, BACTERIUM_INTRACELLULAR, BACTERIUM_SLOW]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.carrying_capacity = 20
+        self.carrying_capacity = 13
         self.hill_exponent = 2
         self.event = InfectedMacrophageBursts(1.0, self.nodes, self.carrying_capacity, self.hill_exponent)
         uh = UpdateHandler([self.event])
@@ -28,11 +28,18 @@ class InfectedMacrophageBurstsTestCase(unittest.TestCase):
         self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 20)
 
         self.nodes[0].reset()
-        self.nodes[0].update({MACROPHAGE_INFECTED: 2, BACTERIUM_INTRACELLULAR: 39})
+        self.nodes[0].update({MACROPHAGE_INFECTED: 2, BACTERIUM_INTRACELLULAR: 83})
         self.event.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 19)
-        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 20)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 41)
+        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 42)
+
+        self.nodes[0].reset()
+        self.nodes[0].update({MACROPHAGE_INFECTED: 5, BACTERIUM_INTRACELLULAR: 61})
+        self.event.perform()
+        self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 4)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 49)
+        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 12)
 
 
 class GetMacrophageBurstingEventsTestCase(unittest.TestCase):

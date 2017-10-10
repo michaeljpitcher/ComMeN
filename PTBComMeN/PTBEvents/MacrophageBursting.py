@@ -39,5 +39,6 @@ class InfectedMacrophageBursts(Event):
                     self._carrying_capacity * node[MACROPHAGE_INFECTED]) ** self._hill_exponent))
 
     def _update_node(self, node):
-        node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR: -1 * self._carrying_capacity,
-                     BACTERIUM_SLOW: self._carrying_capacity})
+        bacteria_to_release = int(round(float(node[BACTERIUM_INTRACELLULAR]) / node[MACROPHAGE_INFECTED]))
+        node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR: -1 * bacteria_to_release,
+                     BACTERIUM_SLOW: bacteria_to_release})
