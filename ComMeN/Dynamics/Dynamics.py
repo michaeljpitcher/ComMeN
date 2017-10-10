@@ -59,15 +59,14 @@ class Dynamics:
 
     def run(self, time_limit, seeding, run_id, timestep_for_data_record=1):
         """
-        Run the simulation, performing events upon the network, until time limit is reached or no event can occur.
-        :param time_limit: Maximum simulation time to run dynamics until - will terminate once this is exceeded
-        :param seeding: Initial state of the network. Dict: key=node_id, value=updates as dict: key=compartment,
-                        value=amount to start
-        :param output_data: Should data be written to a CSV file
-        :param run_id: Identifier for this simulation. Will be used for CSV filename if supplied
+
+        :param time_limit: Limit of simulated time for which to run the experiment
+        :param seeding: The initial seeding of the network (key: node, value: dict, key: compartment, value: seeding)
+        :param run_id: ID for this experiment. Will form the filename of output data
+        :param timestep_for_data_record: How often (in simulated time) to record data
         :return:
         """
-        print "ComMeN Simulation"
+        print "ComMeN Simulation - Run ID:" + str(run_id)
 
         # Seed the network with initial subpopulation counts
         self.network.seed(seeding)
@@ -112,14 +111,13 @@ class Dynamics:
                     e.perform()
                     break
 
-
-
         # Write data
         csv_file = open(str(run_id) + '.csv', 'w')
         csv_writer = csv.DictWriter(csv_file, [TIMESTEP, NODE_ID] + self.compartments)
         csv_writer.writeheader()
         for row in data:
             csv_writer.writerow(row)
+        csv_file.close()
 
     def _end_simulation(self):
         """
