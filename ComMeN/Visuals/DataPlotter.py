@@ -49,7 +49,7 @@ def draw_single_population_graph(filename, compartments, show_total=False, title
     plt.show()
 
 
-def draw_multiple_nodes_graph(filename, compartments, title=None):
+def draw_multiple_nodes_graph(filename, compartments, nodes=None, title=None, show_legend=False):
     csv_file = open(filename, 'r')
     csv_reader = csv.DictReader(csv_file)
     time = []
@@ -72,11 +72,15 @@ def draw_multiple_nodes_graph(filename, compartments, title=None):
 
     print "Plotting data"
     for c in compartments:
-        legend = []
         comp_data = data[c]
-        for key in comp_data:
-            legend.append(key)
+
+        if not nodes:
+            nodes = comp_data.keys()
+
+        for key in nodes:
             plt.plot(time, comp_data[key], label=key)
-        plt.legend()
+
+        if show_legend:
+            plt.legend()
         plt.title(c)
         plt.show()
