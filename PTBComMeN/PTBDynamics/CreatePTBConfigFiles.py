@@ -85,7 +85,7 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
 def create_seeding_config_file(filename=DEFAULT_SEEDING_CONFIG_FILE):
     config_seeding_file = open(filename, 'w')
     config_seeding = ConfigParser.ConfigParser()
-    for n in ALL_BPS + [LYMPH]:
+    for n in LUNG_BPS + [LYMPH]:
         config_seeding.add_section(n)
         for c in ALL_TB_COMPARTMENTS:
             config_seeding.set(n, c, 0)

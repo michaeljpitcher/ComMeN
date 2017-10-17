@@ -48,7 +48,7 @@ class PulmonaryNetwork(MetapopulationNetwork):
         # BPS network
 
         # Node for every BPS
-        for segment_id in ALL_BPS:
+        for segment_id in LUNG_BPS:
             try:
                 nodes[segment_id] = LungPatch(segment_id, compartments, ventilation[segment_id], perfusion[segment_id])
             except KeyError as e:
@@ -66,7 +66,7 @@ class PulmonaryNetwork(MetapopulationNetwork):
                     edges.append(LungEdge(bps_patch, bps_patch2, edge_weight_within_lobe))
         if edge_weight_adjacent_lobe > 0.0:
             # Adjacent lobes list. Lobes next to each other are considered adjacent and may have an edge
-            adjacency = [RIGHT_INFERIOR, RIGHT_MIDDLE, RIGHT_SUPERIOR, LEFT_SUPERIOR, LEFT_INFERIOR]
+            adjacency = [RIGHT_INFERIOR_LOBE, RIGHT_MIDDLE_LOBE, RIGHT_SUPERIOR_LOBE, LEFT_SUPERIOR_LOBE, LEFT_INFERIOR_LOBE]
             for lobe_index in range(len(adjacency)-1):
                 for BPS in adjacency[lobe_index]:
                     node1 = nodes[BPS]
@@ -82,7 +82,8 @@ class PulmonaryNetwork(MetapopulationNetwork):
         self.lymph_patches = [nodes[LYMPH]]
 
         if lymphatic_drainage:
-            for segment_id in ALL_BPS:
+            for segment_id in LUNG_BPS:
+                print lymphatic_drainage[segment_id]
                 # Add a lymph edge from lymph to every BPS
                 edges.append(LymphEdge(nodes[segment_id], nodes[LYMPH], lymphatic_drainage[segment_id]))
                 # Add a blood edge from lymph to all BPS

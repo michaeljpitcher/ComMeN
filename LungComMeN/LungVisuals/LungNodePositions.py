@@ -18,12 +18,12 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-BPS_POSITIONS_ALL = {APICAL_RIGHT: (0, 10), POSTERIOR_RIGHT: (0, 8), ANTERIOR_RIGHT: (3, 10),
-                     LATERAL_RIGHT: (0, 6), MEDIAL_RIGHT: (0, 4),
-                     SUPERIOR_RIGHT: (0, 0), MEDIAL_BASAL_RIGHT: (0, 2), ANTERIOR_BASAL_RIGHT: (3, 0),
-                     LATERAL_BASAL_RIGHT: (3, 2), POSTERIOR_BASAL_RIGHT: (1.5, 3),
-                     INFERIOR_LINGULAR_LEFT: (7, 8), SUPERIOR_LIGULAR_LEFT: (7, 10),
-                     APICOPOSTERIOR_LEFT: (10, 10), ANTERIOR_LEFT: (10, 8),
-                     SUPERIOR_LEFT: (10, 0), ANTEROMEDIAL_LEFT: (7, 0), POSTERIOR_BASAL_LEFT: (10, 2),
-                     LATERAL_BASAL_LEFT: (7, 2),
+BPS_POSITIONS_ALL = {RIGHT_APICAL: (0, 10), RIGHT_POSTERIOR: (0, 8), RIGHT_ANTERIOR: (3, 10),
+                     RIGHT_LATERAL: (0, 6), RIGHT_MEDIAL: (0, 4),
+                     RIGHT_SUPERIOR: (0, 0), RIGHT_MEDIAL_BASAL: (0, 2), RIGHT_ANTERIOR_BASAL: (3, 0),
+                     RIGHT_LATERAL_BASAL: (3, 2), RIGHT_POSTERIOR_BASAL: (1.5, 3),
+                     LEFT_INFERIOR_LINGULAR: (7, 8), LEFT_SUPERIOR_LIGULAR: (7, 10),
+                     LEFT_APICOPOSTERIOR: (10, 10), LEFT_ANTERIOR: (10, 8),
+                     LEFT_SUPERIOR: (10, 0), LEFT_ANTEROMEDIAL: (7, 0), LEFT_POSTERIOR_BASAL: (10, 2),
+                     LEFT_LATERAL_BASAL: (7, 2),
                      LYMPH: (5, 5)}

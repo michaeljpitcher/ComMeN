@@ -35,7 +35,7 @@ def create_network_config_file(filename=DEFAULT_NETWORK_CONFIG_FILE):
     config_network.set(NETWORK_CONFIGURATION_SECTIONS[1], "# Ventilation values for lung patches")
     config_network.set(NETWORK_CONFIGURATION_SECTIONS[2], "# Perfusion values for lung patches")
     # Set ventilation / perfusion values (as 1)
-    for bps in ALL_BPS:
+    for bps in LUNG_BPS:
         config_network.set(NETWORK_CONFIGURATION_SECTIONS[1], bps, 1.0)
         config_network.set(NETWORK_CONFIGURATION_SECTIONS[2], bps, 1.0)
     # Write to file and close
