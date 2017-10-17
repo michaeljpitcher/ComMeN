@@ -74,6 +74,7 @@ class MetapopulationNetwork:
         assert node.node_id not in [n.node_id for n in self.nodes], \
             "Node ID {0} already exists in network".format(node.node_id)
         self.nodes.append(node)
+        self.nodes.sort(key=lambda x: x.node_id)
 
     def add_edge(self, edge):
         """
