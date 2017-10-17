@@ -109,6 +109,7 @@ class StartPage(tk.Frame):
         self.pack()
 
         nodes = self.comp_data.values()[0].keys()
+        nodes = sorted(nodes)
         row = 2
         for n in nodes:
             self.node_vars[n] = tk.IntVar()
