@@ -28,11 +28,11 @@ def get_macrophage_standard_death_events(nodes, standard_rates):
 
 class MacrophageDeathStandard(Destroy):
     def __init__(self, reaction_parameter, nodes, compartment_destroyed):
-        # TODO - where's the bac death?
         Destroy.__init__(self, reaction_parameter, nodes, compartment_destroyed)
 
     def _update_node(self, node):
         if self._compartment_destroyed == MACROPHAGE_INFECTED:
+            # TODO - assume bacteria inside are killed
             bacs_killed = int(round(float(node[BACTERIUM_INTRACELLULAR]) / node[MACROPHAGE_INFECTED]))
             node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR: -1 * bacs_killed})
         else:
