@@ -60,9 +60,13 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
         config_event.set(ActivatedMacrophageDestroysBacteria.__name__, o, 0.0)
         config_event.set(MacrophageBecomesInfected.__name__, o, 0.0)
 
-    for o in MACROPHAGE_RECRUITMENT_OPTIONS:
-        config_event.set(MacrophageRecruitmentLung.__name__, o, 0.0)
-        config_event.set(MacrophageRecruitmentLymph.__name__, o, 0.0)
+    config_event.set(MacrophageRecruitmentLungStandard.__name__, RATE, 0.0)
+
+    for o in MACROPHAGE_RECRUITMENT_LUNG_ENHANCED_OPTIONS:
+        config_event.set(MacrophageRecruitmentLungEnhanced.__name__, o, 0.0)
+
+    for o in MACROPHAGE_RECRUITMENT_LYMPH_ENHANCED_OPTIONS:
+        config_event.set(MacrophageRecruitmentLymphEnhanced.__name__, o, 0.0)
 
     config_event.set(InfectedMacrophageTranslocateLymph.__name__, RATE, 0.0)
 

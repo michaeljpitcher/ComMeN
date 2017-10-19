@@ -6,8 +6,8 @@ class MacrophageRecruitmentLungTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.event = MacrophageRecruitmentLung(0.1, self.nodes)
-        self.event_external = MacrophageRecruitmentLung(0.2, self.nodes, MACROPHAGE_INFECTED)
+        self.event = MacrophageRecruitmentLungStandard(0.1, self.nodes)
+        self.event_external = MacrophageRecruitmentLungEnhanced(0.2, self.nodes, MACROPHAGE_INFECTED)
         uh = UpdateHandler([self.event, self.event_external])
 
     def test_rate(self):
@@ -30,8 +30,8 @@ class MacrophageRecruitmentLymphTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED]
         self.nodes = [LymphPatch(0, compartments)]
-        self.event = MacrophageRecruitmentLymph(0.1, self.nodes)
-        self.event_external = MacrophageRecruitmentLymph(0.2, self.nodes, MACROPHAGE_INFECTED)
+        self.event = MacrophageRecruitmentLymphStandard(0.1, self.nodes)
+        self.event_external = MacrophageRecruitmentLymphEnhanced(0.2, self.nodes, MACROPHAGE_INFECTED)
         uh = UpdateHandler([self.event, self.event_external])
 
     def test_rate(self):
@@ -55,33 +55,33 @@ class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
     def setUp(self):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3), LymphPatch(1, compartments)]
-        self.lung_rates = {STANDARD: 0.1, MACROPHAGE_INFECTED: 0.3, BACTERIUM_FAST: 0.4}
-        self.lymph_rates = {STANDARD:0.2, MACROPHAGE_INFECTED: 0.5, BACTERIUM_FAST: 0.6}
+        self.lung_rate_standard = 0.1
+        self.lung_rates_enhanced = {MACROPHAGE_INFECTED: 0.2, BACTERIUM_FAST: 0.3}
+        self.lymph_rate_standard = 0.4
+        self.lymph_rates_enhanced = {MACROPHAGE_INFECTED: 0.5, BACTERIUM_FAST: 0.6}
         self.events = get_macrophage_recruitment_events([self.nodes[0]], [self.nodes[1]],
-                                                        self.lung_rates, self.lymph_rates)
+                                                        self.lung_rate_standard, self.lung_rates_enhanced,
+                                                        self.lymph_rate_standard, self.lymph_rates_enhanced)
 
     def test_events(self):
         self.assertEqual(len(self.events), 6)
-        standard_lung = next(n for n in self.events if isinstance(n, RecruitmentByPerfusion) and
-                             not n._influencing_compartments)
+        standard_lung = next(n for n in self.events if isinstance(n, MacrophageRecruitmentLungStandard))
         self.assertEqual(standard_lung.reaction_parameter, 0.1)
-        standard_lymph = next(n for n in self.events if isinstance(n, Create) and
-                              not n._influencing_compartments and
-                              n.state_variable_composition.keys() == [self.nodes[1].node_id])
-        self.assertEqual(standard_lymph.reaction_parameter, 0.2)
-        m_i_lung = next(n for n in self.events if isinstance(n, RecruitmentByPerfusion) and
-                             n._influencing_compartments == [MACROPHAGE_INFECTED])
-        self.assertEqual(m_i_lung.reaction_parameter, 0.3)
-        b_f_lung = next(n for n in self.events if isinstance(n, RecruitmentByPerfusion) and
+
+        m_i_lung = next(n for n in self.events if isinstance(n, MacrophageRecruitmentLungEnhanced) and
+                        n._influencing_compartments == [MACROPHAGE_INFECTED])
+        self.assertEqual(m_i_lung.reaction_parameter, 0.2)
+        b_f_lung = next(n for n in self.events if isinstance(n, MacrophageRecruitmentLungEnhanced) and
                         n._influencing_compartments == [BACTERIUM_FAST])
-        self.assertEqual(b_f_lung.reaction_parameter, 0.4)
-        m_i_lymph = next(n for n in self.events if isinstance(n, Create) and
-                              n._influencing_compartments == [MACROPHAGE_INFECTED] and
-                              n.state_variable_composition.keys() == [self.nodes[1].node_id])
+        self.assertEqual(b_f_lung.reaction_parameter, 0.3)
+
+        standard_lymph = next(n for n in self.events if isinstance(n, MacrophageRecruitmentLymphStandard))
+        self.assertEqual(standard_lymph.reaction_parameter, 0.4)
+        m_i_lymph = next(n for n in self.events if isinstance(n, MacrophageRecruitmentLymphEnhanced) and
+                              n._influencing_compartments == [MACROPHAGE_INFECTED])
         self.assertEqual(m_i_lymph.reaction_parameter, 0.5)
-        b_f_lymph = next(n for n in self.events if isinstance(n, Create) and
-                         n._influencing_compartments == [BACTERIUM_FAST] and
-                         n.state_variable_composition.keys() == [self.nodes[1].node_id])
+        b_f_lymph = next(n for n in self.events if isinstance(n, MacrophageRecruitmentLymphEnhanced) and
+                         n._influencing_compartments == [BACTERIUM_FAST])
         self.assertEqual(b_f_lymph.reaction_parameter, 0.6)
 
 if __name__ == '__main__':
