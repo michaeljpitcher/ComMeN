@@ -32,8 +32,9 @@ class MacrophageDeathStandard(Destroy):
 
     def _update_node(self, node):
         if self._compartment_destroyed == MACROPHAGE_INFECTED:
-            # TODO - assume bacteria inside are killed
+            # TODO - assume bacteria inside are released
             bacs_killed = int(round(float(node[BACTERIUM_INTRACELLULAR]) / node[MACROPHAGE_INFECTED]))
-            node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR: -1 * bacs_killed})
+            node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR: -1 * bacs_killed,
+                         BACTERIUM_SLOW: bacs_killed})
         else:
             Destroy._update_node(self, node)

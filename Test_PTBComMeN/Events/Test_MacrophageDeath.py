@@ -4,7 +4,7 @@ from PTBComMeN import *
 
 class MacrophageDeathTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_INTRACELLULAR]
+        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_INTRACELLULAR, BACTERIUM_SLOW]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.event = MacrophageDeathStandard(0.1, self.nodes, MACROPHAGE_REGULAR)
         self.event_inf = MacrophageDeathStandard(0.2, self.nodes, MACROPHAGE_INFECTED)
@@ -29,18 +29,21 @@ class MacrophageDeathTestCase(unittest.TestCase):
         self.event_inf.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 0)
         self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 0)
+        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 10)
 
         self.nodes[0].reset()
         self.nodes[0].update({MACROPHAGE_INFECTED: 2, BACTERIUM_INTRACELLULAR: 10})
         self.event_inf.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
         self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 5)
+        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 5)
 
         self.nodes[0].reset()
         self.nodes[0].update({MACROPHAGE_INFECTED: 3, BACTERIUM_INTRACELLULAR: 10})
         self.event_inf.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 2)
         self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 7)
+        self.assertEqual(self.nodes[0][BACTERIUM_SLOW], 3)
 
 
 class GetMacrophageDeathEventsTestCase(unittest.TestCase):
