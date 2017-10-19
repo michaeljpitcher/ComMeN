@@ -68,6 +68,8 @@ class Dynamics:
         """
         print "ComMeN Simulation - Run ID:" + str(run_id)
 
+        self._time = 0.0
+
         # Seed the network with initial subpopulation counts
         self.network.seed(seeding)
 
