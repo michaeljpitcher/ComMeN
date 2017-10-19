@@ -34,7 +34,9 @@ EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, Bac
                                 RegularMacrophageDestroysBacteria.__name__,
                                 ActivatedMacrophageDestroysBacteria.__name__,
                                 MacrophageBecomesInfected.__name__,
-                                MacrophageRecruitmentLung.__name__, MacrophageRecruitmentLymph.__name__,
+                                MacrophageRecruitmentLungStandard.__name__, MacrophageRecruitmentLungEnhanced.__name__,
+                                MacrophageRecruitmentLymphStandard.__name__,
+                                MacrophageRecruitmentLymphEnhanced.__name__,
                                 InfectedMacrophageTranslocateLymph.__name__,
                                 TCellDifferentiationByInfectedMacrophages.__name__,
                                 TCellDeath.__name__, TCellRecruitmentStandard.__name__,
@@ -140,10 +142,12 @@ class PTBDynamics(Dynamics):
         events += get_macrophage_becomes_infected_events(network.nodes, mac_infection_rates)
 
         # Macrophage recruitment
-        lung_rates = get_rates(MacrophageRecruitmentLung.__name__, event_config)
-        lymph_rates = get_rates(MacrophageRecruitmentLymph.__name__, event_config)
-        events += get_macrophage_recruitment_events(network.lung_patches, network.lymph_patches, lung_rates,
-                                                    lymph_rates)
+        lung_standard_rate = event_config.getfloat(MacrophageRecruitmentLungStandard.__name__, RATE)
+        lung_enhanced_rates = get_rates(MacrophageRecruitmentLungEnhanced.__name__, event_config)
+        lymph_standard_rate = event_config.getfloat(MacrophageRecruitmentLymphStandard.__name__, RATE)
+        lymph_enhanced_rates = get_rates(MacrophageRecruitmentLymphEnhanced.__name__, event_config)
+        events += get_macrophage_recruitment_events(network.lung_patches, network.lymph_patches, lung_standard_rate,
+                                                    lung_enhanced_rates, lymph_standard_rate, lymph_enhanced_rates)
 
         # Macrophage translocation
         mac_translocate_rate = event_config.getfloat(InfectedMacrophageTranslocateLymph.__name__, RATE)
