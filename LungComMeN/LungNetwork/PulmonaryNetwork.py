@@ -83,7 +83,6 @@ class PulmonaryNetwork(MetapopulationNetwork):
 
         if lymphatic_drainage:
             for segment_id in LUNG_BPS:
-                print lymphatic_drainage[segment_id]
                 # Add a lymph edge from lymph to every BPS
                 edges.append(LymphEdge(nodes[segment_id], nodes[LYMPH], lymphatic_drainage[segment_id]))
                 # Add a blood edge from lymph to all BPS
