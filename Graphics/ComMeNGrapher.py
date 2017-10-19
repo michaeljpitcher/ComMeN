@@ -119,6 +119,8 @@ class StartPage(tk.Frame):
     def update_graph(self,):
         self.data_message.set("")
         self.subplot.clear()
+        if not self.compartment_variable.get():
+            return
         compartment_chosen_data = self.comp_data[self.compartment_variable.get()]
         nodes = [n for n in self.node_vars if self.node_vars[n].get() == 1]
 
