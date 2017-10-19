@@ -20,3 +20,5 @@ sandbox.py
 *.xlsx
 
 *.pyc
+
+Experiments/*
