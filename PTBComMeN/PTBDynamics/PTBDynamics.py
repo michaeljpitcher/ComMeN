@@ -24,23 +24,23 @@ MACROPHAGE_CARRYING_CAPACITY = 'macrophage_internal_carrying_capacity'
 BACTERIAL_ATTRIBUTES = 'BacterialAttributes'
 INTRACELLULAR_BACTERIUM_HILL_EXPONENT = 'intracellular_bacterium_hill_exponent'
 
-EVENT_CONFIGURATION_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
-                                ExtracellularBacteriaReplication.__name__, IntracellularBacteriaReplication.__name__,
-                                BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
-                                BacteriaTranslocateBlood.__name__, MacrophageActivation.__name__,
-                                MacrophageDeactivation.__name__,
-                                MacrophageDeathStandard.__name__, InfectedMacrophageDeathByTCell.__name__,
-                                InfectedMacrophageBursts.__name__,
-                                RegularMacrophageDestroysBacteria.__name__,
-                                ActivatedMacrophageDestroysBacteria.__name__,
-                                MacrophageBecomesInfected.__name__,
-                                MacrophageRecruitmentLungStandard.__name__, MacrophageRecruitmentLungEnhanced.__name__,
-                                MacrophageRecruitmentLymphStandard.__name__,
-                                MacrophageRecruitmentLymphEnhanced.__name__,
-                                InfectedMacrophageTranslocateLymph.__name__,
-                                TCellDifferentiationByInfectedMacrophages.__name__,
-                                TCellDeath.__name__, TCellRecruitmentStandard.__name__,
-                                TCellTranslocationBlood.__name__]
+EVENT_CONFIG_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
+                         ExtracellularBacteriaReplication.__name__, IntracellularBacteriaReplication.__name__,
+                         BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
+                         BacteriaTranslocateBlood.__name__,
+                         MacrophageActivation.__name__, MacrophageDeactivation.__name__,
+                         MacrophageDeathStandard.__name__, InfectedMacrophageDeathByTCell.__name__,
+                         InfectedMacrophageBursts.__name__,
+                         RegularMacrophageDestroysBacteria.__name__, ActivatedMacrophageDestroysBacteria.__name__,
+                         MacrophageBecomesInfected.__name__,
+                         MacrophageRecruitmentLungStandard.__name__, MacrophageRecruitmentLungEnhanced.__name__,
+                         MacrophageRecruitmentLymphStandard.__name__, MacrophageRecruitmentLymphEnhanced.__name__,
+                         InfectedMacrophageTranslocateLymph.__name__,
+                         TCellDifferentiationByAPC.__name__, TCellDeath.__name__, TCellRecruitmentStandard.__name__,
+                         TCellTranslocationBlood.__name__,
+                         DendriticCellRecruitmentLungStandard.__name__,
+                         DendriticCellRecruitmentLungEnhancedByBacteria.__name__,
+                         DendriticCellDeathStandard.__name__, DendriticCellTranslocationMaturation.__name__]
 
 
 def get_rates(event_classname, event_config):
@@ -84,7 +84,7 @@ class PTBDynamics(Dynamics):
         # Events
         # --------------------------------------------------
         events = []
-        for section in EVENT_CONFIGURATION_SECTIONS:
+        for section in EVENT_CONFIG_SECTIONS:
             assert section in event_config.sections(), "Section {0} missing from event config. Use " \
                                                        "create_event_config_file() to generate a correct " \
                                                        "configuration file".format(section)
@@ -99,15 +99,18 @@ class PTBDynamics(Dynamics):
 
         # Bacteria replicate
         ext_rates = get_rates(ExtracellularBacteriaReplication.__name__, event_config)
+        events += get_bacteria_replication_extracellular_events(network.nodes, ext_rates)
         int_rate = event_config.getfloat(IntracellularBacteriaReplication.__name__, RATE)
-        events += get_bacteria_replication_events(network.nodes, ext_rates, int_rate, carrying_capacity, hill_exponent)
+        events += get_bacteria_replication_intracellular_events(network.nodes, int_rate, carrying_capacity,
+                                                                hill_exponent)
 
         # Bacteria translocate
         lung_rates = get_rates(BacteriaTranslocateLung.__name__, event_config)
+        events += get_bacteria_translocation_lung_events(network.lung_patches, lung_rates)
         lymph_rates = get_rates(BacteriaTranslocateLymph.__name__, event_config)
+        events += get_bacteria_translocation_lymph_events(network.lung_patches, lymph_rates)
         blood_rates = get_rates(BacteriaTranslocateBlood.__name__, event_config)
-        events += get_bacteria_translocation_events(network.lung_patches, network.lymph_patches, lung_rates,
-                                                    lymph_rates, blood_rates)
+        events += get_bacteria_translocation_blood_events(network.lymph_patches, blood_rates)
 
         # Macrophage activation
         mac_act_rate = event_config.getfloat(MacrophageActivation.__name__, RATE)
@@ -126,7 +129,8 @@ class PTBDynamics(Dynamics):
         # Macrophage death by T-cell
         t_cell_kill_macrophage_rate = event_config.getfloat(InfectedMacrophageDeathByTCell.__name__, RATE)
         t_cell_kill_half_sat = event_config.getfloat(InfectedMacrophageDeathByTCell.__name__, HALF_SAT)
-        events += get_macrophage_death_by_t_cell_events(network.nodes, t_cell_kill_macrophage_rate, t_cell_kill_half_sat)
+        events += get_macrophage_death_by_t_cell_events(network.nodes, t_cell_kill_macrophage_rate,
+                                                        t_cell_kill_half_sat)
 
         # Macrophage burst
         bursting_rate = event_config.getfloat(InfectedMacrophageBursts.__name__, RATE)
@@ -143,19 +147,24 @@ class PTBDynamics(Dynamics):
 
         # Macrophage recruitment
         lung_standard_rate = event_config.getfloat(MacrophageRecruitmentLungStandard.__name__, RATE)
+        events += get_macrophage_recruitment_lung_standard_events(network.lung_patches, lung_standard_rate)
+
         lung_enhanced_rates = get_rates(MacrophageRecruitmentLungEnhanced.__name__, event_config)
+        events += get_macrophage_recruitment_lung_enhanced_events(network.lung_patches, lung_enhanced_rates)
+
         lymph_standard_rate = event_config.getfloat(MacrophageRecruitmentLymphStandard.__name__, RATE)
+        events += get_macrophage_recruitment_lymph_standard_events(network.lymph_patches, lymph_standard_rate)
+
         lymph_enhanced_rates = get_rates(MacrophageRecruitmentLymphEnhanced.__name__, event_config)
-        events += get_macrophage_recruitment_events(network.lung_patches, network.lymph_patches, lung_standard_rate,
-                                                    lung_enhanced_rates, lymph_standard_rate, lymph_enhanced_rates)
+        events += get_macrophage_recruitment_lymph_enhanced_events(network.lymph_patches, lymph_enhanced_rates)
 
         # Macrophage translocation
         mac_translocate_rate = event_config.getfloat(InfectedMacrophageTranslocateLymph.__name__, RATE)
         events += get_macrophage_translocation_events(network.lung_patches, mac_translocate_rate)
 
         # T cell differentiation
-        tcell_differentiation_rate = event_config.getfloat(TCellDifferentiationByInfectedMacrophages.__name__, RATE)
-        events += get_t_cell_differentiation_events(network.nodes, tcell_differentiation_rate)
+        tcell_differentiation_rates = get_rates(TCellDifferentiationByAPC.__name__, event_config)
+        events += get_t_cell_differentiation_events(network.nodes, tcell_differentiation_rates)
 
         # T cell death
         rates = get_rates(TCellDeath.__name__, event_config)
@@ -163,11 +172,28 @@ class PTBDynamics(Dynamics):
 
         # T cell recruitment
         standard_rate = event_config.getfloat(TCellRecruitmentStandard.__name__, RATE)
-        infected_mac_rate = event_config.getfloat(TCellRecruitmentByInfectedMacrophage.__name__, RATE)
-        events += get_t_cell_recruitment_events(network.lymph_patches, standard_rate, infected_mac_rate)
+        events += get_t_cell_recruitment_standard_events(network.lymph_patches, standard_rate)
+        enhanced_rates = get_rates(TCellRecruitmentEnhanced.__name__, event_config)
+        events += get_t_cell_recruitment_enhanced_events(network.lymph_patches, enhanced_rates)
 
         # T cell translocation
         rates = get_rates(TCellTranslocationBlood.__name__, event_config)
         events += get_t_cell_translocation_events(network.lymph_patches, rates)
+
+        # Dendritic recruitment
+        standard_rate = event_config.getfloat(DendriticCellRecruitmentLungStandard.__name__, RATE)
+        events += get_dendritic_cell_recruitment_standard_events(network.lung_patches, standard_rate)
+        enhanced_rate = event_config.getfloat(DendriticCellRecruitmentLungEnhancedByBacteria.__name__, RATE)
+        half_sat = event_config.getfloat(DendriticCellRecruitmentLungEnhancedByBacteria.__name__, HALF_SAT)
+        events += get_dendritic_cell_recruitment_enhanced_events(network.lung_patches, enhanced_rate, half_sat)
+
+        # Dendritic death
+        death_rates = get_rates(DendriticCellDeathStandard.__name__, event_config)
+        events += get_dendritic_cell_standard_death_events(network.nodes, death_rates)
+
+        # Dendritic translocation and maturation
+        standard_rate = event_config.getfloat(DendriticCellTranslocationMaturation.__name__, RATE)
+        half_sat = event_config.getfloat(DendriticCellTranslocationMaturation.__name__, HALF_SAT)
+        events += get_dendritic_cell_translocation_maturation_events(network.lung_patches, standard_rate, half_sat)
 
         Dynamics.__init__(self, network, events)

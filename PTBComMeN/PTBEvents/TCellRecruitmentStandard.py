@@ -19,19 +19,13 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-def get_t_cell_recruitment_events(lymph_nodes, standard_rate, infected_mac_rate):
+def get_t_cell_recruitment_standard_events(lymph_nodes, standard_rate):
     for n in lymph_nodes:
         assert isinstance(n, LymphPatch), "Nodes must be instances of LymphPatch class"
-    events = [TCellRecruitmentStandard(standard_rate, lymph_nodes),
-              TCellRecruitmentByInfectedMacrophage(infected_mac_rate, lymph_nodes)]
+    events = [TCellRecruitmentStandard(standard_rate, lymph_nodes)]
     return events
 
 
 class TCellRecruitmentStandard(Create):
     def __init__(self, reaction_parameter, nodes):
         Create.__init__(self, reaction_parameter, nodes, T_CELL_NAIVE)
-
-
-class TCellRecruitmentByInfectedMacrophage(Create):
-    def __init__(self, reaction_parameter, nodes):
-        Create.__init__(self, reaction_parameter, nodes, T_CELL_NAIVE, [MACROPHAGE_INFECTED])

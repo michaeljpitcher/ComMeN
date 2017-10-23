@@ -17,14 +17,14 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-T_CELL_ACTIVATION_OPTIONS = [MACROPHAGE_INFECTED]
 
-
-def get_t_cell_differentiation_events(nodes, rate):
-    events = [TCellDifferentiationByInfectedMacrophages(rate, nodes)]
+def get_t_cell_differentiation_events(nodes, antigen_presenter_rates):
+    events = []
+    for apc, rate in antigen_presenter_rates.iteritems():
+        events.append(TCellDifferentiationByAPC(rate, nodes, apc))
     return events
 
 
-class TCellDifferentiationByInfectedMacrophages(Change):
-    def __init__(self, reaction_parameter, nodes):
-        Change.__init__(self, reaction_parameter, nodes, T_CELL_NAIVE, T_CELL_ACTIVATED, [MACROPHAGE_INFECTED])
+class TCellDifferentiationByAPC(Change):
+    def __init__(self, reaction_parameter, nodes, antigen_presenting_cell):
+        Change.__init__(self, reaction_parameter, nodes, T_CELL_NAIVE, T_CELL_ACTIVATED, [antigen_presenting_cell])

@@ -4,8 +4,7 @@ from PTBComMeN import *
 
 class BacteriaChangeStateTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [BACTERIUM_FAST, BACTERIUM_SLOW]
-        self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
+        self.nodes = [LungPatch(0, ALL_TB_COMPARTMENTS, 0.9, 0.3)]
 
         self.sigmoid = 1.2
         self.half_sat = 1.0
@@ -40,8 +39,7 @@ class BacteriaChangeStateTestCase(unittest.TestCase):
 class GetBacteriaChangeEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [BACTERIUM_FAST, BACTERIUM_SLOW]
-        self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
+        self.nodes = [LungPatch(0, ALL_TB_COMPARTMENTS, 0.9, 0.3)]
         self.sigmoid = 1.1
         self.half_sat = 1.2
         self.events = get_bacteria_change_events(self.nodes, {BACTERIUM_FAST: 0.1, BACTERIUM_SLOW: 0.2, SIGMOID:

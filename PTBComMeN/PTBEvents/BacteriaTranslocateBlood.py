@@ -21,30 +21,14 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-BACTERIA_TRANSLOCATION_OPTIONS = EXTRACELLULAR_BACTERIA
 
-
-def get_bacteria_translocation_events(lung_nodes, lymph_nodes, lung_rates, lymph_rates, blood_rates):
+def get_bacteria_translocation_blood_events(lymph_nodes, blood_rates):
     events = []
-    for n in lung_nodes:
-        assert isinstance(n, LungPatch), "Patches must be instances of LungPatch"
     for n in lymph_nodes:
         assert isinstance(n, LymphPatch), "Patches must be instances of LymphPatch"
-    for b in BACTERIA_TRANSLOCATION_OPTIONS:
-        events.append(BacteriaTranslocateLung(lung_rates[b], lung_nodes, b))
-        events.append(BacteriaTranslocateLymph(lymph_rates[b], lung_nodes, b))
+    for b in blood_rates:
         events.append(BacteriaTranslocateBlood(blood_rates[b], lymph_nodes, b))
     return events
-
-
-class BacteriaTranslocateLung(LungTranslocateWeight):
-    def __init__(self, reaction_parameter, nodes, compartment_translocating):
-        LungTranslocateWeight.__init__(self, reaction_parameter, nodes, compartment_translocating)
-
-
-class BacteriaTranslocateLymph(LymphTranslocateDrainage):
-    def __init__(self, reaction_parameter, nodes, compartment_translocating):
-        LymphTranslocateDrainage.__init__(self, reaction_parameter, nodes, compartment_translocating)
 
 
 class BacteriaTranslocateBlood(BloodTranslocatePerfusion):

@@ -26,7 +26,7 @@ DEFAULT_SEEDING_CONFIG_FILE = "PTBModel_Seeding.cfg"
 def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
     config_event_file = open(filename, 'w')
     config_event = ConfigParser.ConfigParser(allow_no_value=True)
-    for n in EVENT_CONFIGURATION_SECTIONS:
+    for n in EVENT_CONFIG_SECTIONS:
         config_event.add_section(n)
 
     for o in BACTERIA_CHANGE_STATE_OPTIONS:

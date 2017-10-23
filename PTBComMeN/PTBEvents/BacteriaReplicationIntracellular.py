@@ -17,21 +17,10 @@ __version__ = ""
 __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
-EXTRACELLULAR_BACTERIA_REPLICATION_OPTIONS = EXTRACELLULAR_BACTERIA
 
-
-def get_bacteria_replication_events(nodes, rates_extracellular, rate_intracellular, carrying_capacity, hill_exponent):
-    events = []
-    for compartment in EXTRACELLULAR_BACTERIA:
-        rate = rates_extracellular[compartment]
-        events.append(ExtracellularBacteriaReplication(rate, nodes, compartment))
-    events.append(IntracellularBacteriaReplication(rate_intracellular, nodes, carrying_capacity, hill_exponent))
+def get_bacteria_replication_intracellular_events(nodes, rate_intracellular, carrying_capacity, hill_exponent):
+    events = [IntracellularBacteriaReplication(rate_intracellular, nodes, carrying_capacity, hill_exponent)]
     return events
-
-
-class ExtracellularBacteriaReplication(Create):
-    def __init__(self, reaction_parameter, nodes, compartment_replicating):
-        Create.__init__(self, reaction_parameter, nodes, compartment_replicating, [compartment_replicating])
 
 
 class IntracellularBacteriaReplication(Create):

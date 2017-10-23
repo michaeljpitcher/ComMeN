@@ -18,8 +18,11 @@ __status__ = "Development"
 
 
 from BacteriaChangeState import *
-from BacteriaReplication import *
-from BacteriaTranslocate import *
+from BacteriaReplicationExtracellular import *
+from BacteriaReplicationIntracellular import *
+from BacteriaTranslocateLymph import *
+from BacteriaTranslocateBlood import *
+from BacteriaTranslocateLung import *
 from MacrophageActivation import *
 from MacrophageDeactivation import *
 from MacrophageDeathStandard import *
@@ -27,9 +30,17 @@ from MacrophageBursting import *
 from MacrophageDeathByTCell import *
 from MacrophageBecomesInfected import *
 from MacrophageDestroysBacteria import *
-from MacrophageRecruitment import *
-from MacrophageTranslocation import *
+from MacrophageRecruitmentLungStandard import *
+from MacrophageRecruitmentLungEnhanced import *
+from MacrophageRecruitmentLymphStandard import *
+from MacrophageRecruitmentLymphEnhanced import *
+from MacrophageTranslocationLymph import *
 from TCellDifferentiation import *
 from TCellDeath import *
-from TCellRecruitment import *
-from TCellTranslocation import *
+from TCellRecruitmentStandard import *
+from TCellRecruitmentEnhanced import *
+from TCellTranslocationBlood import *
+from DendriticCellRecruitmentStandard import *
+from DendriticCellRecruitmentEnhanced import *
+from DendriticCellDeathStandard import *
+from DendriticCellTranslocate import *
