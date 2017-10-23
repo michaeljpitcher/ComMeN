@@ -22,3 +22,5 @@ sandbox.py
 *.pyc
 
 Experiments/*
+
+Experiments_previous/*
