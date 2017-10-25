@@ -132,6 +132,6 @@ class StartPage(tk.Frame):
         self.canvas.show()
 
 
-def run_grapher():
+if __name__ == '__main__':
     app = Grapher()
     app.mainloop()
