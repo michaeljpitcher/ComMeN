@@ -142,8 +142,9 @@ class PTBDynamics(Dynamics):
         events += get_macrophage_destroy_bacteria_events(network.nodes, regular_destroy_rates, activated_destroy_rates)
 
         # Macrophage becomes infected
-        mac_infection_rates = get_rates(MacrophageBecomesInfected.__name__, event_config)
-        events += get_macrophage_becomes_infected_events(network.nodes, mac_infection_rates)
+        mac_infection_rate = event_config.getfloat(MacrophageBecomesInfected.__name__, RATE)
+        mac_infection_half_sat = event_config.getfloat(MacrophageBecomesInfected.__name__, HALF_SAT)
+        events += get_macrophage_becomes_infected_events(network.nodes, mac_infection_rate, mac_infection_half_sat)
 
         # Macrophage recruitment
         lung_standard_rate = event_config.getfloat(MacrophageRecruitmentLungStandard.__name__, RATE)

@@ -4,9 +4,9 @@ from PTBComMeN import *
 
 class MacrophageBecomesInfectedTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, BACTERIUM_FAST, BACTERIUM_INTRACELLULAR, MACROPHAGE_INFECTED]
-        self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.event = MacrophageBecomesInfected(0.1, self.nodes, BACTERIUM_FAST, MACROPHAGE_REGULAR)
+        self.nodes = [LungPatch(0, ALL_TB_COMPARTMENTS, 0.9, 0.3)]
+        self.half_sat = 100
+        self.event = MacrophageBecomesInfected(0.1, self.nodes, self.half_sat)
         uh = UpdateHandler([self.event])
 
     def test_rate(self):
@@ -14,7 +14,12 @@ class MacrophageBecomesInfectedTestCase(unittest.TestCase):
         self.nodes[0].update({MACROPHAGE_REGULAR: 2})
         self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({BACTERIUM_FAST: 3})
-        self.assertEqual(self.event.rate, 0.1 * 2 * 3)
+        self.assertEqual(self.event.rate, 0.1 * 2 * (3.0 / (3.0 + 100)))
+        a = self.event.rate
+        self.nodes[0].update({BACTERIUM_SLOW: 56})
+        self.assertEqual(self.event.rate, 0.1 * 2 * (59.0 / (59.0 + 100)))
+        b = self.event.rate
+        self.assertTrue(b > a)
 
     def test_update(self):
         self.nodes[0].update({MACROPHAGE_REGULAR: 2, BACTERIUM_FAST: 5})
@@ -31,17 +36,16 @@ class GetMacrophageBecomesInfectedEventsTestCase(unittest.TestCase):
         compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, MACROPHAGE_ACTIVATED, BACTERIUM_FAST, BACTERIUM_SLOW,
                         BACTERIUM_INTRACELLULAR]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
-        self.rates = {BACTERIUM_FAST: 0.1, BACTERIUM_SLOW: 0.2}
-        self.events = get_macrophage_becomes_infected_events(self.nodes, self.rates)
+        self.rate = 0.1
+        self.half_sat = 100
+        self.events = get_macrophage_becomes_infected_events(self.nodes, self.rate, self.half_sat)
 
     def test_events(self):
-        self.assertEqual(len(self.events), 2)
-        regular_fast = next(e for e in self.events if e._influencing_compartments[0] == MACROPHAGE_REGULAR and
-                            e._compartment_from == BACTERIUM_FAST)
-        self.assertEqual(regular_fast.reaction_parameter, 0.1)
-        regular_slow = next(e for e in self.events if e._influencing_compartments[0] == MACROPHAGE_REGULAR and
-                            e._compartment_from == BACTERIUM_SLOW)
-        self.assertEqual(regular_slow.reaction_parameter, 0.2)
+        self.assertEqual(len(self.events), 1)
+        self.assertTrue(isinstance(self.events[0], MacrophageBecomesInfected))
+        self.assertEqual(self.events[0].reaction_parameter, self.rate)
+        self.assertEqual(self.events[0]._half_sat, self.half_sat)
+
 
 
 if __name__ == '__main__':
