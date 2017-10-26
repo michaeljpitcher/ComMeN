@@ -23,14 +23,16 @@ class InfectedMacrophageDeathByTCellTestCase(unittest.TestCase):
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
         self.assertEqual(self.nodes[0][T_CELL_ACTIVATED], 3)
         self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 5)
+        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], 5)
 
         self.nodes[0].reset()
 
-        self.nodes[0].update({MACROPHAGE_INFECTED: 2, T_CELL_ACTIVATED: 3, BACTERIUM_INTRACELLULAR_MACROPHAGE: 10})
+        self.nodes[0].update({MACROPHAGE_INFECTED: 2, T_CELL_ACTIVATED: 3, BACTERIUM_INTRACELLULAR_MACROPHAGE: 11})
         self.event.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
         self.assertEqual(self.nodes[0][T_CELL_ACTIVATED], 3)
         self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 5)
+        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], 6)
 
 
 class GetMacrophageDeathByTCellEventsTestCase(unittest.TestCase):

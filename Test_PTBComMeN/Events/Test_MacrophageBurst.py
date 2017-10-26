@@ -20,25 +20,25 @@ class InfectedMacrophageBurstsTestCase(unittest.TestCase):
                         bac ** self.hill_exponent + (self.carrying_capacity * mac) ** self.hill_exponent)))
 
     def test_perform(self):
-        self.nodes[0].update({MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR_MACROPHAGE: 20})
+        self.nodes[0].update({MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR_MACROPHAGE: 13})
         self.event.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 0)
         self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 0)
-        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], 20)
+        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], 13)
 
         self.nodes[0].reset()
         self.nodes[0].update({MACROPHAGE_INFECTED: 2, BACTERIUM_INTRACELLULAR_MACROPHAGE: 83})
         self.event.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 41)
-        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], 42)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 83 - self.carrying_capacity)
+        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], self.carrying_capacity)
 
         self.nodes[0].reset()
         self.nodes[0].update({MACROPHAGE_INFECTED: 5, BACTERIUM_INTRACELLULAR_MACROPHAGE: 61})
         self.event.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 4)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 49)
-        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], 12)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 61- self.carrying_capacity)
+        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], self.carrying_capacity)
 
 
 class GetMacrophageBurstingEventsTestCase(unittest.TestCase):
