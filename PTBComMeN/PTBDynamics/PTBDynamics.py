@@ -203,7 +203,12 @@ class PTBDynamics(Dynamics):
 
         # Dendritic translocation and maturation
         standard_rate = event_config.getfloat(DendriticCellTranslocation.__name__, RATE)
-        half_sat = event_config.getfloat(DendriticCellTranslocation.__name__, HALF_SAT)
-        events += get_dendritic_cell_translocation_events(network.lung_patches, standard_rate, half_sat)
+        events += get_dendritic_cell_translocation_events(network.lung_patches, standard_rate)
+
+        # Dendritic cell maturation
+        antigen_rates = get_rates(DendriticCellMaturationAntigen.__name__, event_config)
+        events += get_dendritic_cell_maturation_antigen_events(network.nodes, antigen_rates)
+        bacterial_rates = get_rates(DendriticCellMaturationBacteriaUptake.__name__, event_config)
+        events += get_dendritic_cell_maturation_bacterial_uptake_events(network.nodes, bacterial_rates)
 
         Dynamics.__init__(self, network, events)
