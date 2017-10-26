@@ -24,9 +24,11 @@ class DendriticCellDeathTestCase(unittest.TestCase):
         self.assertEqual(self.nodes[0][DENDRITIC_CELL_IMMATURE], 1)
 
         self.nodes[0].reset()
-        self.nodes[0].update({DENDRITIC_CELL_MATURE: 7})
+        self.nodes[0].update({DENDRITIC_CELL_MATURE: 7, BACTERIUM_INTRACELLULAR_DENDRITIC: 14})
         self.event_mdc.perform()
         self.assertEqual(self.nodes[0][DENDRITIC_CELL_MATURE], 6)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_DENDRITIC], 12)
+        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_SLOW], 2)
 
 
 class GetDendriticCellDeathEventsTestCase(unittest.TestCase):
