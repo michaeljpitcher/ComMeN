@@ -13,13 +13,13 @@ class DendriticCellRecruitmentLungEnhancedBacteriaTestCase(unittest.TestCase):
     def test_rate(self):
         self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({BACTERIUM_EXTRACELLULAR_FAST: 1})
-        self.assertEqual(self.event.rate, 0.1 * (1.0 / (1 + 20)))
+        self.assertAlmostEqual(self.event.rate, 0.3 * 0.1 * (1.0 / (1 + 20)))
         rate_1 = self.event.rate
 
         self.nodes[0].reset()
         self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({BACTERIUM_EXTRACELLULAR_SLOW: 5})
-        self.assertEqual(self.event.rate, 0.1 * (5.0 / (5 + 20)))
+        self.assertAlmostEqual(self.event.rate, 0.3 * 0.1 * (5.0 / (5 + 20)))
         rate_5 = self.event.rate
 
         self.assertTrue(rate_5 > rate_1)
@@ -27,7 +27,7 @@ class DendriticCellRecruitmentLungEnhancedBacteriaTestCase(unittest.TestCase):
         self.nodes[0].reset()
         self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({BACTERIUM_EXTRACELLULAR_FAST: 15, BACTERIUM_EXTRACELLULAR_SLOW: 5})
-        self.assertEqual(self.event.rate, 0.1 * (20.0 / (20 + 20)))
+        self.assertAlmostEqual(self.event.rate, 0.3 * 0.1 * (20.0 / (20 + 20)))
         rate_20 = self.event.rate
 
         self.assertTrue(rate_20 > rate_5 > rate_1)

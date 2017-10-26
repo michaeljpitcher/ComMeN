@@ -6,7 +6,7 @@ Long Docstring
 
 """
 
-from LungComMeN.LungEvents.RecruitmentByPerfusion import *
+from ComMeN.Events.Create import *
 from LungComMeN.LungNetwork.PulmonaryPatch import *
 from ..PulmonaryTBCompartments import *
 
@@ -26,14 +26,14 @@ def get_dendritic_cell_recruitment_enhanced_events(lung_nodes, rate, half_sat):
     return events
 
 
-class DendriticCellRecruitmentLungEnhancedByBacteria(RecruitmentByPerfusion):
+class DendriticCellRecruitmentLungEnhancedByBacteria(Create):
     def __init__(self, reaction_parameter, nodes, half_sat):
         self._half_sat = half_sat
-        RecruitmentByPerfusion.__init__(self, reaction_parameter, nodes, DENDRITIC_CELL_IMMATURE)
+        Create.__init__(self, reaction_parameter, nodes, DENDRITIC_CELL_IMMATURE)
 
     def _calculate_state_variable_at_node(self, node):
         total_extracellular_bac = node[BACTERIUM_EXTRACELLULAR_FAST] + node[BACTERIUM_EXTRACELLULAR_SLOW]
         if total_extracellular_bac + self._half_sat == 0:
             return 0
         else:
-            return float(total_extracellular_bac) / (total_extracellular_bac + self._half_sat)
+            return node.perfusion * float(total_extracellular_bac) / (total_extracellular_bac + self._half_sat)
