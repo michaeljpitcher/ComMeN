@@ -24,9 +24,9 @@ class MacrophageRecruitmentLymphTestCase(unittest.TestCase):
 class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
+        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_EXTRACELLULAR_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3), LymphPatch(1, compartments)]
-        self.lymph_rates_enhanced = {MACROPHAGE_INFECTED: 0.5, BACTERIUM_FAST: 0.6}
+        self.lymph_rates_enhanced = {MACROPHAGE_INFECTED: 0.5, BACTERIUM_EXTRACELLULAR_FAST: 0.6}
         self.events = get_macrophage_recruitment_lymph_enhanced_events([self.nodes[1]], self.lymph_rates_enhanced)
 
     def test_events(self):
@@ -36,7 +36,7 @@ class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
                               n._influencing_compartments == [MACROPHAGE_INFECTED])
         self.assertEqual(m_i_lymph.reaction_parameter, 0.5)
         b_f_lymph = next(n for n in self.events if isinstance(n, MacrophageRecruitmentLymphEnhanced) and
-                         n._influencing_compartments == [BACTERIUM_FAST])
+                         n._influencing_compartments == [BACTERIUM_EXTRACELLULAR_FAST])
         self.assertEqual(b_f_lymph.reaction_parameter, 0.6)
 
 if __name__ == '__main__':

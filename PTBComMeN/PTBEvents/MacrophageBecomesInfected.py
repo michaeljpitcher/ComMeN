@@ -31,16 +31,18 @@ class MacrophageBecomesInfected(Event):
         Event.__init__(self, reaction_parameter, nodes)
 
     def _calculate_state_variable_at_node(self, node):
-        total_bacteria = node[BACTERIUM_FAST] + node[BACTERIUM_SLOW]
+        total_bacteria = node[BACTERIUM_EXTRACELLULAR_FAST] + node[BACTERIUM_EXTRACELLULAR_SLOW]
+        if total_bacteria == 0:
+            return 0
         return node[MACROPHAGE_REGULAR] * (float(total_bacteria) / (total_bacteria + self._half_sat))
 
     def _update_node(self, node):
         # TODO -Doesn't match Kirschner dynamics
-        changes = {MACROPHAGE_REGULAR: -1, MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR: 1}
+        changes = {MACROPHAGE_REGULAR: -1, MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR_MACROPHAGE: 1}
         # To account for uncertain cause of infection, choose a bacterium at random from extracellular
-        r = rand.random() * (node[BACTERIUM_FAST] + node[BACTERIUM_SLOW])
-        if r <= node[BACTERIUM_FAST]:
-            changes[BACTERIUM_FAST] = -1
+        r = rand.random() * (node[BACTERIUM_EXTRACELLULAR_FAST] + node[BACTERIUM_EXTRACELLULAR_SLOW])
+        if r <= node[BACTERIUM_EXTRACELLULAR_FAST]:
+            changes[BACTERIUM_EXTRACELLULAR_FAST] = -1
         else:
-            changes[BACTERIUM_SLOW] = -1
+            changes[BACTERIUM_EXTRACELLULAR_SLOW] = -1
         node.update(changes)

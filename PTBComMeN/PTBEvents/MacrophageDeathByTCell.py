@@ -36,5 +36,5 @@ class InfectedMacrophageDeathByTCell(Event):
             return node[MACROPHAGE_INFECTED] * (t_cell_mac_ratio / (t_cell_mac_ratio + self._half_sat))
 
     def _update_node(self, node):
-        bacs_killed = int(round(float(node[BACTERIUM_INTRACELLULAR]) / node[MACROPHAGE_INFECTED]))
-        node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR: -1 * bacs_killed})
+        bacs_killed = int(round(float(node[BACTERIUM_INTRACELLULAR_MACROPHAGE]) / node[MACROPHAGE_INFECTED]))
+        node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR_MACROPHAGE: -1 * bacs_killed})

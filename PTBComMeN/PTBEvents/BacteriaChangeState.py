@@ -30,11 +30,11 @@ def get_bacteria_change_events(lung_nodes, rates):
     events = []
     for compartment in EXTRACELLULAR_BACTERIA:
         rate = rates[compartment]
-        if compartment == BACTERIUM_FAST:
-            events.append(BacteriaChangeByOxygen(rate, lung_nodes, BACTERIUM_FAST, BACTERIUM_SLOW, -1 * rates[SIGMOID],
+        if compartment == BACTERIUM_EXTRACELLULAR_FAST:
+            events.append(BacteriaChangeByOxygen(rate, lung_nodes, BACTERIUM_EXTRACELLULAR_FAST, BACTERIUM_EXTRACELLULAR_SLOW, -1 * rates[SIGMOID],
                                                  rates[HALF_SAT]))
         else:
-            events.append(BacteriaChangeByOxygen(rate, lung_nodes, BACTERIUM_SLOW, BACTERIUM_FAST, rates[SIGMOID],
+            events.append(BacteriaChangeByOxygen(rate, lung_nodes, BACTERIUM_EXTRACELLULAR_SLOW, BACTERIUM_EXTRACELLULAR_FAST, rates[SIGMOID],
                                                  rates[HALF_SAT]))
     return events
 

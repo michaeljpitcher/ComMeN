@@ -31,8 +31,8 @@ class InfectedMacrophageTranslocateLymph(LymphTranslocateDrainage):
         LymphTranslocateDrainage.__init__(self, reaction_parameter, nodes, MACROPHAGE_INFECTED)
 
     def _move(self, node, neighbour):
-        internals_to_move = int(round(node[BACTERIUM_INTRACELLULAR] * 1.0 / node[MACROPHAGE_INFECTED]))
-        node_changes = {MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR: -1 * internals_to_move}
-        neighbour_changes = {MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR: internals_to_move}
+        internals_to_move = int(round(node[BACTERIUM_INTRACELLULAR_MACROPHAGE] * 1.0 / node[MACROPHAGE_INFECTED]))
+        node_changes = {MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR_MACROPHAGE: -1 * internals_to_move}
+        neighbour_changes = {MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR_MACROPHAGE: internals_to_move}
         node.update(node_changes)
         neighbour.update(neighbour_changes)

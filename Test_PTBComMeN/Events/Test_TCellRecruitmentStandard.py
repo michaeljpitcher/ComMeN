@@ -21,7 +21,7 @@ class TCellRecruitmentStandardTestCase(unittest.TestCase):
 class GetTCellRecruitmentEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
+        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_EXTRACELLULAR_FAST]
         self.nodes = [LymphPatch(0, compartments)]
         self.rate_standard = 0.1
         self.events = get_t_cell_recruitment_standard_events(self.nodes, self.rate_standard)

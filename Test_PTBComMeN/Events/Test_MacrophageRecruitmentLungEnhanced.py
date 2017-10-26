@@ -24,9 +24,9 @@ class MacrophageRecruitmentLungTestCase(unittest.TestCase):
 class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
+        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_EXTRACELLULAR_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3), LymphPatch(1, compartments)]
-        self.lung_rates_enhanced = {MACROPHAGE_INFECTED: 0.2, BACTERIUM_FAST: 0.3}
+        self.lung_rates_enhanced = {MACROPHAGE_INFECTED: 0.2, BACTERIUM_EXTRACELLULAR_FAST: 0.3}
         self.events = get_macrophage_recruitment_lung_enhanced_events([self.nodes[0]], self.lung_rates_enhanced)
 
     def test_events(self):
@@ -36,7 +36,7 @@ class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
                         n._influencing_compartments == [MACROPHAGE_INFECTED])
         self.assertEqual(m_i_lung.reaction_parameter, 0.2)
         b_f_lung = next(n for n in self.events if isinstance(n, MacrophageRecruitmentLungEnhanced) and
-                        n._influencing_compartments == [BACTERIUM_FAST])
+                        n._influencing_compartments == [BACTERIUM_EXTRACELLULAR_FAST])
         self.assertEqual(b_f_lung.reaction_parameter, 0.3)
 
 

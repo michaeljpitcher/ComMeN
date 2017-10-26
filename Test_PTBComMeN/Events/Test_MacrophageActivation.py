@@ -4,7 +4,7 @@ from PTBComMeN import *
 
 class MacrophageActivationTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, BACTERIUM_FAST, BACTERIUM_SLOW, T_CELL_ACTIVATED]
+        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, BACTERIUM_EXTRACELLULAR_FAST, BACTERIUM_EXTRACELLULAR_SLOW, T_CELL_ACTIVATED]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.half_sat = 1.2
         self.event = MacrophageActivation(0.1, self.nodes, self.half_sat)
@@ -27,7 +27,7 @@ class MacrophageActivationTestCase(unittest.TestCase):
 class GetMacrophageActivationEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, BACTERIUM_FAST, BACTERIUM_SLOW, T_CELL_ACTIVATED]
+        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_ACTIVATED, BACTERIUM_EXTRACELLULAR_FAST, BACTERIUM_EXTRACELLULAR_SLOW, T_CELL_ACTIVATED]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.rate = 0.1
         self.half_sat = 1.1

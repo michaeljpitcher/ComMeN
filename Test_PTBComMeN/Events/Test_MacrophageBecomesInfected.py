@@ -13,29 +13,27 @@ class MacrophageBecomesInfectedTestCase(unittest.TestCase):
         self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({MACROPHAGE_REGULAR: 2})
         self.assertEqual(self.event.rate, 0)
-        self.nodes[0].update({BACTERIUM_FAST: 3})
+        self.nodes[0].update({BACTERIUM_EXTRACELLULAR_FAST: 3})
         self.assertEqual(self.event.rate, 0.1 * 2 * (3.0 / (3.0 + 100)))
         a = self.event.rate
-        self.nodes[0].update({BACTERIUM_SLOW: 56})
+        self.nodes[0].update({BACTERIUM_EXTRACELLULAR_SLOW: 56})
         self.assertEqual(self.event.rate, 0.1 * 2 * (59.0 / (59.0 + 100)))
         b = self.event.rate
         self.assertTrue(b > a)
 
     def test_update(self):
-        self.nodes[0].update({MACROPHAGE_REGULAR: 2, BACTERIUM_FAST: 5})
+        self.nodes[0].update({MACROPHAGE_REGULAR: 2, BACTERIUM_EXTRACELLULAR_FAST: 5})
         self.event.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_REGULAR], 1)
-        self.assertEqual(self.nodes[0][BACTERIUM_FAST], 4)
+        self.assertEqual(self.nodes[0][BACTERIUM_EXTRACELLULAR_FAST], 4)
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 1)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 1)
 
 
 class GetMacrophageBecomesInfectedEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, MACROPHAGE_ACTIVATED, BACTERIUM_FAST, BACTERIUM_SLOW,
-                        BACTERIUM_INTRACELLULAR]
-        self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
+        self.nodes = [LungPatch(0, ALL_TB_COMPARTMENTS, 0.9, 0.3)]
         self.rate = 0.1
         self.half_sat = 100
         self.events = get_macrophage_becomes_infected_events(self.nodes, self.rate, self.half_sat)

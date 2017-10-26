@@ -19,7 +19,8 @@ __status__ = "Development"
 
 from BacteriaChangeState import *
 from BacteriaReplicationExtracellular import *
-from BacteriaReplicationIntracellular import *
+from BacteriaReplicationIntracellularMacrophage import *
+from BacteriaReplicationIntracellularDendritic import *
 from BacteriaTranslocateLymph import *
 from BacteriaTranslocateBlood import *
 from BacteriaTranslocateLung import *
@@ -44,3 +45,5 @@ from DendriticCellRecruitmentStandard import *
 from DendriticCellRecruitmentEnhanced import *
 from DendriticCellDeathStandard import *
 from DendriticCellTranslocate import *
+from DendriticCellMaturationBacteriaUptake import *
+from DendriticCellMaturationAntigen import *

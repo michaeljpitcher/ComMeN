@@ -22,7 +22,7 @@ class MacrophageRecruitmentLungTestCase(unittest.TestCase):
 class GetMacrophageRecruitmentEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
+        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_EXTRACELLULAR_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3), LymphPatch(1, compartments)]
         self.lung_rate_standard = 0.1
         self.events = get_macrophage_recruitment_lung_standard_events([self.nodes[0]], self.lung_rate_standard)

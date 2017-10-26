@@ -19,13 +19,16 @@ __status__ = "Development"
 
 RATE = 'rate'
 
-MACROPHAGE_ATTRIBUTES = 'MacrophageAttributes'
+CELL_ATTRIBUTES = 'CellAttributes'
 MACROPHAGE_CARRYING_CAPACITY = 'macrophage_internal_carrying_capacity'
-BACTERIAL_ATTRIBUTES = 'BacterialAttributes'
-INTRACELLULAR_BACTERIUM_HILL_EXPONENT = 'intracellular_bacterium_hill_exponent'
+DENDRITIC_CELL_CARRYING_CAPACITY = 'dendritic_cell_internal_carrying_capacity'
+INTRACELLULAR_BACTERIUM_MACROPHAGE_HILL_EXPONENT = 'intracellular_bacterium_macrophage_hill_exponent'
+INTRACELLULAR_BACTERIUM_DENDRITIC_CELL_HILL_EXPONENT = 'intracellular_bacterium_dendritic_cell_hill_exponent'
 
-EVENT_CONFIG_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
-                         ExtracellularBacteriaReplication.__name__, IntracellularBacteriaReplication.__name__,
+
+EVENT_CONFIG_SECTIONS = [CELL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
+                         ExtracellularBacteriaReplication.__name__, IntracellularBacteriaMacrophageReplication.__name__,
+                         IntracellularBacteriaDendriticReplication.__name__,
                          BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
                          BacteriaTranslocateBlood.__name__,
                          MacrophageActivation.__name__, MacrophageDeactivation.__name__,
@@ -40,7 +43,7 @@ EVENT_CONFIG_SECTIONS = [MACROPHAGE_ATTRIBUTES, BACTERIAL_ATTRIBUTES, BacteriaCh
                          TCellTranslocationBlood.__name__,
                          DendriticCellRecruitmentLungStandard.__name__,
                          DendriticCellRecruitmentLungEnhancedByBacteria.__name__,
-                         DendriticCellDeathStandard.__name__, DendriticCellTranslocationMaturation.__name__]
+                         DendriticCellDeathStandard.__name__, DendriticCellTranslocation.__name__]
 
 
 def get_rates(event_classname, event_config):
@@ -90,8 +93,10 @@ class PTBDynamics(Dynamics):
                                                        "configuration file".format(section)
 
         # Compartment attributes (used in multiple events)
-        carrying_capacity = event_config.getfloat(MACROPHAGE_ATTRIBUTES, MACROPHAGE_CARRYING_CAPACITY)
-        hill_exponent = event_config.getfloat(BACTERIAL_ATTRIBUTES, INTRACELLULAR_BACTERIUM_HILL_EXPONENT)
+        mac_carrying_capacity = event_config.getfloat(CELL_ATTRIBUTES, MACROPHAGE_CARRYING_CAPACITY)
+        dc_carrying_capacity = event_config.getfloat(CELL_ATTRIBUTES, DENDRITIC_CELL_CARRYING_CAPACITY)
+        mac_hill_exponent = event_config.getfloat(CELL_ATTRIBUTES, INTRACELLULAR_BACTERIUM_MACROPHAGE_HILL_EXPONENT)
+        dc_hill_exponent = event_config.getfloat(CELL_ATTRIBUTES, INTRACELLULAR_BACTERIUM_DENDRITIC_CELL_HILL_EXPONENT)
 
         # Bacteria change state
         rates = get_rates(BacteriaChangeByOxygen.__name__, event_config)
@@ -100,9 +105,13 @@ class PTBDynamics(Dynamics):
         # Bacteria replicate
         ext_rates = get_rates(ExtracellularBacteriaReplication.__name__, event_config)
         events += get_bacteria_replication_extracellular_events(network.nodes, ext_rates)
-        int_rate = event_config.getfloat(IntracellularBacteriaReplication.__name__, RATE)
-        events += get_bacteria_replication_intracellular_events(network.nodes, int_rate, carrying_capacity,
-                                                                hill_exponent)
+
+        int_rate_mac = event_config.getfloat(IntracellularBacteriaMacrophageReplication.__name__, RATE)
+        events += get_bacteria_replication_intracellular_macrophage_events(network.nodes, int_rate_mac,
+                                                                           mac_carrying_capacity, mac_hill_exponent)
+        int_rate_dc = event_config.getfloat(IntracellularBacteriaDendriticReplication.__name__, RATE)
+        events += get_bacteria_replication_intracellular_dendritic_events(network.nodes, int_rate_dc,
+                                                                           dc_carrying_capacity, dc_hill_exponent)
 
         # Bacteria translocate
         lung_rates = get_rates(BacteriaTranslocateLung.__name__, event_config)
@@ -134,7 +143,7 @@ class PTBDynamics(Dynamics):
 
         # Macrophage burst
         bursting_rate = event_config.getfloat(InfectedMacrophageBursts.__name__, RATE)
-        events += get_macrophage_bursting_events(network.nodes, bursting_rate, carrying_capacity, hill_exponent)
+        events += get_macrophage_bursting_events(network.nodes, bursting_rate, mac_carrying_capacity, mac_hill_exponent)
 
         # Macrophage destroys bacteria
         regular_destroy_rates = get_rates(RegularMacrophageDestroysBacteria.__name__, event_config)
@@ -193,8 +202,8 @@ class PTBDynamics(Dynamics):
         events += get_dendritic_cell_standard_death_events(network.nodes, death_rates)
 
         # Dendritic translocation and maturation
-        standard_rate = event_config.getfloat(DendriticCellTranslocationMaturation.__name__, RATE)
-        half_sat = event_config.getfloat(DendriticCellTranslocationMaturation.__name__, HALF_SAT)
-        events += get_dendritic_cell_translocation_maturation_events(network.lung_patches, standard_rate, half_sat)
+        standard_rate = event_config.getfloat(DendriticCellTranslocation.__name__, RATE)
+        half_sat = event_config.getfloat(DendriticCellTranslocation.__name__, HALF_SAT)
+        events += get_dendritic_cell_translocation_events(network.lung_patches, standard_rate, half_sat)
 
         Dynamics.__init__(self, network, events)

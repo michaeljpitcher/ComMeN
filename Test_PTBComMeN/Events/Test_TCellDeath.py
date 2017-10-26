@@ -4,7 +4,7 @@ from PTBComMeN import *
 
 class TCellDeathTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [T_CELL_NAIVE, T_CELL_ACTIVATED, BACTERIUM_FAST]
+        compartments = [T_CELL_NAIVE, T_CELL_ACTIVATED, BACTERIUM_EXTRACELLULAR_FAST]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.event = TCellDeath(0.1, self.nodes, T_CELL_NAIVE)
         uh = UpdateHandler([self.event])
@@ -23,7 +23,7 @@ class TCellDeathTestCase(unittest.TestCase):
 class GetTCellDeathEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [T_CELL_NAIVE, T_CELL_ACTIVATED, BACTERIUM_FAST, BACTERIUM_SLOW]
+        compartments = [T_CELL_NAIVE, T_CELL_ACTIVATED, BACTERIUM_EXTRACELLULAR_FAST, BACTERIUM_EXTRACELLULAR_SLOW]
         self.nodes = [LungPatch(0, compartments, 0.9, 0.3)]
         self.death_rates = {T_CELL_NAIVE: 0.1, T_CELL_ACTIVATED: 0.2}
         self.events = get_t_cell_death_events(self.nodes, self.death_rates)

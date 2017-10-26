@@ -4,8 +4,7 @@ from PTBComMeN import *
 
 class MacrophageTranslocationLymphTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_INTRACELLULAR]
-        self.nodes = [LungPatch(0, compartments, 0.9, 0.3), LymphPatch(1, compartments)]
+        self.nodes = [LungPatch(0, ALL_TB_COMPARTMENTS, 0.9, 0.3), LymphPatch(1, ALL_TB_COMPARTMENTS)]
         self.edges = [LymphEdge(self.nodes[0], self.nodes[1], 0.9)]
         self.network = MetapopulationNetwork(self.nodes, self.edges)
         self.event = InfectedMacrophageTranslocateLymph(0.1, self.nodes)
@@ -13,41 +12,40 @@ class MacrophageTranslocationLymphTestCase(unittest.TestCase):
 
     def test_rate(self):
         self.assertEqual(self.event.rate, 0)
-        self.nodes[0].update({MACROPHAGE_INFECTED: 3, BACTERIUM_INTRACELLULAR: 10})
+        self.nodes[0].update({MACROPHAGE_INFECTED: 3, BACTERIUM_INTRACELLULAR_MACROPHAGE: 10})
         self.assertEqual(self.event.rate, 3 * 0.9 * 0.1)
 
     def test_update(self):
-        self.nodes[0].update({MACROPHAGE_INFECTED: 2, BACTERIUM_INTRACELLULAR: 10})
+        self.nodes[0].update({MACROPHAGE_INFECTED: 2, BACTERIUM_INTRACELLULAR_MACROPHAGE: 10})
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 2)
         self.assertEqual(self.nodes[1][MACROPHAGE_INFECTED], 0)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 10)
-        self.assertEqual(self.nodes[1][BACTERIUM_INTRACELLULAR], 0)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 10)
+        self.assertEqual(self.nodes[1][BACTERIUM_INTRACELLULAR_MACROPHAGE], 0)
         self.event.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 1)
         self.assertEqual(self.nodes[1][MACROPHAGE_INFECTED], 1)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 5)
-        self.assertEqual(self.nodes[1][BACTERIUM_INTRACELLULAR], 5)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 5)
+        self.assertEqual(self.nodes[1][BACTERIUM_INTRACELLULAR_MACROPHAGE], 5)
 
         for n in self.nodes:
             n.reset()
 
-        self.nodes[0].update({MACROPHAGE_INFECTED: 3, BACTERIUM_INTRACELLULAR: 10})
+        self.nodes[0].update({MACROPHAGE_INFECTED: 3, BACTERIUM_INTRACELLULAR_MACROPHAGE: 10})
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 3)
         self.assertEqual(self.nodes[1][MACROPHAGE_INFECTED], 0)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 10)
-        self.assertEqual(self.nodes[1][BACTERIUM_INTRACELLULAR], 0)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 10)
+        self.assertEqual(self.nodes[1][BACTERIUM_INTRACELLULAR_MACROPHAGE], 0)
         self.event.perform()
         self.assertEqual(self.nodes[0][MACROPHAGE_INFECTED], 2)
         self.assertEqual(self.nodes[1][MACROPHAGE_INFECTED], 1)
-        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR], 7)
-        self.assertEqual(self.nodes[1][BACTERIUM_INTRACELLULAR], 3)
+        self.assertEqual(self.nodes[0][BACTERIUM_INTRACELLULAR_MACROPHAGE], 7)
+        self.assertEqual(self.nodes[1][BACTERIUM_INTRACELLULAR_MACROPHAGE], 3)
 
 
 class GetMacrophageTranslocationEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, MACROPHAGE_ACTIVATED, BACTERIUM_INTRACELLULAR]
-        self.nodes = [LungPatch(0, compartments, 0.9, 0.5)]
+        self.nodes = [LungPatch(0, ALL_TB_COMPARTMENTS, 0.9, 0.5)]
         self.edges = []
         self.network = MetapopulationNetwork(self.nodes, self.edges)
         self.events = get_macrophage_translocation_events(self.nodes, 0.1)

@@ -22,28 +22,20 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-def get_dendritic_cell_translocation_maturation_events(lung_nodes, lymph_rate, half_sat):
+def get_dendritic_cell_translocation_events(lung_nodes, lymph_rate):
     for n in lung_nodes:
         assert isinstance(n, LungPatch), "Patches must be instances of LungPatch"
-    events = [DendriticCellTranslocationMaturation(lymph_rate, lung_nodes, half_sat)]
+    events = [DendriticCellTranslocation(lymph_rate, lung_nodes)]
     return events
 
-# TODO - no bacteria are uptaken
 
-class DendriticCellTranslocationMaturation(LymphTranslocateDrainage):
-    def __init__(self, reaction_parameter, nodes, half_sat):
-        self._half_sat = half_sat
-        LymphTranslocateDrainage.__init__(self, reaction_parameter, nodes, DENDRITIC_CELL_IMMATURE)
 
-    def _calculate_state_variable_at_node(self, node):
-        total_extracellular_bac = node[BACTERIUM_FAST] + node[BACTERIUM_SLOW]
-        if total_extracellular_bac + self._half_sat == 0:
-            return 0
-        else:
-            return node[DENDRITIC_CELL_IMMATURE] * (float(total_extracellular_bac) /
-                                                (total_extracellular_bac + self._half_sat))
+class DendriticCellTranslocation(LymphTranslocateDrainage):
+    def __init__(self, reaction_parameter, nodes):
+        LymphTranslocateDrainage.__init__(self, reaction_parameter, nodes, DENDRITIC_CELL_MATURE)
 
     def _move(self, node, neighbour):
-        node.update({DENDRITIC_CELL_IMMATURE: -1})
+        bac_to_move = int(round(float(node[BACTERIUM_INTRACELLULAR_DENDRITIC]) / node[DENDRITIC_CELL_MATURE]))
+        node.update({DENDRITIC_CELL_MATURE: -1, BACTERIUM_INTRACELLULAR_DENDRITIC: -1 * bac_to_move})
         # Add member to the neighbour
-        neighbour.update({DENDRITIC_CELL_MATURE: 1})
+        neighbour.update({DENDRITIC_CELL_MATURE: 1, BACTERIUM_INTRACELLULAR_DENDRITIC: bac_to_move})

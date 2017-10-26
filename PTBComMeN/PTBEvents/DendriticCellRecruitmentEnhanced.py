@@ -32,7 +32,7 @@ class DendriticCellRecruitmentLungEnhancedByBacteria(RecruitmentByPerfusion):
         RecruitmentByPerfusion.__init__(self, reaction_parameter, nodes, DENDRITIC_CELL_IMMATURE)
 
     def _calculate_state_variable_at_node(self, node):
-        total_extracellular_bac = node[BACTERIUM_FAST] + node[BACTERIUM_SLOW]
+        total_extracellular_bac = node[BACTERIUM_EXTRACELLULAR_FAST] + node[BACTERIUM_EXTRACELLULAR_SLOW]
         if total_extracellular_bac + self._half_sat == 0:
             return 0
         else:

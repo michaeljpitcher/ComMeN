@@ -4,10 +4,10 @@ from PTBComMeN import *
 
 class TCellRecruitmentByInfectedMacrophageTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [T_CELL_NAIVE, MACROPHAGE_INFECTED, BACTERIUM_FAST]
+        compartments = [T_CELL_NAIVE, MACROPHAGE_INFECTED, BACTERIUM_EXTRACELLULAR_FAST]
         self.nodes = [LymphPatch(0, compartments)]
         self.event_mi = TCellRecruitmentEnhanced(0.1, self.nodes, MACROPHAGE_INFECTED)
-        self.event_bf = TCellRecruitmentEnhanced(0.2, self.nodes, BACTERIUM_FAST)
+        self.event_bf = TCellRecruitmentEnhanced(0.2, self.nodes, BACTERIUM_EXTRACELLULAR_FAST)
         uh = UpdateHandler([self.event_mi, self.event_bf])
 
     def test_rate(self):
@@ -16,7 +16,7 @@ class TCellRecruitmentByInfectedMacrophageTestCase(unittest.TestCase):
         self.nodes[0].update({MACROPHAGE_INFECTED: 4})
         self.assertEqual(self.event_mi.rate, 0.1 * 4)
         self.assertEqual(self.event_bf.rate, 0.0)
-        self.nodes[0].update({BACTERIUM_FAST: 3})
+        self.nodes[0].update({BACTERIUM_EXTRACELLULAR_FAST: 3})
         self.assertEqual(self.event_mi.rate, 0.1 * 4)
         self.assertEqual(self.event_bf.rate, 0.2 * 3)
 
@@ -30,9 +30,9 @@ class TCellRecruitmentByInfectedMacrophageTestCase(unittest.TestCase):
 class GetTCellRecruitmentEventsTestCase(unittest.TestCase):
 
     def setUp(self):
-        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_FAST]
+        compartments = [MACROPHAGE_REGULAR, MACROPHAGE_INFECTED, BACTERIUM_EXTRACELLULAR_FAST]
         self.nodes = [LymphPatch(0, compartments)]
-        self.rates = {MACROPHAGE_INFECTED: 0.1, BACTERIUM_FAST: 0.2}
+        self.rates = {MACROPHAGE_INFECTED: 0.1, BACTERIUM_EXTRACELLULAR_FAST: 0.2}
         self.events = get_t_cell_recruitment_enhanced_events(self.nodes, self.rates)
 
     def test_events(self):

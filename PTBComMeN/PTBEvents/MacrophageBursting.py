@@ -30,15 +30,15 @@ class InfectedMacrophageBursts(Event):
 
     def _calculate_state_variable_at_node(self, node):
         # Account for possible division by zero
-        if node[BACTERIUM_INTRACELLULAR] ** self._hill_exponent + \
+        if node[BACTERIUM_INTRACELLULAR_MACROPHAGE] ** self._hill_exponent + \
            (self._carrying_capacity * node[MACROPHAGE_INFECTED]) ** self._hill_exponent == 0:
             return 0
         else:
-            return node[MACROPHAGE_INFECTED] * (node[BACTERIUM_INTRACELLULAR] ** self._hill_exponent * 1.0 / (
-                    node[BACTERIUM_INTRACELLULAR] ** self._hill_exponent + (
+            return node[MACROPHAGE_INFECTED] * (node[BACTERIUM_INTRACELLULAR_MACROPHAGE] ** self._hill_exponent * 1.0 / (
+                    node[BACTERIUM_INTRACELLULAR_MACROPHAGE] ** self._hill_exponent + (
                     self._carrying_capacity * node[MACROPHAGE_INFECTED]) ** self._hill_exponent))
 
     def _update_node(self, node):
-        bacteria_to_release = int(round(float(node[BACTERIUM_INTRACELLULAR]) / node[MACROPHAGE_INFECTED]))
-        node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR: -1 * bacteria_to_release,
-                     BACTERIUM_SLOW: bacteria_to_release})
+        bacteria_to_release = int(round(float(node[BACTERIUM_INTRACELLULAR_MACROPHAGE]) / node[MACROPHAGE_INFECTED]))
+        node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR_MACROPHAGE: -1 * bacteria_to_release,
+                     BACTERIUM_EXTRACELLULAR_SLOW: bacteria_to_release})
