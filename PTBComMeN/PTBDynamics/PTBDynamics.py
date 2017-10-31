@@ -40,10 +40,12 @@ EVENT_CONFIG_SECTIONS = [CELL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
                          MacrophageRecruitmentLymphStandard.__name__, MacrophageRecruitmentLymphEnhanced.__name__,
                          InfectedMacrophageTranslocateLymph.__name__,
                          TCellDifferentiationByAPC.__name__, TCellDeath.__name__, TCellRecruitmentStandard.__name__,
+                         TCellRecruitmentEnhanced.__name__,
                          TCellTranslocationBlood.__name__,
                          DendriticCellRecruitmentLungStandard.__name__,
                          DendriticCellRecruitmentLungEnhancedByBacteria.__name__,
-                         DendriticCellDeathStandard.__name__, DendriticCellTranslocation.__name__]
+                         DendriticCellDeathStandard.__name__, DendriticCellTranslocation.__name__,
+                         DendriticCellMaturationAntigen.__name__, DendriticCellMaturationBacteriaUptake.__name__]
 
 
 def get_rates(event_classname, event_config):
@@ -177,33 +179,33 @@ class PTBDynamics(Dynamics):
         events += get_t_cell_differentiation_events(network.nodes, tcell_differentiation_rates)
 
         # T cell death
-        rates = get_rates(TCellDeath.__name__, event_config)
-        events += get_t_cell_death_events(network.nodes, rates)
+        t_cell_death_rates = get_rates(TCellDeath.__name__, event_config)
+        events += get_t_cell_death_events(network.nodes, t_cell_death_rates)
 
         # T cell recruitment
-        standard_rate = event_config.getfloat(TCellRecruitmentStandard.__name__, RATE)
-        events += get_t_cell_recruitment_standard_events(network.lymph_patches, standard_rate)
-        enhanced_rates = get_rates(TCellRecruitmentEnhanced.__name__, event_config)
-        events += get_t_cell_recruitment_enhanced_events(network.lymph_patches, enhanced_rates)
+        t_cell_recruit_standard_rate = event_config.getfloat(TCellRecruitmentStandard.__name__, RATE)
+        events += get_t_cell_recruitment_standard_events(network.lymph_patches, t_cell_recruit_standard_rate)
+        t_cell_recruit_enhanced_rates = get_rates(TCellRecruitmentEnhanced.__name__, event_config)
+        events += get_t_cell_recruitment_enhanced_events(network.lymph_patches, t_cell_recruit_enhanced_rates)
 
         # T cell translocation
-        rates = get_rates(TCellTranslocationBlood.__name__, event_config)
-        events += get_t_cell_translocation_events(network.lymph_patches, rates)
+        t_cell_translocation_rate = event_config.getfloat(TCellTranslocationBlood.__name__, RATE)
+        events += get_t_cell_translocation_events(network.lymph_patches, t_cell_translocation_rate)
 
         # Dendritic recruitment
-        standard_rate = event_config.getfloat(DendriticCellRecruitmentLungStandard.__name__, RATE)
-        events += get_dendritic_cell_recruitment_standard_events(network.lung_patches, standard_rate)
-        enhanced_rate = event_config.getfloat(DendriticCellRecruitmentLungEnhancedByBacteria.__name__, RATE)
+        dc_standard_rate = event_config.getfloat(DendriticCellRecruitmentLungStandard.__name__, RATE)
+        events += get_dendritic_cell_recruitment_standard_events(network.lung_patches, dc_standard_rate)
+        dc_enhanced_rate = event_config.getfloat(DendriticCellRecruitmentLungEnhancedByBacteria.__name__, RATE)
         half_sat = event_config.getfloat(DendriticCellRecruitmentLungEnhancedByBacteria.__name__, HALF_SAT)
-        events += get_dendritic_cell_recruitment_enhanced_events(network.lung_patches, enhanced_rate, half_sat)
+        events += get_dendritic_cell_recruitment_enhanced_events(network.lung_patches, dc_enhanced_rate, half_sat)
 
         # Dendritic death
-        death_rates = get_rates(DendriticCellDeathStandard.__name__, event_config)
-        events += get_dendritic_cell_standard_death_events(network.nodes, death_rates)
+        dc_death_rates = get_rates(DendriticCellDeathStandard.__name__, event_config)
+        events += get_dendritic_cell_standard_death_events(network.nodes, dc_death_rates)
 
         # Dendritic translocation and maturation
-        standard_rate = event_config.getfloat(DendriticCellTranslocation.__name__, RATE)
-        events += get_dendritic_cell_translocation_events(network.lung_patches, standard_rate)
+        dc_translocation_rate = event_config.getfloat(DendriticCellTranslocation.__name__, RATE)
+        events += get_dendritic_cell_translocation_events(network.lung_patches, dc_translocation_rate)
 
         # Dendritic cell maturation
         antigen_rates = get_rates(DendriticCellMaturationAntigen.__name__, event_config)
