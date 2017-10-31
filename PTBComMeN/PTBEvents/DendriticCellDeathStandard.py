@@ -21,8 +21,9 @@ __status__ = "Development"
 def get_dendritic_cell_standard_death_events(nodes, standard_rates):
     events = []
     # Standard
-    for dendritic_cell_state, rate in standard_rates.iteritems():
-        events.append(DendriticCellDeathStandard(rate, nodes, dendritic_cell_state))
+    for d in ALL_DENDRITIC_CELLS:
+        rate = standard_rates[d]
+        events.append(DendriticCellDeathStandard(rate, nodes, d))
     return events
 
 
