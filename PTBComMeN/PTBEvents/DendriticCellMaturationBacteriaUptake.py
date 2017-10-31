@@ -21,7 +21,8 @@ __status__ = "Development"
 
 def get_dendritic_cell_maturation_bacterial_uptake_events(nodes, bacterium_rates):
     events = []
-    for bacterium, rate in bacterium_rates.iteritems():
+    for bacterium in EXTRACELLULAR_BACTERIA:
+        rate = bacterium_rates[bacterium]
         events.append(DendriticCellMaturationBacteriaUptake(rate, nodes, bacterium))
     return events
 
