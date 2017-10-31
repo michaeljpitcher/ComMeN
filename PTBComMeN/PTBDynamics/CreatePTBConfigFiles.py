@@ -6,8 +6,8 @@ Long Docstring
 
 """
 
-from PTBDynamics import *
-from ..PTBEvents import *
+from PTBComMeN.PTBDynamics import *
+from PTBComMeN.PTBEvents import *
 import ConfigParser
 
 __author__ = "Michael Pitcher"
@@ -29,15 +29,22 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
     for n in EVENT_CONFIG_SECTIONS:
         config_event.add_section(n)
 
-    for o in BACTERIA_CHANGE_STATE_OPTIONS:
+    config_event.set(CELL_ATTRIBUTES, MACROPHAGE_CARRYING_CAPACITY, 0.0)
+    config_event.set(CELL_ATTRIBUTES, DENDRITIC_CELL_CARRYING_CAPACITY, 0.0)
+    config_event.set(CELL_ATTRIBUTES, INTRACELLULAR_BACTERIUM_MACROPHAGE_HILL_EXPONENT, 0.0)
+    config_event.set(CELL_ATTRIBUTES, INTRACELLULAR_BACTERIUM_DENDRITIC_CELL_HILL_EXPONENT, 0.0)
+
+    for o in EXTRACELLULAR_BACTERIA + [SIGMOID, HALF_SAT]:
         config_event.set(BacteriaChangeByOxygen.__name__, o, 0.0)
 
-    for o in EXTRACELLULAR_BACTERIA_REPLICATION_OPTIONS:
+    for o in EXTRACELLULAR_BACTERIA:
         config_event.set(ExtracellularBacteriaReplication.__name__, o, 0.0)
 
-    config_event.set(IntracellularBacteriaReplication.__name__, RATE, 0.0)
+    config_event.set(IntracellularBacteriaMacrophageReplication.__name__, RATE, 0.0)
 
-    for o in BACTERIA_TRANSLOCATION_OPTIONS:
+    config_event.set(IntracellularBacteriaDendriticReplication.__name__, RATE, 0.0)
+
+    for o in EXTRACELLULAR_BACTERIA:
         config_event.set(BacteriaTranslocateLung.__name__, o, 0.0)
         config_event.set(BacteriaTranslocateLymph.__name__, o, 0.0)
         config_event.set(BacteriaTranslocateBlood.__name__, o, 0.0)
@@ -52,34 +59,52 @@ def create_event_config_file(filename=DEFAULT_EVENT_CONFIG_FILE):
         config_event.set(MacrophageDeathStandard.__name__, o, 0.0)
 
     config_event.set(InfectedMacrophageDeathByTCell.__name__, RATE, 0.0)
+    config_event.set(InfectedMacrophageDeathByTCell.__name__, HALF_SAT, 0.0)
 
     config_event.set(InfectedMacrophageBursts.__name__, RATE, 0.0)
 
     for o in EXTRACELLULAR_BACTERIA:
         config_event.set(RegularMacrophageDestroysBacteria.__name__, o, 0.0)
         config_event.set(ActivatedMacrophageDestroysBacteria.__name__, o, 0.0)
-        config_event.set(MacrophageBecomesInfected.__name__, o, 0.0)
+
+    config_event.set(MacrophageBecomesInfected.__name__, RATE, 0.0)
+    config_event.set(MacrophageBecomesInfected.__name__, HALF_SAT, 0.0)
 
     config_event.set(MacrophageRecruitmentLungStandard.__name__, RATE, 0.0)
+    config_event.set(MacrophageRecruitmentLymphStandard.__name__, RATE, 0.0)
 
-    for o in MACROPHAGE_RECRUITMENT_LUNG_ENHANCED_OPTIONS:
+    for o in [MACROPHAGE_INFECTED, MACROPHAGE_ACTIVATED]:
         config_event.set(MacrophageRecruitmentLungEnhanced.__name__, o, 0.0)
-
-    for o in MACROPHAGE_RECRUITMENT_LYMPH_ENHANCED_OPTIONS:
         config_event.set(MacrophageRecruitmentLymphEnhanced.__name__, o, 0.0)
 
     config_event.set(InfectedMacrophageTranslocateLymph.__name__, RATE, 0.0)
 
-    config_event.set(TCellDifferentiationByInfectedMacrophages.__name__, RATE, 0.0)
-
-    for o in T_CELL_DEATH_OPTIONS:
+    for o in ALL_T_CELLS:
         config_event.set(TCellDeath.__name__, o, 0.0)
 
     config_event.set(TCellRecruitmentStandard.__name__, RATE, 0.0)
-    config_event.set(TCellRecruitmentByInfectedMacrophage.__name__, RATE, 0.0)
 
-    for o in T_CELL_TRANSLOCATION_OPTIONS:
-        config_event.set(TCellTranslocationBlood.__name__, o, 0.0)
+    for o in [DENDRITIC_CELL_MATURE, MACROPHAGE_INFECTED]:
+        config_event.set(TCellRecruitmentEnhanced.__name__, o, 0.0)
+        config_event.set(TCellDifferentiationByAPC.__name__, o, 0.0)
+
+    config_event.set(TCellTranslocationBlood.__name__, RATE, 0.0)
+
+    config_event.set(DendriticCellRecruitmentLungStandard.__name__, RATE, 0.0)
+
+    config_event.set(DendriticCellRecruitmentLungEnhancedByBacteria.__name__, RATE, 0.0)
+    config_event.set(DendriticCellRecruitmentLungEnhancedByBacteria.__name__, HALF_SAT, 0.0)
+
+    for o in ALL_DENDRITIC_CELLS:
+        config_event.set(DendriticCellDeathStandard.__name__, o, 0.0)
+
+    config_event.set(DendriticCellTranslocation.__name__, RATE, 0.0)
+
+    # for o in [MACROPHAGE_INFECTED]:
+    #     config_event.set(DendriticCellMaturationAntigen.__name__, o, 0.0)
+
+    for o in EXTRACELLULAR_BACTERIA:
+        config_event.set(DendriticCellMaturationBacteriaUptake.__name__, o, 0.0)
 
     # Write to file and close
     config_event.write(config_event_file)
@@ -95,3 +120,7 @@ def create_seeding_config_file(filename=DEFAULT_SEEDING_CONFIG_FILE):
             config_seeding.set(n, c, 0)
     config_seeding.write(config_seeding_file)
     config_seeding_file.close()
+
+if __name__ == '__main__':
+    create_event_config_file()
+    create_seeding_config_file()
