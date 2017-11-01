@@ -29,7 +29,6 @@ def get_dendritic_cell_translocation_events(lung_nodes, lymph_rate):
     return events
 
 
-
 class DendriticCellTranslocation(LymphTranslocateDrainage):
     def __init__(self, reaction_parameter, nodes):
         LymphTranslocateDrainage.__init__(self, reaction_parameter, nodes, DENDRITIC_CELL_MATURE)

@@ -37,7 +37,7 @@ class MacrophageBecomesInfected(Event):
         return node[MACROPHAGE_REGULAR] * (float(total_bacteria) / (total_bacteria + self._half_sat))
 
     def _update_node(self, node):
-        # TODO -Doesn't match Kirschner dynamics
+        # TODO - Doesn't match Kirschner dynamics
         changes = {MACROPHAGE_REGULAR: -1, MACROPHAGE_INFECTED: 1, BACTERIUM_INTRACELLULAR_MACROPHAGE: 1}
         # To account for uncertain cause of infection, choose a bacterium at random from extracellular
         r = rand.random() * (node[BACTERIUM_EXTRACELLULAR_FAST] + node[BACTERIUM_EXTRACELLULAR_SLOW])

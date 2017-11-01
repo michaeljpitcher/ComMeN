@@ -15,9 +15,11 @@ class MacrophageBecomesInfectedTestCase(unittest.TestCase):
         self.assertEqual(self.event.rate, 0)
         self.nodes[0].update({BACTERIUM_EXTRACELLULAR_FAST: 3})
         self.assertEqual(self.event.rate, 0.1 * 2 * (3.0 / (3.0 + 100)))
+
         a = self.event.rate
         self.nodes[0].update({BACTERIUM_EXTRACELLULAR_SLOW: 56})
         self.assertEqual(self.event.rate, 0.1 * 2 * (59.0 / (59.0 + 100)))
+
         b = self.event.rate
         self.assertTrue(b > a)
 
