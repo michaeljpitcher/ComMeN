@@ -36,9 +36,13 @@ class InfectedMacrophageBursts(Event):
         else:
             return node[MACROPHAGE_INFECTED] * (node[BACTERIUM_INTRACELLULAR_MACROPHAGE] ** self._hill_exponent * 1.0 / (
                     node[BACTERIUM_INTRACELLULAR_MACROPHAGE] ** self._hill_exponent + (
-                    self._carrying_capacity * node[MACROPHAGE_INFECTED]) ** self._hill_exponent))
+                     self._carrying_capacity * node[MACROPHAGE_INFECTED]) ** self._hill_exponent))
 
     def _update_node(self, node):
-        bacteria_to_release = self._carrying_capacity
+        if self._carrying_capacity > node[BACTERIUM_INTRACELLULAR_MACROPHAGE]:
+            bacteria_to_release = int(round(float(node[BACTERIUM_INTRACELLULAR_MACROPHAGE]) /
+                                            node[MACROPHAGE_INFECTED]))
+        else:
+            bacteria_to_release = self._carrying_capacity
         node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR_MACROPHAGE: -1 * bacteria_to_release,
                      BACTERIUM_EXTRACELLULAR_SLOW: bacteria_to_release})
