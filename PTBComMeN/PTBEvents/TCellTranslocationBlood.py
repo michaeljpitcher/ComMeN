@@ -33,3 +33,17 @@ def get_t_cell_translocation_events(lymph_nodes, rate):
 class TCellTranslocationBlood(BloodTranslocatePerfusion):
     def __init__(self, reaction_parameter, nodes):
         BloodTranslocatePerfusion.__init__(self, reaction_parameter, nodes, T_CELL_ACTIVATED)
+
+    def _pick_edge(self, edges):
+        nodes = [edge.nodes[1] for edge in edges]
+        total_m_i = sum(n[MACROPHAGE_INFECTED] for n in nodes)
+        if total_m_i == 0:
+            return BloodTranslocatePerfusion._pick_edge(self, edges)
+        else:
+            total = sum(n[MACROPHAGE_INFECTED] * n.perfusion for n in nodes)
+            counter = 0
+            r = rand.random() * total
+            for c in range(len(edges)):
+                counter += nodes[c][MACROPHAGE_INFECTED] * nodes[c].perfusion
+                if counter >= r:
+                    return edges[c]

@@ -4,9 +4,9 @@ from PTBComMeN import *
 
 class TCellTranslocationBloodTestCase(unittest.TestCase):
     def setUp(self):
-        compartments = [T_CELL_ACTIVATED]
-        self.nodes = [LymphPatch(1, compartments), LungPatch(0, compartments, 0.9, 0.3)]
-        self.edges = [BloodEdge(self.nodes[0], self.nodes[1])]
+        self.nodes = [LymphPatch(0, ALL_TB_COMPARTMENTS), LungPatch(1, ALL_TB_COMPARTMENTS, 0.9, 0.3),
+                      LungPatch(2, ALL_TB_COMPARTMENTS, 0.9, 0.1)]
+        self.edges = [BloodEdge(self.nodes[0], self.nodes[1]), BloodEdge(self.nodes[0], self.nodes[2])]
         self.network = MetapopulationNetwork(self.nodes, self.edges)
         self.event = TCellTranslocationBlood(0.1, self.nodes)
         uh = UpdateHandler([self.event])
@@ -17,6 +17,8 @@ class TCellTranslocationBloodTestCase(unittest.TestCase):
         self.assertEqual(self.event.rate, 0.1 * 3)
 
     def test_update(self):
+        rand.seed(101)
+        # NO MI
         self.nodes[0].update({T_CELL_ACTIVATED: 3})
         self.assertEqual(self.nodes[0][T_CELL_ACTIVATED], 3)
         self.assertEqual(self.nodes[1][T_CELL_ACTIVATED], 0)
@@ -26,6 +28,17 @@ class TCellTranslocationBloodTestCase(unittest.TestCase):
         self.event.perform()
         self.assertEqual(self.nodes[0][T_CELL_ACTIVATED], 1)
         self.assertEqual(self.nodes[1][T_CELL_ACTIVATED], 2)
+
+        # MI
+        self.nodes[0].reset()
+        self.nodes[1].reset()
+
+        self.nodes[0].update({T_CELL_ACTIVATED: 3})
+        self.nodes[2].update({MACROPHAGE_INFECTED: 3})
+        self.event.perform()
+        self.assertEqual(self.nodes[0][T_CELL_ACTIVATED], 2)
+        self.assertEqual(self.nodes[1][T_CELL_ACTIVATED], 0)
+        self.assertEqual(self.nodes[2][T_CELL_ACTIVATED], 1)
 
 
 class GetTCellTranslocationEventsTestCase(unittest.TestCase):
