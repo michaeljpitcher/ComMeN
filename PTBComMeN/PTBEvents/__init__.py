@@ -22,7 +22,7 @@ from BacteriaReplicationExtracellular import *
 from BacteriaReplicationIntracellularMacrophage import *
 from BacteriaReplicationIntracellularDendritic import *
 from BacteriaTranslocateLymph import *
-from BacteriaTranslocateBlood import *
+from BacteriaTranslocateLymphToLung import *
 from BacteriaTranslocateLung import *
 from MacrophageActivation import *
 from MacrophageDeactivation import *

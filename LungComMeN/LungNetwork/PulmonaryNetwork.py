@@ -28,13 +28,13 @@ class PulmonaryNetwork(MetapopulationNetwork):
     connected together based on the method chosen.
     """
 
-    def __init__(self, compartments, ventilation, perfusion, edge_weight_within_lobe=1, edge_weight_adjacent_lobe=1,
-                 lymphatic_drainage=None):
+    def __init__(self, compartments, ventilation, perfusion, edge_weight_within_lobe=1,
+                 edge_weight_adjacent_lobe=1, lymphatic_drainage=None):
         """
         Create a new network
         :param compartments: Compartments within patches
-        :param ventilation: Dictionary of ventilation values (key:patch ID, value:ventilation value)
-        :param perfusion: Dictionary of perfusion values (key:patch ID, value:perfusion value)
+        :param ventilation: Dictionary of ventilation values (key:zone number, value:ventilation value)
+        :param perfusion: Dictionary of perfusion values (key:zone number, value:perfusion value)
         :param edge_joining: How to join BPS
         """
         # Keep lists of node types for convenience
@@ -49,10 +49,31 @@ class PulmonaryNetwork(MetapopulationNetwork):
 
         # Node for every BPS
         for segment_id in LUNG_BPS:
+            # Get the West Zone for this patch
+            zone = ZONE_FOR_SEGMENT[segment_id]
+
+            # If patch has been specified for ventilation/perfusion, use the specified value
             try:
-                nodes[segment_id] = LungPatch(segment_id, compartments, ventilation[segment_id], perfusion[segment_id])
+                if segment_id in ventilation:
+                    vent = ventilation[segment_id]
+                # Otherwise use the West Zone value specified
+                else:
+                    vent = ventilation[zone]
             except KeyError as e:
-                raise KeyError("Patch {0} is missing value for ventilation/perfusion".format(e.message))
+                raise KeyError(
+                    "Please specify a value for ventilation of either patch {0} or West Zone {1}".format(segment_id,
+                                                                                                         zone))
+            try:
+                if segment_id in perfusion:
+                    perf = perfusion[segment_id]
+                else:
+                    perf = perfusion[zone]
+            except KeyError as e:
+                raise KeyError(
+                    "Please specify a value for perfusion of either patch {0} or West Zone {1}".format(segment_id,
+                                                                                                         zone))
+
+            nodes[segment_id] = LungPatch(segment_id, compartments, vent, perf)
             self.lung_patches.append(nodes[segment_id])
 
         # Edges
@@ -89,3 +110,16 @@ class PulmonaryNetwork(MetapopulationNetwork):
                 edges.append(BloodEdge(nodes[LYMPH], nodes[segment_id]))
 
         MetapopulationNetwork.__init__(self, nodes.values(), edges)
+
+    def get_standard_seeding(self, cell_recruitment_lung_rates, cell_recruitment_lymph_rates, death_rates):
+        seeding = {}
+        for node_id in LUNG_BPS + [LYMPH]:
+            seeding[node_id] = {}
+        # Lung seedings
+        for cell, rate in cell_recruitment_lung_rates.iteritems():
+            for n in LUNG_BPS:
+                seeding[n][cell] = int(float(self[n].perfusion * rate / death_rates[cell]))
+        # Lymph seedings
+        for cell, rate in cell_recruitment_lymph_rates.iteritems():
+            seeding[LYMPH][cell] = int(float(rate / death_rates[cell]))
+        return seeding

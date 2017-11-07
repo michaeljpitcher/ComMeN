@@ -36,6 +36,7 @@ class InfectedMacrophageDeathByTCell(Event):
             return node[MACROPHAGE_INFECTED] * (t_cell_mac_ratio / (t_cell_mac_ratio + self._half_sat))
 
     def _update_node(self, node):
+        # TODO - all bacteria are released
         bacteria_to_release = int(round(float(node[BACTERIUM_INTRACELLULAR_MACROPHAGE]) / node[MACROPHAGE_INFECTED]))
         node.update({MACROPHAGE_INFECTED: -1, BACTERIUM_INTRACELLULAR_MACROPHAGE: -1 * bacteria_to_release,
                      BACTERIUM_EXTRACELLULAR_SLOW: bacteria_to_release})

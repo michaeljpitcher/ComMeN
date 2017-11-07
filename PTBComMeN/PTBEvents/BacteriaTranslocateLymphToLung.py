@@ -22,15 +22,23 @@ __email__ = "mjp22@st-andrews.ac.uk"
 __status__ = "Development"
 
 
-def get_bacteria_translocation_blood_events(lymph_nodes, blood_rates):
+def get_bacteria_translocation_blood_events(lymph_nodes, blood_rates, lymphangitis_rates):
     events = []
     for n in lymph_nodes:
         assert isinstance(n, LymphPatch), "Patches must be instances of LymphPatch"
-    for b in blood_rates:
-        events.append(BacteriaTranslocateBlood(blood_rates[b], lymph_nodes, b))
+    for bacterium, rate in blood_rates.iteritems():
+        events.append(BacteriaTranslocateBlood(rate, lymph_nodes, bacterium))
+    for bacterium, rate in lymphangitis_rates.iteritems():
+        events.append(BacteriaTranslocateLymphangitis(rate, lymph_nodes, bacterium))
     return events
 
 
 class BacteriaTranslocateBlood(BloodTranslocatePerfusion):
     def __init__(self, reaction_parameter, nodes, compartment_translocating):
         BloodTranslocatePerfusion.__init__(self, reaction_parameter, nodes, compartment_translocating)
+
+
+# TODO - need some way of modelling lymphangitis
+class BacteriaTranslocateLymphangitis(Translocate):
+    def __init__(self, reaction_parameter, nodes, compartment_translocating):
+        Translocate.__init__(self, reaction_parameter, nodes, compartment_translocating, BloodEdge, False)

@@ -30,7 +30,7 @@ EVENT_CONFIG_SECTIONS = [CELL_ATTRIBUTES, BacteriaChangeByOxygen.__name__,
                          ExtracellularBacteriaReplication.__name__, IntracellularBacteriaMacrophageReplication.__name__,
                          IntracellularBacteriaDendriticReplication.__name__,
                          BacteriaTranslocateLung.__name__, BacteriaTranslocateLymph.__name__,
-                         BacteriaTranslocateBlood.__name__,
+                         BacteriaTranslocateBlood.__name__, BacteriaTranslocateLymphangitis.__name__,
                          MacrophageActivation.__name__, MacrophageDeactivation.__name__,
                          MacrophageDeathStandard.__name__, InfectedMacrophageDeathByTCell.__name__,
                          InfectedMacrophageBursts.__name__,
@@ -121,7 +121,8 @@ class PTBDynamics(Dynamics):
         lymph_rates = get_rates(BacteriaTranslocateLymph.__name__, event_config)
         events += get_bacteria_translocation_lymph_events(network.lung_patches, lymph_rates)
         blood_rates = get_rates(BacteriaTranslocateBlood.__name__, event_config)
-        events += get_bacteria_translocation_blood_events(network.lymph_patches, blood_rates)
+        lymphangitis_rates = get_rates(BacteriaTranslocateLymphangitis.__name__, event_config)
+        events += get_bacteria_translocation_blood_events(network.lymph_patches, blood_rates, lymphangitis_rates)
 
         # Macrophage activation
         mac_act_rate = event_config.getfloat(MacrophageActivation.__name__, RATE)
