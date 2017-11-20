@@ -34,11 +34,13 @@ class Translocate(Event):
         :param rate_increases_with_edges: Does the rate increase the more viable edges there are at node?
         :param influencing_compartments: External compartments which cause translocation
         """
+        self._viable_edges_lookup = {}
         self._compartment_translocating = compartment_translocating
         self._rate_increases_with_edges = rate_increases_with_edges
-        self._edge_class = edge_class
+        self._edge_class = edge_class.__name__
         self._influencing_compartments = influencing_compartments
         Event.__init__(self, reaction_parameter, nodes)
+
 
     def _calculate_state_variable_at_node(self, node):
         """
@@ -72,15 +74,15 @@ class Translocate(Event):
         :param node:
         :return: Acceptable edges for this event object
         """
-        # TODO - can this be stored in the event so it's not computed every time?
-        if self._edge_class in node.adjacent_edges.keys():
-            viable_edges = []
-            for e in node.adjacent_edges[self._edge_class]:
-                if (e.directed and e.nodes[0] == node) or not e.directed:
-                    viable_edges.append(e)
-            return viable_edges
-        else:
+        try:
+            if node.node_id not in self._viable_edges_lookup:
+                self._viable_edges_lookup[node.node_id] = [e for e in node.adjacent_edges[self._edge_class] if
+                                                           (e.directed and e.nodes[0] == node) or not e.directed]
+
+            return self._viable_edges_lookup[node.node_id]
+        except KeyError:
             return []
+
 
     def _update_node(self, node):
         """
