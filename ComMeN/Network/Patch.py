@@ -79,10 +79,10 @@ class Patch:
         :param edge: Edge to add
         """
         # Check if there is already a record for this class of edge, if not add one
-        if edge.__class__ not in self.adjacent_edges:
-            self.adjacent_edges[edge.__class__] = []
+        if edge.__class__.__name__ not in self.adjacent_edges:
+            self.adjacent_edges[edge.__class__.__name__] = []
         # Add the edge to the record for the edge class
-        self.adjacent_edges[edge.__class__].append(edge)
+        self.adjacent_edges[edge.__class__.__name__].append(edge)
 
     def total_population(self):
         """
