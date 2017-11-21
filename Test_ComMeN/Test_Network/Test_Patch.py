@@ -31,8 +31,8 @@ class PatchTestCase(unittest.TestCase):
         e = Edge(self.patch, patch2)
         self.patch.adjacent_edges.clear()
         self.patch.add_adjacent_edge(e)
-        self.assertItemsEqual(self.patch.adjacent_edges.keys(), [Edge])
-        self.assertItemsEqual(self.patch.adjacent_edges[Edge], [e])
+        self.assertItemsEqual(self.patch.adjacent_edges.keys(), [Edge.__name__])
+        self.assertItemsEqual(self.patch.adjacent_edges[Edge.__name__], [e])
 
     def test_reset(self):
         self.patch.update({'a':1,'b':2,'c':3})

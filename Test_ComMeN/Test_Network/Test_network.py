@@ -27,10 +27,10 @@ class NetworkTestCase(unittest.TestCase):
             network_full = MetapopulationNetwork(nodes, self.edges)
         self.assertTrue('is not in the network' in str(context.exception))
 
-        self.assertItemsEqual(self.nodes[0].adjacent_edges.keys(), [Edge])
-        self.assertItemsEqual(self.nodes[0].adjacent_edges[Edge], [self.edges[0]])
-        self.assertItemsEqual(self.nodes[1].adjacent_edges.keys(), [Edge])
-        self.assertItemsEqual(self.nodes[1].adjacent_edges[Edge], [self.edges[0]])
+        self.assertItemsEqual(self.nodes[0].adjacent_edges.keys(), [Edge.__name__])
+        self.assertItemsEqual(self.nodes[0].adjacent_edges[Edge.__name__], [self.edges[0]])
+        self.assertItemsEqual(self.nodes[1].adjacent_edges.keys(), [Edge.__name__])
+        self.assertItemsEqual(self.nodes[1].adjacent_edges[Edge.__name__], [self.edges[0]])
 
     def test_seed(self):
         self.network.seed({0:{'a':1, 'b':2}, 9:{'a':3, 'c':4}})
