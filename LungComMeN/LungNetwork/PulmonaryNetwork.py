@@ -28,8 +28,8 @@ class PulmonaryNetwork(MetapopulationNetwork):
     connected together based on the method chosen.
     """
 
-    def __init__(self, compartments, ventilation, perfusion, edge_weight_within_lobe=1,
-                 edge_weight_adjacent_lobe=1, lymphatic_drainage=None):
+    def __init__(self, compartments, ventilation, perfusion, lymphatic_drainage, edge_weight_within_lobe=1,
+                 edge_weight_adjacent_lobe=1):
         """
         Create a new network
         :param compartments: Compartments within patches
@@ -102,12 +102,25 @@ class PulmonaryNetwork(MetapopulationNetwork):
         nodes[LYMPH] = LymphPatch(LYMPH, compartments)
         self.lymph_patches = [nodes[LYMPH]]
 
-        if lymphatic_drainage:
-            for segment_id in LUNG_BPS:
-                # Add a lymph edge from lymph to every BPS
-                edges.append(LymphEdge(nodes[segment_id], nodes[LYMPH], lymphatic_drainage[segment_id]))
-                # Add a blood edge from lymph to all BPS
-                edges.append(BloodEdge(nodes[LYMPH], nodes[segment_id]))
+        for segment_id in LUNG_BPS:
+            # Get the West Zone for this patch
+            zone = ZONE_FOR_SEGMENT[segment_id]
+
+            try:
+                if segment_id in lymphatic_drainage:
+                    drainage = lymphatic_drainage[segment_id]
+                # Otherwise use the West Zone value specified
+                else:
+                    drainage = lymphatic_drainage[zone]
+            except KeyError as e:
+                raise KeyError(
+                    "Please specify a value for lymphatic drainage of either patch {0} or West Zone {1}"
+                        .format(segment_id, zone))
+
+            # Add a lymph edge from lymph to every BPS
+            edges.append(LymphEdge(nodes[segment_id], nodes[LYMPH], drainage))
+            # Add a blood edge from lymph to all BPS
+            edges.append(BloodEdge(nodes[LYMPH], nodes[segment_id]))
 
         MetapopulationNetwork.__init__(self, nodes.values(), edges)
 

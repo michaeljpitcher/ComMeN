@@ -82,8 +82,8 @@ class PTBDynamics(Dynamics):
             for node_id, value in network_config.items(LYMPH_DRAINAGE):
                 lymph_drainage_values[node_id] = float(value)
 
-        network = PulmonaryNetwork(ALL_TB_COMPARTMENTS, ventilations, perfusions, edge_weight_within_lobe,
-                                   edge_weight_adjacent_lobe, lymph_drainage_values)
+        network = PulmonaryNetwork(ALL_TB_COMPARTMENTS, ventilations, perfusions, lymph_drainage_values,
+                                   edge_weight_within_lobe, edge_weight_adjacent_lobe)
 
         # --------------------------------------------------
         # Events
